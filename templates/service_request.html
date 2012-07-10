@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>311 Status</title>
+		<style>
+			article, aside, dialog, figure, footer, header,
+			hgroup, menu, nav, section { display: block; }
+		</style>
+		<link rel="stylesheet" href="/static/arvo-fontfacekit/stylesheet.css" type="text/css" />
+		<link rel="stylesheet" href="/static/css/service_request.css" type="text/css" />
+	</head>
+	<body>
+		
+		<header>
+			<span class="site_title">311 Service Tracker</span>
+			<form method="GET" action="/requests">
+				<label id="request_id_label" for="status_lookup">Check the status of:</label>
+				<input name="request_id" id="status_lookup" type="text" placeholder="Enter Service Request #" />
+				<input type="submit" value="Submit" />
+			</form>
+		</header>
+		
+		<article class="main_content">
+		
+		<h1>{{ sr.service_name }} #{{ sr.service_request_id }}</h1>
+		<p class="status_indicator status-{{ sr.status }}">{{ sr.status.title() }}</p>
+		
+		<div class="request_details">
+			<h2>Original Request</h2>
+			<dl>
+				<dt>Service Type:</dt>
+				<dd>{{ sr.service_name }}</dd>
+				<dt>Description:</dt>
+				<dd>{{ sr.description }}</dd>
+				<dt>Address:</dt>
+				<dd>{{ sr.address.title().split(",", 1)[0] }}<br/>{{ sr.address.title().split(",", 1)[1].replace("Il", "IL") }}</dd>
+				<dt>Created:</dt>
+				<dd>{{ sr.requested_datetime.strftime('%B %d, %Y') }}</dd>
+				<dt>Received:</dt>
+				<dd>{{ sr.received_via.title() }}</dd>
+			</dl>
+		</div>
+		
+		<ol class="activities_list">
+			{% for activity in sr.activities %}
+			<li class="activity activity-{{ activity.type }}">
+				<div class="activity_indicator"></div>
+				<span class="datetime">
+					<span class="date">{{ activity.datetime.strftime('%d-%b-%Y') }}</span>
+					<span class="time">{{ activity.datetime.strftime('%I:%M %p').strip('0') }}</span>
+				</span>
+				<div class="details">
+					<p>
+						
+						{% if activity.type == 'subrequest' %}
+							<strong>{{ activity.description }}</strong><br/>
+							Department: {{ activity.properties.agency_responsible }}
+						{% else %}
+							{{ activity.description }}
+						{% endif %}
+					</p>
+				</div>
+			</li>
+			{% endfor %}
+			
+			{# And of course the SR itself... #}
+			<li class="activity activity-initial activity-subrequest">
+				<div class="activity_indicator"></div>
+				<span class="datetime">
+					<span class="date">{{ sr.requested_datetime.strftime('%d-%b-%Y') }}</span>
+					<span class="time">{{ sr.requested_datetime.strftime('%I:%M %p').strip('0') }}</span>
+				</span>
+				<div class="details">
+					<p>
+						{{ sr.service_name }}<br/>
+						Department: {{ sr.agency_responsible }}<br/>
+						via {{ sr.received_via.title() }}
+					</p>
+					<p>
+						{{ sr.description }}
+					</p>
+				</div>
+			</li>
+		</ol>
+		
+		</article>
+		
+	</body>
+</html>
