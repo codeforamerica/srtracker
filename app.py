@@ -1,14 +1,27 @@
 import os
-from flask import Flask, render_template, request, abort, redirect, url_for
+from flask import Flask, render_template, request, abort, redirect, url_for, make_response
 import requests
 import iso8601
 
 # Config
 DEBUG = True
-OPEN311_SERVER = 'http://ec2-50-16-81-245.compute-1.amazonaws.com/api'
-OPEN311_API_KEY = 'WelcomeToTheChicagoView'
+OPEN311_SERVER = 'localhost:5000'
+OPEN311_API_KEY = ''
+PASSWORD_PROTECTED = False
 
 app = Flask(__name__)
+
+@app.before_request
+def password_protect():
+    if app.config['PASSWORD_PROTECTED']:
+        auth = request.authorization
+        if not auth or auth.password != app.config['PASSWORD']:
+            # Tell the browser to do basic auth
+            return make_response(
+                'Could not verify your access level for that URL.\n'
+                'You have to login with proper credentials', 401,
+                {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
 
 @app.route("/")
 def index():
@@ -26,8 +39,11 @@ def redirect_request():
 @app.route("/requests/<request_id>")
 def show_request(request_id):
     # TODO: Should probably use Three or something nice for this...
-    url = '%s/requests/%s.json?api_key=%s' % (app.config['OPEN311_SERVER'], request_id, app.config['OPEN311_API_KEY'])
-    r = requests.get(url)
+    url = '%s/requests/%s.json' % (app.config['OPEN311_SERVER'], request_id)
+    params = {}
+    if app.config['OPEN311_API_KEY']:
+        params['api_key'] = app.config['OPEN311_API_KEY']
+    r = requests.get(url, params=params)
     sr = r.json
     
     if sr:
@@ -53,6 +69,9 @@ if __name__ == "__main__":
         app.config['OPEN311_SERVER'] = os.environ['OPEN311_SERVER']
     if 'OPEN311_API_KEY' in os.environ:
         app.config['OPEN311_API_KEY'] = os.environ['OPEN311_API_KEY']
+    
+    app.config['PASSWORD_PROTECTED'] = 'PASSWORD_PROTECTED' in os.environ and (os.environ['PASSWORD_PROTECTED'] == 'True') or False
+    app.config['PASSWORD'] = 'PASSWORD' in os.environ and os.environ['PASSWORD'] or ''
     
     port = int(os.environ.get('PORT', 5100))
     app.run(host='0.0.0.0', port=port)
