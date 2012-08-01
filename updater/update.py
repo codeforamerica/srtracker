@@ -71,7 +71,7 @@ def get_updates(since):
 
 def updated_srs_by_subscription():   
     updates = []
-    with db.session() as session:
+    with db() as session:
         srs = [item[0] for item in session.query(distinct(Subscription.sr_id)).all()]
         for sr in get_srs(srs):
             updated_date = parse_date(sr['updated_datetime'])
@@ -91,7 +91,7 @@ def updated_srs_by_subscription():
 
 def updated_srs_by_time():
     updates = []
-    with db.session() as session:
+    with db() as session:
         now = datetime.datetime.now()
         last_update_info = session.query(UpdateInfoItem).filter(UpdateInfoItem.key == 'date').first()
         # add 1 second to the time so we don't grab the latest previous result even if it wasn't updated
@@ -126,7 +126,7 @@ def subscribe(request_id, notification_method):
     if method not in KNOWN_METHODS:
         return False
     
-    with db.session() as session:
+    with db() as session:
         # FIXME: this check should really just be at the DB level to prevent race conditions
         existing = session.query(Subscription).\
             filter(Subscription.sr_id == request_id).\
@@ -140,7 +140,7 @@ def subscribe(request_id, notification_method):
 
 
 def initialize():
-    with db.session() as session:
+    with db() as session:
         # Ensure we have a last updated date
         last_update_info = session.query(UpdateInfoItem).filter(UpdateInfoItem.key == 'date').first()
         if not last_update_info:

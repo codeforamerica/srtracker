@@ -23,3 +23,7 @@ class DB(object):
         instance = self.Session()
         yield instance
         instance.commit()
+    
+    # alias session() for convenience:
+    # now you can do "with db() as s:"
+    __call__ = session
