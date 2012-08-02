@@ -2,7 +2,10 @@ import os
 import math
 import datetime
 from contextlib import contextmanager
+import smtplib
+from email.mime.text import MIMEText
 import requests
+import dateutil
 from dateutil.parser import parse as parse_date
 from db import DB
 from models import Subscription, UpdateInfoItem
@@ -12,11 +15,12 @@ OPEN311_SERVER = 'http://localhost:5000/api'
 OPEN311_API_KEY = ''
 OPEN311_PAGE_SIZE = 1000
 DB_STRING = 'postgresql://localhost:5432/srtracker'
-# DB_HOST = 'localhost'
-# DB_PORT = 27017
-# DB_USER = None
-# DB_PASS = None
-# DB_NAME = 'SRTracker'
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 465
+EMAIL_USER = 'test@example.com'
+EMAIL_PASS = ''
+EMAIL_FROM = 'test@example.com'
+EMAIL_SSL = True
 
 # Max number of SRs to return per request (per spec it's 50)
 SR_INFO_CHUNK_SIZE = 50
@@ -24,6 +28,15 @@ SR_INFO_CHUNK_SIZE = 50
 KNOWN_METHODS = ('email')
 
 db = DB(DB_STRING)
+
+
+# FIXME: start using this
+utczone = dateutil.tz.tzutc()
+def parse_date_utc(date_string):
+    '''Returns a naive date in UTC representing the passed-in date string.'''
+    parsed = parse_date(date_string)
+    if parsed.tzinfo:
+        parsed = parsed.astimezone(utczone).replace(tzinfo=None)
 
 
 def get_srs(sr_list):
@@ -121,6 +134,36 @@ def updated_srs_by_time():
     return updates
 
 
+def send_notification(contact, sr):
+    method, address = contact.split(':', 1)
+    # this should have some more dynamic method of loading 
+    # the function associated with a particular method
+    if method == 'email':
+        send_email_notification(address, sr)
+
+
+def send_email_notification(address, sr):
+    SMTPClass = EMAIL_SSL and smtplib.SMTP_SSL or smtplib.SMTP
+    smtp = SMTPClass(EMAIL_HOST, EMAIL_PORT)
+    smtp.login(EMAIL_USER, EMAIL_PASS)
+    
+    subject = 'Chicago 311: Your %s issue has been updated.' % sr['service_name']
+    message = MIMEText('''Service Request %s (%s) has been updated. Here's the deets: (not)''' % (sr['service_request_id'], sr['service_name']))
+    message['Subject'] = subject
+    message['From'] = EMAIL_FROM
+    message['To'] = address
+    
+    smtp.sendmail(EMAIL_FROM, [address], message.as_string())
+    smtp.quit()
+
+
+def poll_and_notify():
+    notifications = updated_srs_by_time()
+    # FIXME: This should be threads, subprocesses, eventlets or something more concurrent
+    for notification in notifications:
+        send_notification(*notification)
+
+
 def subscribe(request_id, notification_method):
     method, address = notification_method.split(':', 1)
     if method not in KNOWN_METHODS:
@@ -149,21 +192,7 @@ def initialize():
             session.add(UpdateInfoItem(key='date', value=start_date))
 
 
-# if __name__ == "__main__":
-   # updated_srs_by_time
-   
-   
-    # app.config.from_object(__name__)
-    # if 'DEBUG' in os.environ:
-    #     app.debug = os.environ['DEBUG'] == 'True' and True or False
-    # if 'OPEN311_SERVER' in os.environ:
-    #     app.config['OPEN311_SERVER'] = os.environ['OPEN311_SERVER']
-    # if 'OPEN311_API_KEY' in os.environ:
-    #     app.config['OPEN311_API_KEY'] = os.environ['OPEN311_API_KEY']
-    # 
-    # app.config['PASSWORD_PROTECTED'] = 'PASSWORD_PROTECTED' in os.environ and (os.environ['PASSWORD_PROTECTED'] == 'True') or False
-    # app.config['PASSWORD'] = 'PASSWORD' in os.environ and os.environ['PASSWORD'] or ''
-    # 
-    # port = int(os.environ.get('PORT', 5100))
-    # app.run(host='0.0.0.0', port=port)
+if __name__ == "__main__":
+    initialize()
+    poll_and_notify()
     
