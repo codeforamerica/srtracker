@@ -4,7 +4,7 @@ from sqlalchemy import Column, Integer, String, DateTime, Sequence
 Base = declarative_base()
 
 class Subscription(Base):
-    __tablename__ = 'Subscriptions'
+    __tablename__ = 'subscriptions'
     
     id      = Column(Integer, Sequence('subscription_id_seq'), primary_key=True)
     sr_id   = Column(String, index=True)
@@ -13,7 +13,7 @@ class Subscription(Base):
 
 
 class UpdateInfoItem(Base):
-    __tablename__ = 'UpdateInfo'
+    __tablename__ = 'updateinfo'
     
     key   = Column(String, primary_key=True)
     value = Column(String)
