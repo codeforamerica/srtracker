@@ -8,7 +8,7 @@ import requests
 import dateutil
 from dateutil.parser import parse as parse_date
 from db import DB
-from models import Subscription, UpdateInfoItem
+from models import Subscription, UpdateInfoItem, Base
 
 # Config
 OPEN311_SERVER = 'http://localhost:5000/api'
@@ -190,6 +190,11 @@ def initialize():
             # default to 12am this morning for endpoints that update daily
             start_date = datetime.datetime.combine(datetime.date.today(), datetime.time())
             session.add(UpdateInfoItem(key='date', value=start_date))
+
+
+def initialize_db():
+    with db() as session:
+        db.create(Base)
 
 
 if __name__ == "__main__":

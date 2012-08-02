@@ -18,6 +18,9 @@ class DB(object):
             self._engine = create_engine(self._connection)
             self.Session = sessionmaker(bind=self._engine)
     
+    def create(self, ModelClass):
+        ModelClass.metadata.create_all(bind=self._engine)
+    
     @contextmanager
     def session(self):
         instance = self.Session()
