@@ -31,24 +31,6 @@ def parse_date_utc(date_string):
         parsed = parsed.astimezone(utczone).replace(tzinfo=None)
 
 
-def get_srs(sr_list):
-   url = '%s/requests.json' % OPEN311_SERVER
-   num_requests = int(math.ceil(len(sr_list) / float(SR_INFO_CHUNK_SIZE)))
-   results = []
-   for chunk in range(num_requests):
-      srs = sr_list[SR_INFO_CHUNK_SIZE * chunk : SR_INFO_CHUNK_SIZE * (chunk + 1)]
-      params = {'service_request_id': ','.join(srs)}
-      if config.OPEN311_API_KEY:
-         params['api_key'] = config.OPEN311_API_KEY
-      request = requests.get(url, params=params)
-      if request.status_code == requests.codes.ok:
-         results.extend(request.json)
-      else:
-         # TODO: raise exception?
-         break
-   return results
-
-
 def get_updates(since):
    url = '%s/requests.json' % config.OPEN311_SERVER
    params = {
@@ -72,26 +54,6 @@ def get_updates(since):
          break
    
    return results
-
-
-def updated_srs_by_subscription():   
-    updates = []
-    with db() as session:
-        srs = [item[0] for item in session.query(distinct(Subscription.sr_id)).all()]
-        for sr in get_srs(srs):
-            updated_date = parse_date(sr['updated_datetime'])
-            updated_subscriptions = session.query(Subscriptions).\
-                filter(Subscription.sr_id == sr['service_request_id']).\
-                filter(Subscription.updated < updated_date)
-            for subscription in updated_subscriptions:
-                updates.append((subscription.contact, sr))
-                if sr['status'] == 'closed':
-                    # Remove subscriptions for SRs that have been completed
-                    session.delete(subscription)
-                else:
-                    subscription.updated = updated_date
-                    
-    return updates
 
 
 def updated_srs_by_time():
