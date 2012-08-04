@@ -11,23 +11,15 @@ from db import DB
 from models import Subscription, UpdateInfoItem, Base
 
 # Config
-OPEN311_SERVER = 'http://localhost:5000/api'
-OPEN311_API_KEY = ''
-OPEN311_PAGE_SIZE = 1000
-DB_STRING = 'postgresql://localhost:5432/srtracker'
-EMAIL_HOST = 'smtp.example.com'
-EMAIL_PORT = 465
-EMAIL_USER = 'test@example.com'
-EMAIL_PASS = ''
-EMAIL_FROM = 'test@example.com'
-EMAIL_SSL = True
+config_file = os.environ.get('UPDATER_CONFIGURATION', 'configuration')
+config = __import__(config_file)
 
 # Max number of SRs to return per request (per spec it's 50)
 SR_INFO_CHUNK_SIZE = 50
 # Supported notification methods
 KNOWN_METHODS = ('email')
 
-db = DB(DB_STRING)
+db = DB(config.DB_STRING)
 
 
 # FIXME: start using this
@@ -46,8 +38,8 @@ def get_srs(sr_list):
    for chunk in range(num_requests):
       srs = sr_list[SR_INFO_CHUNK_SIZE * chunk : SR_INFO_CHUNK_SIZE * (chunk + 1)]
       params = {'service_request_id': ','.join(srs)}
-      if OPEN311_API_KEY:
-         params['api_key'] = OPEN311_API_KEY
+      if config.OPEN311_API_KEY:
+         params['api_key'] = config.OPEN311_API_KEY
       request = requests.get(url, params=params)
       if request.status_code == requests.codes.ok:
          results.extend(request.json)
@@ -58,13 +50,13 @@ def get_srs(sr_list):
 
 
 def get_updates(since):
-   url = '%s/requests.json' % OPEN311_SERVER
+   url = '%s/requests.json' % config.OPEN311_SERVER
    params = {
       'start_updated_date': since.isoformat(),
-      'page_size': OPEN311_PAGE_SIZE,
+      'page_size': config.OPEN311_PAGE_SIZE,
    }
-   if OPEN311_API_KEY:
-      params['api_key'] = OPEN311_API_KEY
+   if config.OPEN311_API_KEY:
+      params['api_key'] = config.OPEN311_API_KEY
    # paging starts at 1 (not 0)
    page = 1
    results = []
@@ -143,17 +135,17 @@ def send_notification(contact, sr):
 
 
 def send_email_notification(address, sr):
-    SMTPClass = EMAIL_SSL and smtplib.SMTP_SSL or smtplib.SMTP
-    smtp = SMTPClass(EMAIL_HOST, EMAIL_PORT)
-    smtp.login(EMAIL_USER, EMAIL_PASS)
+    SMTPClass = config.EMAIL_SSL and smtplib.SMTP_SSL or smtplib.SMTP
+    smtp = SMTPClass(config.EMAIL_HOST, config.EMAIL_PORT)
+    smtp.login(config.EMAIL_USER, config.EMAIL_PASS)
     
     subject = 'Chicago 311: Your %s issue has been updated.' % sr['service_name']
     message = MIMEText('''Service Request %s (%s) has been updated. Here's the deets: (not)''' % (sr['service_request_id'], sr['service_name']))
     message['Subject'] = subject
-    message['From'] = EMAIL_FROM
+    message['From'] = config.EMAIL_FROM
     message['To'] = address
     
-    smtp.sendmail(EMAIL_FROM, [address], message.as_string())
+    smtp.sendmail(config.EMAIL_FROM, [address], message.as_string())
     smtp.quit()
 
 
