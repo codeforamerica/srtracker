@@ -2,6 +2,7 @@ OPEN311_SERVER = 'http://localhost:5000/api'
 OPEN311_API_KEY = ''
 OPEN311_PAGE_SIZE = 1000
 DB_STRING = 'postgresql://localhost:5432/srtracker'
+THREADED_UPDATES = False
 EMAIL_HOST = 'smtp.example.com'
 EMAIL_PORT = 465
 EMAIL_USER = 'test@example.com'

@@ -4,6 +4,7 @@ import datetime
 from contextlib import contextmanager
 import smtplib
 from email.mime.text import MIMEText
+from threading import Thread
 import requests
 import dateutil
 from dateutil.parser import parse as parse_date
@@ -88,19 +89,21 @@ def updated_srs_by_time():
     return updates
 
 
-def send_notification(contact, sr):
-    method, address = contact.split(':', 1)
-    # this should have some more dynamic method of loading 
-    # the function associated with a particular method
-    if method == 'email':
-        send_email_notification(address, sr)
-
-
-def send_email_notification(address, sr):
+def send_notifications(notifications):
+    # get email server
     SMTPClass = config.EMAIL_SSL and smtplib.SMTP_SSL or smtplib.SMTP
     smtp = SMTPClass(config.EMAIL_HOST, config.EMAIL_PORT)
     smtp.login(config.EMAIL_USER, config.EMAIL_PASS)
     
+    for notification in notifications:
+        # pulling out the address should really be done already elsewhere
+        address = notification[0].split(':', 1)[1]
+        send_email_notification(address, notification[1], smtp)
+    
+    smtp.quit()
+
+
+def send_email_notification(address, sr, smtp):
     subject = 'Chicago 311: Your %s issue has been updated.' % sr['service_name']
     message = MIMEText('''Service Request %s (%s) has been updated. Here's the deets: (not)''' % (sr['service_request_id'], sr['service_name']))
     message['Subject'] = subject
@@ -108,14 +111,30 @@ def send_email_notification(address, sr):
     message['To'] = address
     
     smtp.sendmail(config.EMAIL_FROM, [address], message.as_string())
-    smtp.quit()
 
 
 def poll_and_notify():
     notifications = updated_srs_by_time()
-    # FIXME: This should be threads, subprocesses, eventlets or something more concurrent
-    for notification in notifications:
-        send_notification(*notification)
+    
+    # Need to unhardcode "email" updates so we can support things like SMS, Twitter, etc.
+    # Should break up the list by update method and have a thread pool for each
+    if config.THREADED_UPDATES:
+        notification_count = len(notifications)
+        max_threads = config.EMAIL_MAX_THREADS
+        per_thread = int(math.ceil(float(notification_count) / max_threads))
+        threads = []
+        # Create threads
+        for i in range(max_threads):
+            thread_notifications = notifications[i * per_thread:(i + 1) * per_thread]
+            if len(thread_notifications):
+                thread = Thread(target=send_notifications, args=(thread_notifications,))
+                thread.start()
+                threads.append(thread)
+        # Wait for threads to finish
+        for thread in threads:
+            thread.join()
+    else:
+        send_notifications(notifications)
 
 
 def subscribe(request_id, notification_method):
@@ -132,8 +151,7 @@ def subscribe(request_id, notification_method):
         if not existing:
             session.add(Subscription(
                 sr_id=request_id,
-                contact=notification_method,
-                updated=datetime.datetime(1900, 1, 1)))
+                contact=notification_method))
 
 
 def initialize():
