@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import os
 import math
 import datetime
@@ -60,8 +61,15 @@ def get_updates(since):
 def updated_srs_by_time():
     updates = []
     with db() as session:
-        now = datetime.datetime.now()
         last_update_info = session.query(UpdateInfoItem).filter(UpdateInfoItem.key == 'date').first()
+        # Bail out if we don't actually have any subscriptions
+        if not session.query(Subscription).first():
+            # but first we should clear out the last updated time
+            if last_update_info:
+                session.delete(last_update_info)
+            # TODO: should we raise an exception here instead?
+            return updates
+        
         # add 1 second to the time so we don't grab the latest previous result even if it wasn't updated
         last_update_date = parse_date(last_update_info.value) + datetime.timedelta(seconds=1)
         srs = get_updates(last_update_date)
@@ -165,7 +173,9 @@ def initialize():
     with db() as session:
         # Ensure we have a last updated date
         last_update_info = session.query(UpdateInfoItem).filter(UpdateInfoItem.key == 'date').first()
-        if not last_update_info:
+        a_subscription = session.query(Subscription).first()
+        if a_subscription and not last_update_info:
+            # this is an invalid state! Could raise an error, but just attempt to repair for now
             # default to 12am this morning for endpoints that update daily
             start_date = datetime.datetime.combine(datetime.date.today(), datetime.time())
             session.add(UpdateInfoItem(key='date', value=start_date))
