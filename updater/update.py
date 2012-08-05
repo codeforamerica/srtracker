@@ -13,7 +13,7 @@ from models import Subscription, UpdateInfoItem, Base
 
 # Config
 config_file = os.environ.get('UPDATER_CONFIGURATION', 'configuration')
-config = __import__(config_file)
+config = __import__(config_file, globals(), locals(), [], -1)
 
 # Max number of SRs to return per request (per spec it's 50)
 SR_INFO_CHUNK_SIZE = 50
@@ -142,8 +142,9 @@ def subscribe(request_id, notification_method):
     if method not in KNOWN_METHODS:
         return False
     
+    # TODO: validate the subscription by seeing if the request_id exists via Open311?
     with db() as session:
-        # FIXME: this check should really just be at the DB level to prevent race conditions
+        # FIXME: this check should really just be at the DB level to prevent race conditions (e.g. a unique index on sr_id+contact)
         existing = session.query(Subscription).\
             filter(Subscription.sr_id == request_id).\
             filter(Subscription.contact == notification_method).\
@@ -152,6 +153,12 @@ def subscribe(request_id, notification_method):
             session.add(Subscription(
                 sr_id=request_id,
                 contact=notification_method))
+        
+        # If we haven't ever updated, set the last update date
+        last_update_info = session.query(UpdateInfoItem).filter(UpdateInfoItem.key == 'date').first()
+        if not last_update_info:
+            # TODO: get the SR's updated_datetime and use that
+            session.add(UpdateInfoItem(key='date', value=datetime.datetime.now()))
 
 
 def initialize():

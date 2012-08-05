@@ -123,10 +123,16 @@ input {
 				display: block;
 				margin-left: 232px;
 			}
-			
-	.request_details {
+	
+	.request_extras {
+		position: relative;
 		float: right;
-		width: 252px;
+		width: 300px;
+		z-index: 1;
+	}
+	
+	.request_details {
+		margin-bottom: 20px;
 		padding: 24px 24px 1px;
 		background: #f6f6f6;
 	}

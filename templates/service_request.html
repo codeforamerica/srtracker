@@ -26,21 +26,33 @@
 		<h1>{{ sr.service_name }} #{{ sr.service_request_id }}</h1>
 		<p class="status_indicator status-{{ sr.status }}">{{ sr.status.title() }}</p>
 		
-		<div class="request_details">
-			<h2>Original Request</h2>
-			<dl>
-				<dt>Service Type:</dt>
-				<dd>{{ sr.service_name }}</dd>
-				<dt>Description:</dt>
-				<dd>{{ sr.description }}</dd>
-				<dt>Address:</dt>
-				<dd>{{ sr.address.title().split(",", 1)[0] }}<br/>{{ sr.address.title().split(",", 1)[1].replace("Il", "IL") }}</dd>
-				<dt>Created:</dt>
-				<dd>{{ sr.requested_datetime.strftime('%B %d, %Y') }}</dd>
-				<dt>Received:</dt>
-				<dd>{{ sr.received_via.title() }}</dd>
-			</dl>
-		</div>
+		<aside class="request_extras">
+  		<div class="request_details">
+  			<h2>Original Request</h2>
+  			<dl>
+  				<dt>Service Type:</dt>
+  				<dd>{{ sr.service_name }}</dd>
+  				<dt>Description:</dt>
+  				<dd>{{ sr.description }}</dd>
+  				<dt>Address:</dt>
+  				<dd>{{ sr.address.title().split(",", 1)[0] }}<br/>{{ sr.address.title().split(",", 1)[1].replace("Il", "IL") }}</dd>
+  				<dt>Created:</dt>
+  				<dd>{{ sr.requested_datetime.strftime('%B %d, %Y') }}</dd>
+  				<dt>Received:</dt>
+  				<dd>{{ sr.received_via.title() }}</dd>
+  			</dl>
+  		</div>
+		
+  		<div class="request_details">
+  			<h2>Stay Up To Date</h2>
+  			<p>Get notified of any changes to this service request by email.</p>
+  			<form method="POST" action="/subscribe/{{ sr.service_request_id }}">
+  			  <label for="update_email">E-Mail:</label>
+  			  <input type="email" id="update_email" name="update_email" />
+  			  <input type="submit" value="Notify Me!" />
+  			</form>
+  		</div>
+  	</aside>
 		
 		<ol class="activities_list">
 			{% for activity in sr.activities %}

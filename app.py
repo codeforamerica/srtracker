@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request, abort, redirect, url_for, make_response
 import requests
 import iso8601
+import updater
 
 # Config
 DEBUG = True
@@ -58,6 +59,16 @@ def show_request(request_id):
     
     else:
         return ("No such service request", 404, None)
+
+
+@app.route("/subscribe/<request_id>", methods=["POST"])
+def subscribe(request_id):
+    email = request.form.get('update_email')
+    # TODO: validate email
+    if email:
+        contact = 'email:%s' % email
+        updater.subscribe(request_id, contact)
+    return redirect(url_for('show_request', request_id=request_id))
 
 
 
