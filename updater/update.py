@@ -6,6 +6,7 @@ from contextlib import contextmanager
 import smtplib
 from email.mime.text import MIMEText
 from threading import Thread
+from optparse import OptionParser
 import requests
 import dateutil
 from dateutil.parser import parse as parse_date
@@ -187,6 +188,14 @@ def initialize_db():
 
 
 if __name__ == "__main__":
-    initialize()
-    poll_and_notify()
+    parser = OptionParser()
+    parser.add_option("-i", "--initialize", dest="initialize_db", action="store_true", help="Initialize the database.")
+    # parser.add_option("-d", "--date", dest="start_date", help="Start datetime in the format 'YYYY-MM-DDTHH:MM:SS'", default=None)
+    (options, args) = parser.parse_args()
+    
+    if options.initialize_db:
+        initialize_db()
+    else:
+        initialize()
+        poll_and_notify()
     
