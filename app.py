@@ -74,15 +74,12 @@ def subscribe(request_id):
 
 if __name__ == "__main__":
     app.config.from_object(__name__)
-    if 'DEBUG' in os.environ:
-        app.debug = os.environ['DEBUG'] == 'True' and True or False
-    if 'OPEN311_SERVER' in os.environ:
-        app.config['OPEN311_SERVER'] = os.environ['OPEN311_SERVER']
-    if 'OPEN311_API_KEY' in os.environ:
-        app.config['OPEN311_API_KEY'] = os.environ['OPEN311_API_KEY']
-    
-    app.config['PASSWORD_PROTECTED'] = 'PASSWORD_PROTECTED' in os.environ and (os.environ['PASSWORD_PROTECTED'] == 'True') or False
-    app.config['PASSWORD'] = 'PASSWORD' in os.environ and os.environ['PASSWORD'] or ''
+    app.debug = os.environ.get('DEBUG', str(app.debug)) == 'True'
+    app.config['OPEN311_SERVER'] = os.environ.get('OPEN311_SERVER', OPEN311_SERVER)
+    app.config['OPEN311_API_KEY'] = os.environ.get('OPEN311_API_KEY', OPEN311_API_KEY)
+    app.config['PASSWORD_PROTECTED'] = os.environ.get('PASSWORD_PROTECTED', str(PASSWORD_PROTECTED)) == 'True'
+    app.config['PASSWORD'] = os.environ.get('PASSWORD', '')
     
     port = int(os.environ.get('PORT', 5100))
     app.run(host='0.0.0.0', port=port)
+    
