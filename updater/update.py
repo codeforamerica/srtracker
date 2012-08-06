@@ -80,7 +80,7 @@ def updated_srs_by_time():
         for sr in srs:
             updated_subscriptions = session.query(Subscription).filter(Subscription.sr_id == sr['service_request_id'])
             for subscription in updated_subscriptions:
-                updates.append((subscription.contact, sr))
+                updates.append((subscription.method, subscription.contact, sr))
                 if sr['status'] == 'closed':
                     session.delete(subscription)
             
@@ -106,8 +106,8 @@ def send_notifications(notifications):
     
     for notification in notifications:
         # pulling out the address should really be done already elsewhere
-        address = notification[0].split(':', 1)[1]
-        send_email_notification(address, notification[1], smtp)
+        address = notification[1]
+        send_email_notification(address, notification[2], smtp)
     
     smtp.quit()
 
@@ -146,8 +146,13 @@ def poll_and_notify():
         send_notifications(notifications)
 
 
-def subscribe(request_id, notification_method):
-    method, address = notification_method.split(':', 1)
+def subscribe(request_id, method, address):
+    '''Create a new subscription the request identified by request_id.
+    @param request_id: The request to subscribe to
+    @param method:     The type of subscription (e.g. 'email' or 'sms')
+    @param address:    The adress to send updates to (e.g. 'someone@example.com' or '63055512345')
+    '''
+    
     if method not in KNOWN_METHODS:
         return False
     
@@ -156,12 +161,14 @@ def subscribe(request_id, notification_method):
         # FIXME: this check should really just be at the DB level to prevent race conditions (e.g. a unique index on sr_id+contact)
         existing = session.query(Subscription).\
             filter(Subscription.sr_id == request_id).\
-            filter(Subscription.contact == notification_method).\
+            filter(Subscription.method == method).\
+            filter(Subscription.contact == address).\
             first()
         if not existing:
             session.add(Subscription(
                 sr_id=request_id,
-                contact=notification_method))
+                method=method,
+                contact=address))
         
         # If we haven't ever updated, set the last update date
         last_update_info = session.query(UpdateInfoItem).filter(UpdateInfoItem.key == 'date').first()

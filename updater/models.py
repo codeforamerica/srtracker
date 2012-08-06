@@ -8,6 +8,7 @@ class Subscription(Base):
     
     id      = Column(Integer, Sequence('subscription_id_seq'), primary_key=True)
     sr_id   = Column(String, index=True)
+    method  = Column(String)
     contact = Column(String)
 
 
