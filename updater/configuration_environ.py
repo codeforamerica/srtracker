@@ -12,3 +12,5 @@ EMAIL_PASS = environ.get('EMAIL_PASS')
 EMAIL_FROM = environ.get('EMAIL_FROM')
 EMAIL_SSL = environ.get('EMAIL_SSL', True)
 EMAIL_MAX_THREADS = environ.get('EMAIL_MAX_THREADS', 5)
+
+SR_DETAILS_URL = environ.get('SR_DETAILS_URL', 'http://chicagosrtracker/requests/{sr_id}')

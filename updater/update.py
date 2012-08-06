@@ -113,8 +113,15 @@ def send_notifications(notifications):
 
 
 def send_email_notification(address, sr, smtp):
+    details_url = config.SR_DETAILS_URL.format(sr_id=sr['service_request_id'])
     subject = 'Chicago 311: Your %s issue has been updated.' % sr['service_name']
-    message = MIMEText('''Service Request %s (%s) has been updated. Here's the deets: (not)''' % (sr['service_request_id'], sr['service_name']))
+    body = ''
+    if sr['status'] == 'open':
+        body = '''Service Request #%s (%s) has been updated. You can see more information about at:\n\n    %s''' % (sr['service_request_id'], sr['service_name'], details_url)
+    else:
+        body = '''Service Request #%s (%s) has been completed! You can see more about it at:\n\n    %s''' % (sr['service_request_id'], sr['service_name'], details_url)
+    
+    message = MIMEText(body)
     message['Subject'] = subject
     message['From'] = config.EMAIL_FROM
     message['To'] = address
