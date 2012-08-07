@@ -165,23 +165,33 @@ def subscribe(request_id, method, address):
     
     # TODO: validate the subscription by seeing if the request_id exists via Open311?
     with db() as session:
-        # FIXME: this check should really just be at the DB level to prevent race conditions (e.g. a unique index on sr_id+contact)
-        existing = session.query(Subscription).\
-            filter(Subscription.sr_id == request_id).\
-            filter(Subscription.method == method).\
-            filter(Subscription.contact == address).\
-            first()
-        if not existing:
+        if not subscription_exists(request_id, method, address):
             session.add(Subscription(
                 sr_id=request_id,
                 method=method,
                 contact=address))
         
-        # If we haven't ever updated, set the last update date
-        last_update_info = session.query(UpdateInfoItem).filter(UpdateInfoItem.key == 'date').first()
-        if not last_update_info:
-            # TODO: get the SR's updated_datetime and use that
-            session.add(UpdateInfoItem(key='date', value=datetime.datetime.now()))
+            # If we haven't ever updated, set the last update date
+            last_update_info = session.query(UpdateInfoItem).filter(UpdateInfoItem.key == 'date').first()
+            if not last_update_info:
+                # TODO: get the SR's updated_datetime and use that
+                session.add(UpdateInfoItem(key='date', value=datetime.datetime.now()))
+
+
+def subscription_exists(request_id, method, address):
+    '''Check whether a subscription already exists for the given request id with the specified method and address.
+    @param request_id: The request to subscribe to
+    @param method:     The type of subscription (e.g. 'email' or 'sms')
+    @param address:    The adress to send updates to (e.g. 'someone@example.com' or '63055512345')
+    '''
+    
+    with db() as session:
+        existing = session.query(Subscription).\
+            filter(Subscription.sr_id == request_id).\
+            filter(Subscription.method == method).\
+            filter(Subscription.contact == address).\
+            first()
+        return existing != None
 
 
 def initialize():

@@ -1,1 +1,1 @@
-from update import subscribe
+from update import subscribe, subscription_exists

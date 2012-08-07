@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, abort, redirect, url_for, make_response
+from flask import Flask, render_template, request, abort, redirect, url_for, make_response, session
 import requests
 import iso8601
 import updater
@@ -9,6 +9,7 @@ DEBUG = True
 OPEN311_SERVER = 'localhost:5000'
 OPEN311_API_KEY = ''
 PASSWORD_PROTECTED = False
+SECRET_KEY = 'please_please_change_this!'
 
 app = Flask(__name__)
 
@@ -54,7 +55,13 @@ def show_request(request_id):
         
         sr[0]['activities'].reverse()
         
-        body = render_template('service_request.html', sr=sr[0])
+        subscribed = False
+        if sr[0]['status'] == 'open' and session.get('email', None):
+            # TODO: when subscription service supports more than e-mail, 
+            # we should probably be able to show all your subscriptions here
+            subscribed = updater.subscription_exists(request_id, 'email', session.get('email', ''))
+        
+        body = render_template('service_request.html', sr=sr[0], subscribed=subscribed)
         return (body, 200, None)
     
     else:
@@ -66,8 +73,9 @@ def subscribe(request_id):
     email = request.form.get('update_email')
     # TODO: validate email
     if email:
-        contact = 'email:%s' % email
-        updater.subscribe(request_id, contact)
+        updater.subscribe(request_id, 'email', email)
+        # TODO: should we get back a secret subscription key and use that instead?
+        session['email'] = email
     return redirect(url_for('show_request', request_id=request_id))
 
 
@@ -75,6 +83,7 @@ def subscribe(request_id):
 if __name__ == "__main__":
     app.config.from_object(__name__)
     app.debug = os.environ.get('DEBUG', str(app.debug)) == 'True'
+    app.secret_key = os.environ.get('SECRET_KEY', app.secret_key)
     app.config['OPEN311_SERVER'] = os.environ.get('OPEN311_SERVER', OPEN311_SERVER)
     app.config['OPEN311_API_KEY'] = os.environ.get('OPEN311_API_KEY', OPEN311_API_KEY)
     app.config['PASSWORD_PROTECTED'] = os.environ.get('PASSWORD_PROTECTED', str(PASSWORD_PROTECTED)) == 'True'

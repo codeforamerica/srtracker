@@ -44,15 +44,25 @@
 			</div>
 			
 			{% if sr.status == 'open' %}
-			<div class="request_details">
-				<h2>Stay Up To Date</h2>
-				<p>Get notified of any changes to this service request by email.</p>
-				<form method="POST" action="/subscribe/{{ sr.service_request_id }}">
-				  <label for="update_email">E-Mail:</label>
-				  <input type="email" id="update_email" name="update_email" />
-				  <input type="submit" value="Notify Me!" />
-				</form>
-			</div>
+				{% if subscribed %}
+				<div class="request_details">
+					<h2>You’ve Subscribed</h2>
+					<p>
+						Thanks for subscribing to updates for this request.
+						We’ll e-mail you when work is done on this service request.
+					</p>
+				</div>
+				{% else %}
+				<div class="request_details">
+					<h2>Stay Up To Date</h2>
+					<p>Get notified of any changes to this service request by email.</p>
+					<form method="POST" action="/subscribe/{{ sr.service_request_id }}">
+						<label for="update_email">E-Mail:</label>
+						<input type="email" id="update_email" name="update_email" />
+						<input type="submit" value="Notify Me!" />
+					</form>
+				</div>
+				{% endif %}
 			{% endif %}
 		</aside>
 		
