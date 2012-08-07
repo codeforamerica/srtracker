@@ -50,10 +50,10 @@ def show_request(request_id):
     
     if sr:
         sr[0]['requested_datetime'] = iso8601.parse_date(sr[0]['requested_datetime'])
-        for activity in sr[0]['activities']:
-            activity['datetime'] = iso8601.parse_date(activity['datetime'])
+        for note in sr[0]['notes']:
+            note['datetime'] = iso8601.parse_date(note['datetime'])
         
-        sr[0]['activities'].reverse()
+        sr[0]['notes'].reverse()
         
         subscribed = False
         if sr[0]['status'] == 'open' and session.get('email', None):

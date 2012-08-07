@@ -66,22 +66,22 @@
 			{% endif %}
 		</aside>
 		
-		<ol class="activities_list">
-			{% for activity in sr.activities %}
-			<li class="activity activity-{{ activity.type }}">
-				<div class="activity_indicator"></div>
+		<ol class="notes_list">
+			{% for note in sr.notes %}
+			<li class="note note-{{ note.type }}">
+				<div class="note_indicator"></div>
 				<span class="datetime">
-					<span class="date">{{ activity.datetime.strftime('%d-%b-%Y') }}</span>
-					<span class="time">{{ activity.datetime.strftime('%I:%M %p').strip('0') }}</span>
+					<span class="date">{{ note.datetime.strftime('%d-%b-%Y') }}</span>
+					<span class="time">{{ note.datetime.strftime('%I:%M %p').strip('0') }}</span>
 				</span>
 				<div class="details">
 					<p>
 						
-						{% if activity.type == 'subrequest' %}
-							<strong>{{ activity.description }}</strong><br/>
-							Department: {{ activity.properties.agency_responsible }}
+						{% if note.type == 'subrequest' %}
+							<strong>{{ note.description }}</strong><br/>
+							Department: {{ note.properties.agency_responsible }}
 						{% else %}
-							{{ activity.description }}
+							{{ note.description }}
 						{% endif %}
 					</p>
 				</div>
@@ -89,8 +89,8 @@
 			{% endfor %}
 			
 			{# And of course the SR itself... #}
-			<li class="activity activity-initial activity-subrequest">
-				<div class="activity_indicator"></div>
+			<li class="note note-initial note-subrequest">
+				<div class="note_indicator"></div>
 				<span class="datetime">
 					<span class="date">{{ sr.requested_datetime.strftime('%d-%b-%Y') }}</span>
 					<span class="time">{{ sr.requested_datetime.strftime('%I:%M %p').strip('0') }}</span>
