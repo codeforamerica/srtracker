@@ -27,7 +27,16 @@ def password_protect():
 
 @app.route("/")
 def index():
-    return "Chicago Nightly 311";
+    url = '%s/requests.json' % app.config['OPEN311_SERVER']
+    params = {'extensions': 'true', 'legacy': 'false'}
+    if app.config['OPEN311_API_KEY']:
+        params['api_key'] = app.config['OPEN311_API_KEY']
+    r = requests.get(url, params=params)
+    if r.status_code != 200:
+        # TODO: need a template
+        # TODO: log this, since we really shouldn't receive errors
+        return ("There was an error getting service request data." % request_id, 500, None)
+    return render_template('index.html', service_requests=r.json)
 
 
 @app.route("/requests")
@@ -40,6 +49,8 @@ def redirect_request():
 
 @app.route("/requests/<request_id>")
 def show_request(request_id):
+    request_id = request_id.lstrip('#')
+    
     # TODO: Should probably use Three or something nice for this...
     url = '%s/requests/%s.json' % (app.config['OPEN311_SERVER'], request_id)
     params = {'extensions': 'true', 'legacy': 'false'}

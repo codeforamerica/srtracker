@@ -1,0 +1,129 @@
+/* HTML5 Support */
+article, aside, dialog, figure, footer, header,
+hgroup, menu, nav, section { display: block; }
+
+/* Styles */
+body {
+	margin: 0;
+	font-family: Helvetica, Arial, sans-serif;
+	color: #333;
+}
+
+.box {
+	width: 660px;
+	margin: 0 auto 30px;
+	padding: 45px 60px;
+	background: #fff;
+	box-shadow: 5px 5px 13px rgba(0, 0, 0, 0.46);
+	border-radius: 4px;
+}
+
+	.box > h1 {
+		margin: 0 0 18px;
+		padding: 0 0 10px;
+		font-family: Arvo, Helvetica, Arial, sans-serif;
+		line-height: 1em;
+		text-align: left;
+		font-size: 28px;
+	}
+	
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+	table th {
+		text-align: left;
+	}
+	
+	.number_col {
+		text-align: right;
+	}
+	
+	.time_col {
+		font-style: italic;
+		color: #555;
+	}
+
+input {
+	display: inline-block;
+	padding: 6px 12px;
+	font-size: 22px;
+	line-height: 28px;
+	border: 3px solid #dbdbdb;
+	border-radius: 5px;
+	box-shadow: inset 5px 5px 18px rgba(0, 0, 0, 0.13);
+}
+
+input[type="submit"],
+button {
+	box-shadow: none;
+	background: #02bcc8;
+	border-color: #02bcc8;
+	color: #fff;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+
+.form_help {
+	margin: 10px 0 0;
+	color: #666;
+	font-style: italic;
+}
+
+.request_list h1 {
+	border-bottom: 3px solid #333;
+}
+
+.request_list tr {
+	border-bottom: 1px solid #dbdbdb;
+}
+.request_list tr:last-child {
+	border-bottom: none;
+}
+
+	.request_list td,
+	.request_list th {
+		padding: 0;
+	}
+
+
+/* 
+ * Landing Page
+ */
+ 
+.landing header {
+	margin: 0 auto 24px;
+	/* TODO: @2x support */
+	background: url("../img/service_tracker_logo_big.png");
+	width: 444px;
+	height: 193px;
+	text-indent: -100em;
+	overflow: hidden;
+}
+
+.landing form {
+	overflow: hidden;
+}
+
+	.landing .search_field {
+		float: left;
+		width: 416px;
+	}
+	
+	.landing .submit {
+		float: right;
+		width: 206px;
+	}
+
+.landing th > a,
+.landing td > a {
+	display: block;
+	padding: 18px 0;
+	text-decoration: none;
+	color: inherit;
+}
+
+.landing tr:hover a {
+	text-decoration: underline;
+}

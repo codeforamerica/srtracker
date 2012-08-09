@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html class="landing">
+	<head>
+		<meta charset="utf-8" />
+		<title>311 Service Tracker</title>
+		<link rel="stylesheet" href="/static/arvo-fontfacekit/stylesheet.css" type="text/css" />
+		<link rel="stylesheet" href="/static/css/base.css" type="text/css" />
+		<style type="text/css" media="screen">
+			body {
+				background: #a4dade url("../static/img/bg_pattern.png");
+				margin: 0;
+				font-family: Helvetica, Arial, sans-serif;
+			}
+		</style>
+	</head>
+	<body>
+		<header>
+			311 Chicago Service Tracker
+		</header>
+		
+		<div class="box">
+			<h1>Find out the status of your 311 service request</h1>
+			
+			<form method="GET" action="requests">
+				<input type="text" name="request_id" class="search_field" placeholder="Enter service request #" />
+				<input type="submit" class="submit" value="Submit" />
+			</form>
+			
+			<p class="form_help">Don’t know your service request number? Call 311.</p>
+		</div>
+		
+		<div class="box request_list">
+			<h1>Most Recent Service Requests</h1>
+			
+			<table>
+				<tbody>
+					{% for sr in service_requests %}
+						<tr>
+							<th><a href="requests/{{ sr.service_request_id }}">{{ sr.service_name }}</a></th>
+							<td class="number_col"><a href="requests/{{ sr.service_request_id }}">#{{ sr.service_request_id }}</a></td>
+							<td class="number_col time_col"><a href="requests/{{ sr.service_request_id }}">{{ sr.requested_datetime }}</a></td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+
+	</body>
+</html>
