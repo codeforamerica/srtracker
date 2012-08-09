@@ -1,2 +1,7 @@
+# Compiled Python code
 *.pyc
+*.pyo
+
+# Config files for foreman
 .env
+.env*
