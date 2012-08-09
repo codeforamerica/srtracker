@@ -14,7 +14,7 @@ Installation & Configuration
 
 SRTracker's `app.py` web app requires the following environment variables:
 
-- `OPEN311_SERVER`: the fully qualified URL for the endpoint server, e.g. _'http://311api.cityofchicago.org/open311/v2/'_
+- `OPEN311_SERVER`: the fully qualified URL for the endpoint server, e.g. _'http://311.baltimorecity.gov/open311/v2'_
 - `OPEN311_API_KEY`: the API key, [if necessary](http://wiki.open311.org/GeoReport_v2/Servers), for the Open311 server
 - `PASSWORD_PROTECTED`: Whether SRTracker requires a password to access; for example, if it accesses a private/internal Open311 API
 - `PASSWORD`: the password necessary to access this SRTracker instance
