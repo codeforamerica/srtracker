@@ -42,12 +42,20 @@ def redirect_request():
 def show_request(request_id):
     # TODO: Should probably use Three or something nice for this...
     url = '%s/requests/%s.json' % (app.config['OPEN311_SERVER'], request_id)
-    params = {}
+    params = {'extensions': 'true', 'legacy': 'false'}
     if app.config['OPEN311_API_KEY']:
         params['api_key'] = app.config['OPEN311_API_KEY']
     r = requests.get(url, params=params)
+    if r.status_code == 404:
+        # TODO: need a template
+        # Log this?
+        return ("There is no service request on file for #%s" % request_id, 404, None)
+    elif r.status_code != 200:
+        # TODO: need a template
+        # TODO: log this, since we really shouldn't receive errors
+        return ("There was an error getting data about service request #%s" % request_id, 404, None)
+        
     sr = r.json
-    
     if sr:
         sr[0]['requested_datetime'] = iso8601.parse_date(sr[0]['requested_datetime'])
         for note in sr[0]['notes']:
@@ -65,7 +73,8 @@ def show_request(request_id):
         return (body, 200, None)
     
     else:
-        return ("No such service request", 404, None)
+        # TODO: need a template
+        return ("There is no service request on file for #%s" % request_id, 404, None)
 
 
 @app.route("/subscribe/<request_id>", methods=["POST"])
