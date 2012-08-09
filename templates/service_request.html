@@ -101,7 +101,7 @@
 				<div class="details">
 					<p>
 						{{ sr.service_name }}<br/>
-						Department: {{ sr.agency_responsible }}<br/>
+						Department: {{ sr.agency_responsible }}
 						{%  if sr.extended_attributes and sr.extended_attributes.channel %}
 							<br/>via {{ sr.extended_attributes.channel.title() }}
 						{% endif %}
