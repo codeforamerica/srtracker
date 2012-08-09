@@ -84,7 +84,7 @@ input {
 				font-size: 16px;
 				color: #02bcc8;
 			}
-			.note-subrequest .datetime {
+			.note-follow_on .datetime {
 				font-size: 20px;
 				font-weight: bold;
 			}
@@ -107,7 +107,7 @@ input {
 				        border-radius: 7px;
 			}
 	
-			.note-subrequest .note_indicator {
+			.note-follow_on .note_indicator {
 				left: 158px;
 				top: -14px;
 				background-image: url("../img/icon_clipboard.png");

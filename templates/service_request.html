@@ -38,8 +38,10 @@
 					<dd>{{ sr.address.title().split(",", 1)[0] }}<br/>{{ sr.address.title().split(",", 1)[1].replace("Il", "IL") }}</dd>
 					<dt>Created:</dt>
 					<dd>{{ sr.requested_datetime.strftime('%B %d, %Y') }}</dd>
-					<dt>Received:</dt>
-					<dd>{{ sr.received_via.title() }}</dd>
+					{%  if sr.extended_attributes and sr.extended_attributes.channel %}
+						<dt>Received:</dt>
+						<dd>{{ sr.extended_attributes.channel.title() }}</dd>
+					{% endif %}
 				</dl>
 			</div>
 			
@@ -68,6 +70,7 @@
 		
 		<ol class="notes_list">
 			{% for note in sr.notes %}
+			{% if (note.type != 'follow_on' or 'Closed' not in note.description) and note.type != 'opened' %}
 			<li class="note note-{{ note.type }}">
 				<div class="note_indicator"></div>
 				<span class="datetime">
@@ -76,20 +79,20 @@
 				</span>
 				<div class="details">
 					<p>
-						
-						{% if note.type == 'subrequest' %}
-							<strong>{{ note.description }}</strong><br/>
-							Department: {{ note.properties.agency_responsible }}
+						{% if note.type == 'follow_on' %}
+							<strong>{{ note.extended_attributes.service_name }}</strong><br/>
+							Department: {{ note.extended_attributes.agency_responsible }}
 						{% else %}
-							{{ note.description }}
+							{{ note.summary or note.description }}
 						{% endif %}
 					</p>
 				</div>
 			</li>
+			{% endif %}
 			{% endfor %}
 			
 			{# And of course the SR itself... #}
-			<li class="note note-initial note-subrequest">
+			<li class="note note-initial note-follow_on">
 				<div class="note_indicator"></div>
 				<span class="datetime">
 					<span class="date">{{ sr.requested_datetime.strftime('%d-%b-%Y') }}</span>
@@ -99,7 +102,9 @@
 					<p>
 						{{ sr.service_name }}<br/>
 						Department: {{ sr.agency_responsible }}<br/>
-						via {{ sr.received_via.title() }}
+						{%  if sr.extended_attributes and sr.extended_attributes.channel %}
+							<br/>via {{ sr.extended_attributes.channel.title() }}
+						{% endif %}
 					</p>
 					<p>
 						{{ sr.description }}
