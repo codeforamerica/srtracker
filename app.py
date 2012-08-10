@@ -66,21 +66,34 @@ def show_request(request_id):
         # TODO: log this, since we really shouldn't receive errors
         return ("There was an error getting data about service request #%s" % request_id, 404, None)
         
-    sr = r.json
-    if sr:
-        sr[0]['requested_datetime'] = iso8601.parse_date(sr[0]['requested_datetime'])
-        for note in sr[0]['notes']:
+    srs = r.json
+    if srs:
+        sr = srs[0]
+        sr['requested_datetime'] = iso8601.parse_date(sr['requested_datetime'])
+        for note in sr['notes']:
             note['datetime'] = iso8601.parse_date(note['datetime'])
         
-        sr[0]['notes'].reverse()
+        # add follow-on closure data
+        by_id = {}
+        for note in sr['notes']:
+            if note['type'] == 'follow_on':
+                note_sr_id = note['extended_attributes']['service_request_id']
+                if note_sr_id in by_id:
+                    if note['description'].endswith('Closed'):
+                        original = by_id[note_sr_id]
+                        original['extended_attributes']['closed_datetime'] = note['datetime']
+                else:
+                    by_id[note_sr_id] = note
+        
+        sr['notes'].reverse()
         
         subscribed = False
-        if sr[0]['status'] == 'open' and session.get('email', None):
+        if sr['status'] == 'open' and session.get('email', None):
             # TODO: when subscription service supports more than e-mail, 
             # we should probably be able to show all your subscriptions here
             subscribed = updater.subscription_exists(request_id, 'email', session.get('email', ''))
         
-        body = render_template('service_request.html', sr=sr[0], subscribed=subscribed)
+        body = render_template('service_request.html', sr=sr, subscribed=subscribed)
         return (body, 200, None)
     
     else:

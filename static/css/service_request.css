@@ -66,7 +66,7 @@ input {
 		
 		.notes_list .note {
 			margin: 0;
-			padding: 0;
+			padding: 0 0 20px;
 			position: relative;
 			min-height: 70px;
 			line-height: 20px;
@@ -117,6 +117,11 @@ input {
 				height: 46px;
 				-webkit-border-radius: 23px;
 				        border-radius: 23px;
+			}
+			
+			.note-follow_on .ongoing {
+				color: #933;
+				font-style: italic;
 			}
 			
 			.note .details {
