@@ -70,36 +70,39 @@
 		
 		<ol class="notes_list">
 			{% for note in sr.notes %}
-			{% if (note.type != 'follow_on' or 'Closed' not in note.description) and note.type != 'opened' %}
-			<li class="note note-{{ note.type }}">
-				<div class="note_indicator"></div>
-				<span class="datetime">
-					<span class="date">{{ note.datetime.strftime('%d-%b-%Y') }}</span>
-					<span class="time">{{ note.datetime.strftime('%I:%M %p').strip('0') }}</span>
-				</span>
-				<div class="details">
-					<p>
-						{% if note.type == 'follow_on' %}
-							<strong>{{ note.extended_attributes.service_name }}</strong><br/>
-							Department: {{ note.extended_attributes.agency_responsible }}
-							{% if note.extended_attributes.closed_datetime %}
-								<div>
-									Completed on {{ note.extended_attributes.closed_datetime.strftime('%d-%b-%Y') }}
-									at {{ note.extended_attributes.closed_datetime.strftime('%I:%M %p').strip('0') }}
-								</div>
-							{% else %}
-								<div class="ongoing">
-									In progress
-								</div>
-							{% endif %}
-						{% else %}
-							{% if note.summary %}<div class="note_summary">{{ note.summary }}</div>{% endif %}
-							{% if note.description %}<div class="note_description">{{ note.description }}</div>{% endif %}
-						{% endif %}
-					</p>
-				</div>
-			</li>
-			{% endif %}
+				{% if (note.type != 'follow_on' or 'Closed' not in note.description) and note.type != 'opened' %}
+					<li class="note note-{{ note.type }}">
+					
+						<div class="note_indicator"></div>
+						
+						<span class="datetime">
+							<span class="date">{{ note.datetime.strftime('%d-%b-%Y') }}</span>
+							<span class="time">{{ note.datetime.strftime('%I:%M %p').strip('0') }}</span>
+						</span>
+						
+						<div class="details">
+							<p>
+								{% if note.type == 'follow_on' %}
+									<strong>{{ note.extended_attributes.service_name }}</strong><br/>
+									Department: {{ note.extended_attributes.agency_responsible }}
+									{% if note.extended_attributes.closed_datetime %}
+										<div>
+											Completed on {{ note.extended_attributes.closed_datetime.strftime('%d-%b-%Y') }}
+											at {{ note.extended_attributes.closed_datetime.strftime('%I:%M %p').strip('0') }}
+										</div>
+									{% else %}
+										<div class="ongoing">
+											In progress
+										</div>
+									{% endif %}
+								{% else %}
+									{% if note.summary %}<div class="note_summary">{{ note.summary }}</div>{% endif %}
+									{% if note.description %}<div class="note_description">{{ note.description }}</div>{% endif %}
+								{% endif %}
+							</p>
+						</div>
+					</li>
+				{% endif %}
 			{% endfor %}
 			
 			{# And of course the SR itself... #}
