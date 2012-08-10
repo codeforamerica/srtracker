@@ -93,7 +93,8 @@
 								</div>
 							{% endif %}
 						{% else %}
-							{{ note.summary or note.description }}
+							{% if note.summary %}<div class="note_summary">{{ note.summary }}</div>{% endif %}
+							{% if note.description %}<div class="note_description">{{ note.description }}</div>{% endif %}
 						{% endif %}
 					</p>
 				</div>
