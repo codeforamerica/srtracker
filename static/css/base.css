@@ -58,8 +58,8 @@ input {
 input[type="submit"],
 button {
 	box-shadow: none;
-	background: #02bcc8;
-	border-color: #02bcc8;
+	background: #347eb3;
+	border-color: #347eb3;
 	color: #fff;
 	text-transform: uppercase;
 	font-weight: bold;
@@ -95,9 +95,9 @@ button {
 .landing header {
 	margin: 0 auto 24px;
 	/* TODO: @2x support */
-	background: url("../img/service_tracker_logo_big.png");
-	width: 444px;
-	height: 193px;
+	background: url("../img/311_service_tracker_logo_big.png");
+	width: 436px;
+	height: 190px;
 	text-indent: -100em;
 	overflow: hidden;
 }
