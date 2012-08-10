@@ -1,36 +1,40 @@
-body {
-	margin: 0;
-	font-family: Helvetica, Arial, sans-serif;
-	color: #333;
-}
-
 header {
 	padding: 16px 40px;
-	background: #a4dade;
-	line-height: 28px;
+	background: #a4d2de;
+	line-height: 50px;
+	overflow: hidden; /* contain floated content */
 }
 	.site_title {
-		font-family: ArvoBoldItalic, Helvetica, Arial, sans-serif;
-		font-size: 24px;
-		line-height: 28px;
-		color: #fff;
-		text-shadow: -5px 5px 1px rgba(0, 0, 0, 0.08);
+		position: absolute;
+		left: 34px;
+		top: 0;
+		background: url("../img/311_service_tracker_logo.png");
+		width: 279px;
+		height: 123px;
+		text-indent: -100em;
+		overflow: hidden;
 	}
 	
 	header form {
-		display: inline-block;
+		float: right;
+		display: inli/*  */ne-block;
 		margin: 0 0 0 20px;
 		position: relative;
 		top: -3px;
 	}
 	
-	#request_id_label {
-		/* This will hide it from screen readers, which is bad. Do better. */
-		display: none;
-	}
-	#status_lookup {
-		width: 200px;
-	}
+		header .search_field {
+			width: 260px;
+		}
+		
+		header .submit {
+			min-width: 106px;
+		}
+	
+		#request_id_label {
+			/* This will hide it from screen readers, which is bad. Do better. */
+			display: none;
+		}
 
 .main_content {
 	padding: 0 40px;

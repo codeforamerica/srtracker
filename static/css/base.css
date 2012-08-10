@@ -48,9 +48,9 @@ table {
 input {
 	display: inline-block;
 	padding: 6px 12px;
-	font-size: 22px;
-	line-height: 28px;
-	border: 3px solid #dbdbdb;
+	font-size: 14px;
+	line-height: 18px;
+	border: 1px solid #dbdbdb;
 	border-radius: 5px;
 	box-shadow: inset 5px 5px 18px rgba(0, 0, 0, 0.13);
 }
@@ -63,6 +63,12 @@ button {
 	color: #fff;
 	text-transform: uppercase;
 	font-weight: bold;
+}
+
+.in_yo_face input {
+	font-size: 22px;
+	line-height: 28px;
+	border-width: 3px;
 }
 
 .form_help {

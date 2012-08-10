@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html class="detail_page">
 	<head>
 		<meta charset="utf-8" />
-		<title>311 Status</title>
+		<title>{{ sr.service_name }} #{{ sr.service_request_id }} - 311 Service Tracker</title>
 		<style>
 			article, aside, dialog, figure, footer, header,
 			hgroup, menu, nav, section { display: block; }
 		</style>
 		<link rel="stylesheet" href="/static/arvo-fontfacekit/stylesheet.css" type="text/css" />
+		<link rel="stylesheet" href="/static/css/base.css" type="text/css" />
 		<link rel="stylesheet" href="/static/css/service_request.css" type="text/css" />
 	</head>
 	<body>
@@ -16,8 +17,8 @@
 			<span class="site_title">311 Service Tracker</span>
 			<form method="GET" action="/requests">
 				<label id="request_id_label" for="status_lookup">Check the status of:</label>
-				<input name="request_id" id="status_lookup" type="text" placeholder="Enter Service Request #" />
-				<input type="submit" value="Submit" />
+				<input name="request_id" id="status_lookup" class="search_field" type="text" placeholder="Enter Service Request #" />
+				<input type="submit" class="submit" value="Submit" />
 			</form>
 		</header>
 		
