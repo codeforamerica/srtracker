@@ -39,7 +39,7 @@ def index():
         params['api_key'] = app.config['OPEN311_API_KEY']
     r = requests.get(url, params=params)
     if r.status_code != 200:
-        app.logger.error('Failed to load recent requests from Open311 server. Status Code: %s, Response: %s', r.status_code, r.text)
+        app.logger.error('OPEN311: Failed to load recent requests from Open311 server. Status Code: %s, Response: %s', r.status_code, r.text)
         service_requests = None
     else:
         service_requests = r.json
@@ -66,12 +66,13 @@ def show_request(request_id):
         params['api_key'] = app.config['OPEN311_API_KEY']
     r = requests.get(url, params=params)
     if r.status_code == 404:
+        # It would be nice to log this for analytical purposes (what requests are being checked that we can't show?)
+        # but that would be better done through GA or KISS Metrics than through server logging
         # TODO: need a template
-        # Log this?
         return ("There is no service request on file for #%s" % request_id, 404, None)
     elif r.status_code != 200:
         # TODO: need a template
-        # TODO: log this, since we really shouldn't receive errors
+        app.logger.error('OPEN311: Error (not 404) loading data for SR %s', request_id)
         return ("There was an error getting data about service request #%s" % request_id, 404, None)
         
     srs = r.json
