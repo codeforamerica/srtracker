@@ -39,11 +39,12 @@ def index():
         params['api_key'] = app.config['OPEN311_API_KEY']
     r = requests.get(url, params=params)
     if r.status_code != 200:
-        # TODO: need a template
-        # TODO: log this, since we really shouldn't receive errors
-        return ("There was an error getting service request data." % request_id, 500, None)
-    testdelta = datetime.datetime.now() - datetime.timedelta(seconds=5580)
-    return render_template('index.html', service_requests=r.json, testdelta=testdelta)
+        app.logger.error('Failed to load recent requests from Open311 server. Status Code: %s, Response: %s', r.status_code, r.text)
+        service_requests = None
+    else:
+        service_requests = r.json
+    
+    return render_template('index.html', service_requests=service_requests)
 
 
 @app.route("/requests")
