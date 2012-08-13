@@ -1,7 +1,9 @@
 import os
+import datetime
 from flask import Flask, render_template, request, abort, redirect, url_for, make_response, session
 import requests
 import iso8601
+import pytz
 import updater
 
 # Config
@@ -25,6 +27,10 @@ def password_protect():
                 {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
 
+#--------------------------------------------------------------------------
+# ROUTES
+#--------------------------------------------------------------------------
+
 @app.route("/")
 def index():
     url = '%s/requests.json' % app.config['OPEN311_SERVER']
@@ -36,7 +42,8 @@ def index():
         # TODO: need a template
         # TODO: log this, since we really shouldn't receive errors
         return ("There was an error getting service request data." % request_id, 500, None)
-    return render_template('index.html', service_requests=r.json)
+    testdelta = datetime.datetime.now() - datetime.timedelta(seconds=5580)
+    return render_template('index.html', service_requests=r.json, testdelta=testdelta)
 
 
 @app.route("/requests")
@@ -112,6 +119,56 @@ def subscribe(request_id):
     return redirect(url_for('show_request', request_id=request_id))
 
 
+#--------------------------------------------------------------------------
+# FILTERS
+#--------------------------------------------------------------------------
+
+# Friendly time by Sean Vieira (http://flask.pocoo.org/snippets/33/)
+@app.template_filter()
+def friendly_time(dt, past_="ago", future_="from now", default="just now"):
+    """
+    Returns string representing "time since"
+    or "time until" e.g.
+    3 days ago, 5 hours from now etc.
+    """
+
+    if isinstance(dt, basestring):
+        dt = iso8601.parse_date(dt)
+        # ensure the date is naive for comparison to utcnow
+        if dt.tzinfo:
+            dt = dt.astimezone(pytz.utc).replace(tzinfo=None)
+
+    now = datetime.datetime.utcnow()
+    if now > dt:
+        diff = now - dt
+        dt_is_past = True
+    else:
+        diff = dt - now
+        dt_is_past = False
+
+    periods = (
+        (diff.days / 365, "year", "years"),
+        (diff.days / 30, "month", "months"),
+        (diff.days / 7, "week", "weeks"),
+        (diff.days, "day", "days"),
+        (diff.seconds / 3600, "hour", "hours"),
+        (diff.seconds / 60, "minute", "minutes"),
+        (diff.seconds, "second", "seconds"),
+    )
+
+    for period, singular, plural in periods:
+
+        if period:
+            return "%d %s %s" % (period, \
+                singular if period == 1 else plural, \
+                past_ if dt_is_past else future_)
+
+    return default
+
+
+#--------------------------------------------------------------------------
+# INIT
+#--------------------------------------------------------------------------
 
 if __name__ == "__main__":
     app.config.from_object(__name__)
