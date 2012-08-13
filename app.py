@@ -58,9 +58,8 @@ def show_request(request_id):
         params['api_key'] = app.config['OPEN311_API_KEY']
     r = requests.get(url, params=params)
     if r.status_code == 404:
-        # TODO: need a template
-        # Log this?
-        return ("There is no service request on file for #%s" % request_id, 404, None)
+        return render_template('no_service_request_found.html', rid=request_id)
+        
     elif r.status_code != 200:
         # TODO: need a template
         # TODO: log this, since we really shouldn't receive errors
@@ -97,8 +96,7 @@ def show_request(request_id):
         return (body, 200, None)
     
     else:
-        # TODO: need a template
-        return ("There is no service request on file for #%s" % request_id, 404, None)
+        return render_template('no_service_request_found.html', rid=request_id)
 
 
 @app.route("/subscribe/<request_id>", methods=["POST"])
