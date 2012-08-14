@@ -168,3 +168,16 @@ input {
 				padding: 0;
 			}
 			
+
+.invalid input[type="email"] {
+	border: 1px solid #933;
+}
+
+.error_message {
+	display: none;
+	color: #933;
+}
+
+.invalid .error_message {
+	display: block;
+}

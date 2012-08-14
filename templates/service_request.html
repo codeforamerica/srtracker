@@ -3,13 +3,12 @@
 	<head>
 		<meta charset="utf-8" />
 		<title>{{ sr.service_name }} #{{ sr.service_request_id }} - 311 Service Tracker</title>
-		<style>
-			article, aside, dialog, figure, footer, header,
-			hgroup, menu, nav, section { display: block; }
-		</style>
 		<link rel="stylesheet" href="/static/arvo-fontfacekit/stylesheet.css" type="text/css" />
 		<link rel="stylesheet" href="/static/css/base.css" type="text/css" />
 		<link rel="stylesheet" href="/static/css/service_request.css" type="text/css" />
+		
+		<script src="/static/js/jquery-1.8.0.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/static/js/validation.js" type="text/javascript" charset="utf-8"></script>
 	</head>
 	<body>
 		
@@ -59,9 +58,10 @@
 				<div class="request_details">
 					<h2>Stay Up To Date</h2>
 					<p>Get notified of any changes to this service request by email.</p>
-					<form method="POST" action="/subscribe/{{ sr.service_request_id }}">
+					<form method="POST" action="/subscribe/{{ sr.service_request_id }}" id="subscription_form">
 						<label for="update_email">E-Mail:</label>
 						<input type="email" id="update_email" name="update_email" />
+						<p class="error_message">Please use a valid e-mail address.</p>
 						<input type="submit" value="Notify Me!" />
 					</form>
 				</div>
