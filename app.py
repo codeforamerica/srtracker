@@ -69,7 +69,8 @@ def show_request(request_id):
         # It would be nice to log this for analytical purposes (what requests are being checked that we can't show?)
         # but that would be better done through GA or KISS Metrics than through server logging
         # TODO: need a template
-        return ("There is no service request on file for #%s" % request_id, 404, None)
+        return render_template('no_service_request_found.html', rid=request_id)
+        
     elif r.status_code != 200:
         # TODO: need a template
         app.logger.error('OPEN311: Error (not 404) loading data for SR %s', request_id)
@@ -106,8 +107,7 @@ def show_request(request_id):
         return (body, 200, None)
     
     else:
-        # TODO: need a template
-        return ("There is no service request on file for #%s" % request_id, 404, None)
+        return render_template('no_service_request_found.html', rid=request_id)
 
 
 @app.route("/subscribe/<request_id>", methods=["POST"])
