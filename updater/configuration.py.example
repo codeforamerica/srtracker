@@ -11,3 +11,4 @@ EMAIL_FROM = 'test@example.com'
 EMAIL_SSL = True
 
 SR_DETAILS_URL = 'http://localhost:5000/requests/{sr_id}'
+SR_TRACKER_IMG = 'http://localhost:5000/static/img/'

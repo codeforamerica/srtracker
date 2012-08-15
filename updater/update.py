@@ -25,6 +25,12 @@ SR_INFO_CHUNK_SIZE = 50
 # Where to get notification plugins
 NOTIFIERS_DIR = 'NOTIFIERS_DIR' in dir(config) and config.NOTIFIERS_DIR or os.path.abspath('notifiers')
 
+# Set default template path
+if 'TEMPLATE_PATH' in dir(config):
+    config.TEMPLATE_PATH = os.path.abspath(config.TEMPLATE_PATH)
+else:
+    config.TEMPLATE_PATH = os.path.abspath('templates')
+
 db = DB(config.DB_STRING)
 logging.basicConfig()
 logger = logging.getLogger(__name__)
