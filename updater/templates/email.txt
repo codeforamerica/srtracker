@@ -1,0 +1,3 @@
+Service Request #{{ sr.service_request_id }} ({{ sr.service_name }}) has been {% if sr.status == 'open' %}updated.{% else %}completed!{% endif %} You can see more information about at:
+
+    {{ details_url }}
