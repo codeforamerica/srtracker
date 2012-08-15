@@ -2,11 +2,13 @@
 import os
 import math
 import datetime
-from contextlib import contextmanager
 import smtplib
 from email.mime.text import MIMEText
 from threading import Thread
 from optparse import OptionParser
+import logging
+from collections import defaultdict
+import imp
 import requests
 import dateutil
 from dateutil.parser import parse as parse_date
@@ -19,10 +21,13 @@ config = __import__(config_file, globals(), locals(), [], -1)
 
 # Max number of SRs to return per request (per spec it's 50)
 SR_INFO_CHUNK_SIZE = 50
-# Supported notification methods
-KNOWN_METHODS = ('email')
+
+# Where to get notification plugins
+NOTIFIERS_DIR = 'NOTIFIERS_DIR' in dir(config) and config.NOTIFIERS_DIR or os.path.abspath('notifiers')
 
 db = DB(config.DB_STRING)
+logging.basicConfig()
+logger = logging.getLogger(__name__)
 
 
 # FIXME: start using this
@@ -99,39 +104,26 @@ def updated_srs_by_time():
 
 
 def send_notifications(notifications):
-    # get email server
-    SMTPClass = config.EMAIL_SSL and smtplib.SMTP_SSL or smtplib.SMTP
-    smtp = SMTPClass(config.EMAIL_HOST, config.EMAIL_PORT)
-    smtp.login(config.EMAIL_USER, config.EMAIL_PASS)
-    
+    # split up notifications by method
+    by_method = defaultdict(list)
     for notification in notifications:
-        # pulling out the address should really be done already elsewhere
-        address = notification[1]
-        send_email_notification(address, notification[2], smtp)
+        by_method[notification[0]].append(notification)
     
-    smtp.quit()
-
-
-def send_email_notification(address, sr, smtp):
-    details_url = config.SR_DETAILS_URL.format(sr_id=sr['service_request_id'])
-    subject = 'Chicago 311: Your %s issue has been updated.' % sr['service_name']
-    body = ''
-    if sr['status'] == 'open':
-        body = '''Service Request #%s (%s) has been updated. You can see more information about at:\n\n    %s''' % (sr['service_request_id'], sr['service_name'], details_url)
-    else:
-        body = '''Service Request #%s (%s) has been completed! You can see more about it at:\n\n    %s''' % (sr['service_request_id'], sr['service_name'], details_url)
-    
-    message = MIMEText(body)
-    message['Subject'] = subject
-    message['From'] = config.EMAIL_FROM
-    message['To'] = address
-    
-    smtp.sendmail(config.EMAIL_FROM, [address], message.as_string())
+    notifiers = get_notifiers()
+    for method, notes in by_method.iteritems():
+        if method in notifiers:
+            for notifier in notifiers[method]:
+                logger.debug('Sending %d notifications via %s', len(notes), notifier.__name__)
+                notifier.send_notifications(notes, config)
+        else:
+            logger.error('No notifier for "%s" - skipping %d notifications', method, len(notes))
 
 
 def poll_and_notify():
+    logger.debug('Getting updates from Open311...')
     notifications = updated_srs_by_time()
     
+    logger.debug('Sending %d notifications...', len(notifications))
     # Need to unhardcode "email" updates so we can support things like SMS, Twitter, etc.
     # Should break up the list by update method and have a thread pool for each
     if config.THREADED_UPDATES:
@@ -153,15 +145,37 @@ def poll_and_notify():
         send_notifications(notifications)
 
 
+def get_notifiers():
+    notifiers = defaultdict(list) # organized by type
+    for file_name in os.listdir(NOTIFIERS_DIR):
+        module_name, ext = os.path.splitext(file_name)
+        if ext == '.py' or os.path.isdir(os.path.join(NOTIFIERS_DIR, file_name)):
+            # Warning: this will raise ImportError if the file isn't importable (that's a good thing)
+            module_info = imp.find_module(module_name, [NOTIFIERS_DIR])
+            module = None
+            try:
+                module = imp.load_module(module_name, *module_info)
+            finally:
+                # find_module opens the module's file, so be sure to close it here (!)
+                if module_info[0]:
+                    module_info[0].close()
+            if module:
+                logger.debug('Loading notifier: "%s"' % module.__name__)
+                method = 'NOTIFICATION_METHOD' in dir(module) and module.NOTIFICATION_METHOD or module_name
+                if 'send_notifications' not in dir(module):
+                    logger.warning('Notifier "%s" not loaded - Notifiers must implement the function send_notifications(notifications, options)' % module_name)
+                else:
+                    notifiers[method].append(module)
+                    
+    return notifiers
+
+
 def subscribe(request_id, method, address):
     '''Create a new subscription the request identified by request_id.
     @param request_id: The request to subscribe to
     @param method:     The type of subscription (e.g. 'email' or 'sms')
     @param address:    The adress to send updates to (e.g. 'someone@example.com' or '63055512345')
     '''
-    
-    if method not in KNOWN_METHODS:
-        return False
     
     # TODO: validate the subscription by seeing if the request_id exists via Open311?
     with db() as session:
@@ -204,6 +218,7 @@ def initialize():
             # default to 12am this morning for endpoints that update daily
             start_date = datetime.datetime.combine(datetime.date.today(), datetime.time())
             session.add(UpdateInfoItem(key='date', value=start_date))
+            logger.warning('Found a subscription but no last updated time.\nSetting last update to %s', start_date)
 
 
 def initialize_db():
