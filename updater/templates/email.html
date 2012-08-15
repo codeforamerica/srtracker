@@ -4,9 +4,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
         <!-- Facebook sharing information tags -->
-        <meta property="og:title" content="*|MC:SUBJECT|*" />
+        <meta property="og:title" content="{{ subject }}" />
 
-        <title>*|MC:SUBJECT|*</title>
+        <title>{{ subject }}</title>
     <style type="text/css">
       /* Client-specific Styles */
       #outlook a{padding:0;} /* Force Outlook to provide a "view in browser" button. */
@@ -44,7 +44,7 @@
 
       #service-request-info{
         background-color:#D7D7D7;
-        background-image: url({{ img }}email/status_open.gif);
+        background-image: url({{ img }}email/{% if sr.status == 'open' %}status_open.gif{% else %}status_closed.gif{% endif %});
         background-repeat: no-repeat no-repeat;
         background-position: top right;
       }
@@ -385,7 +385,11 @@
                                                                 Hi There,
                                                                 <br />
                                                                 <br />
-                                                                The status of your service request has been updated:
+                                                                {% if sr.status == 'open' %}
+                                                                    The status of your service request has been updated:
+                                                                {% else %}
+                                                                    Your service request has been completed!
+                                                                {% endif %}
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -399,10 +403,10 @@
                                                               <tr>
                                                                   <td valign="top">
                                                                     <div>
-                                                                        <h2 class="h2">Sewer Inspection</h2>
-                                                                        12-00718044
+                                                                        <h2 class="h2">{{ sr.service_name }}</h2>
+                                                                        {{ sr.service_request_id }}
                                                                         <br />
-                                                                        Located at 5709 Natoma Ave Chicago, IL 60638
+                                                                        Located at {{ sr.address }}
                                                                     </div>
                                                                   </td>
                                                               </tr>
@@ -415,6 +419,7 @@
 
 
                                                 <!-- // Begin Module: Standard Content \\ -->
+                                                {% set note = sr.notes|last %}
                                                 <table id="updates" border="0" cellpadding="20" cellspacing="0" width="100%">
                                                     <tr>
                                                       <td valign="top">
@@ -422,7 +427,7 @@
                                                             <tr>
                                                                 <td valign="top" width="120">
                                                                   <div style="text-align: right;">
-                                                                    15-JUNE-2012
+                                                                    {{ note.datetime.strftime('%d-%b-%Y') }}
                                                                   </div>
                                                                 </td>
                                                                 <td valign="middle" width="50">
@@ -432,7 +437,13 @@
                                                                 </td>
                                                                 <td valign="top">
                                                                   <div>
-                                                                    Assigned to C-DOT for Pothole
+                                                                    {% if note.type == 'follow_on' %}
+                                                                      Assigned to {{ note.extended_attributes.agency_responsible }}
+                                                                      for {{ note.extended_attributes.service_name }}
+                                                                    {% else %}
+                                                                        {% if note.summary %}{{ note.summary }}<br />{% endif %}
+                                                                        {% if note.description %}{{ note.description }}{% endif %}
+                                                                    {% endif %}
                                                                   </div>
                                                                 </td>
                                                             </tr>
@@ -442,9 +453,9 @@
                                                     <tr>
                                                         <td valign="top">
                                                             <div style="text-align: center;">
-                                                              <a href="#"><img src="{{ img }}email/view_request.gif" style="max-width:600px;" /></a>
+                                                              <a href="{{ details_url }}"><img src="{{ img }}email/view_request.gif" style="max-width:600px;" /></a>
                                                               <br />
-                                                              <a href="#">View Your Request</a>
+                                                              <a href="{{ details_url }}">View Your Request</a>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -472,8 +483,10 @@
                                                   <br />
 
                                                   This email was sent to you by Service Tracker Chicago.
+                                                  {# TODO: support unsubscribing (issue #4)
                                                   <br />
-                                                  If you wish to no longer recieve status updates, click here to <a href="*|UNSUB|*">unsubscribe</a>
+                                                  If you wish to no longer recieve status updates, click here to <a href="{{ unsubscribe_url }}">unsubscribe</a>
+                                                  #}
                                                 </div>
                                               </td>
                                           </tr>
