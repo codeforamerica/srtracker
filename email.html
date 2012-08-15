@@ -44,12 +44,22 @@
 
       #service-request-info{
         background-color:#D7D7D7;
-        background-image: url(static/img/email/status-open.gif);
+        background-image: url(static/img/email/status_open.gif);
         background-repeat: no-repeat no-repeat;
         background-position: top right;
-        background-color: #D7D7D7;
       }
 
+      #updates {
+        background-color:#FFFFFF;
+        background-image: url(static/img/email/line.gif);
+        background-repeat: no-repeat no-repeat;
+        background-position: 158px 25px;
+      }
+      
+      #updates div {
+        color: #347EB3;
+        font-weight: bold;
+      }
       /**
       * @tab Page
       * @section heading 1
@@ -405,14 +415,36 @@
 
 
                                                 <!-- // Begin Module: Standard Content \\ -->
-                                                <table border="0" cellpadding="20" cellspacing="0" width="100%">
+                                                <table id="updates" border="0" cellpadding="20" cellspacing="0" width="100%">
+                                                    <tr>
+                                                      <td valign="top">
+                                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" >
+                                                            <tr>
+                                                                <td valign="top" width="120">
+                                                                  <div style="text-align: right;">
+                                                                    15-JUNE-2012
+                                                                  </div>
+                                                                </td>
+                                                                <td valign="middle" width="50">
+                                                                  <div style="text-align: center;">
+                                                                    <img src="static/img/email/small_dot.gif" /></a>
+                                                                  </div>
+                                                                </td>
+                                                                <td valign="top">
+                                                                  <div>
+                                                                    Assigned to C-DOT for Pothole
+                                                                  </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                      </td>
+                                                    </tr>
                                                     <tr>
                                                         <td valign="top">
                                                             <div style="text-align: center;">
                                                               <a href="#"><img src="static/img/email/view_request.gif" style="max-width:600px;" /></a>
                                                               <br />
                                                               <a href="#">View Your Request</a>
-
                                                             </div>
                                                         </td>
                                                     </tr>
