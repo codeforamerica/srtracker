@@ -70,7 +70,7 @@ def show_request(request_id):
         # It would be nice to log this for analytical purposes (what requests are being checked that we can't show?)
         # but that would be better done through GA or KISS Metrics than through server logging
         # TODO: need a template
-        return render_template('error_no_sr.html', rid=request_id)
+        return render_template('error_no_sr.html', request_id=request_id), 404
         
     elif r.status_code != 200:
         # TODO: need a template
@@ -125,7 +125,7 @@ def show_request(request_id):
         return (body, 200, None)
     
     else:
-        return render_template('error_no_sr.html', rid=request_id)
+        return render_template('error_no_sr.html', request_id=request_id), 404
 
 
 @app.route("/subscribe/<request_id>", methods=["POST"])
