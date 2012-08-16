@@ -11,9 +11,13 @@
 
 {% block content %}
 	<article class="main_content">
-		<h1>No Service Request Found for ID {{ rid }}</h1>
+		<h1>There's no page at this address!</h1>
 		
-		<p class="form_help">Don’t know your service request number? Call 311.</p>
-		
+		<p>
+			It looks like something’s gone wrong—you’ve arrived at this page but there's nothing here.
+			If you got here by typing the URL into your browser, try checking that you haven't made a typo.
+			Otherwise, <a href="{{ url_for('index') }}">click here to head back to the main page of 311 Service Tracker</a>.
+		</p>
+
 	</article>
 {% endblock %}
