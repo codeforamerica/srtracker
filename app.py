@@ -17,7 +17,8 @@ app = Flask(__name__)
 
 @app.before_request
 def password_protect():
-    if app.config['PASSWORD_PROTECTED']:
+    # don't password-protect images (for e-mail!)
+    if app.config['PASSWORD_PROTECTED'] and not request.path.startswith('/static/img'):
         auth = request.authorization
         if not auth or auth.password != app.config['PASSWORD']:
             # Tell the browser to do basic auth
