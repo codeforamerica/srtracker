@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block page_title %}Error - 311 Service Tracker{% endblock %}
+
+{% block page_class %}detail_page{% endblock %}
+
+{% block stylesheets %}
+	{{ super() }}
+	<link rel="stylesheet" href="/static/css/service_request.css" type="text/css" />
+{% endblock %}
+
+{% block content %}
+	<article class="main_content">
+		<h1>An unknown error has occurred!</h1>
+
+		<p>
+			The computer building this web page for you ran into a serious problem! We’re looking into it and hopefully we’ll get it fixed soon!
+		</p>
+		
+		{{ error }}
+	</article>
+{% endblock %}

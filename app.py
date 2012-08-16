@@ -148,6 +148,11 @@ def page_not_found(error):
     return render_template('error_404.html'), 404
 
 
+@app.errorhandler(500)
+def generic_error(error):
+    return render_template('error_generic.html'), 500
+
+
 #--------------------------------------------------------------------------
 # FILTERS
 #--------------------------------------------------------------------------
