@@ -60,10 +60,10 @@
 						<h2>Stay Up To Date</h2>
 						<p>Get notified of any changes to this service request by email.</p>
 						<form method="POST" action="/subscribe/{{ sr.service_request_id }}" id="subscription_form">
-							<label for="update_email">E-Mail:</label>
-							<input type="email" id="update_email" name="update_email" />
+							<label for="update_email" class="use_placeholder">E-Mail:</label>
+							<input type="email" id="update_email" name="update_email" placeholder="Enter your e-mail address" />
 							<p class="error_message">Please use a valid e-mail address.</p>
-							<input type="submit" value="Notify Me!" />
+							<input type="submit" class="submit" value="Notify Me!" />
 						</form>
 					</div>
 					{% endif %}

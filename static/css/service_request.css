@@ -57,7 +57,7 @@ input {
 
 .request_details {
 	position: relative;
-	margin-bottom: 20px;
+	margin-bottom: 32px;
 	padding: 24px 160px 24px 24px;
 	background: #f0f0f0;
 	box-shadow: 0 5px 5px rgba(0, 0, 0, 0.07);
@@ -98,7 +98,7 @@ input {
 	
 	
 .activity_header {
-	margin: 32px 320px 1em 0;
+	margin: 0 320px 1em 0;
 	font-family: ArvoBold, Helvetica, Arial, sans-serif;
 	font-size: 24px;
 	line-height: 34px;
@@ -204,25 +204,34 @@ input {
 	
 		.extras_content h2 {
 			margin: -24px -24px 16px;
-			padding: 4px 24px;
+			padding: 8px 24px;
 			background: #333;
 			color: #fff;
 			font-family: Arvo, Helvetica, Arial, sans-serif;
 			font-size: 1em;
-		}
-	
-		.extras_content dl {
-			margin: 0;
-			padding: 0;
+			line-height: 1.35;
+			text-align: center;
 		}
 		
-			.extras_content dt {
-				font-weight: bold;
-			}
-			.extras_content dd {
-				margin: 0 0 1em;
-				padding: 0;
-			}
+		.extras_content .use_placeholder {
+			/* Hide a label visually without hiding from screen-readers */
+			display: block;
+			height: 0;
+			overflow: hidden;
+		}
+	
+		.extras_content input {
+			width: 100%;
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			-o-box-sizing: border-box;
+			-ms-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+		
+		.extras_content .submit {
+			margin-top: 1em;
+		}
 			
 
 .invalid input[type="email"] {
