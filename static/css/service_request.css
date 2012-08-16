@@ -121,9 +121,17 @@ input {
 			position: relative;
 			min-height: 70px;
 			line-height: 20px;
-			background: url("../img/blue_line.png") repeat-y 180px 0;
 		}
-		.notes_list .note:last-child {
+		.notes_list .note:before {
+			content: "";
+			position: absolute;
+			left: 180px;
+			top: 4px; /* don't draw from the very top so that we don't draw above the dot */
+			bottom: -4px; /* but draw below the bottom so that we draw all the way to the next dot */
+			width: 2px;
+			background: #a4d2de;
+		}
+		.notes_list .note:last-child:before {
 			background: none;
 		}
 		
