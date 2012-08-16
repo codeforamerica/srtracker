@@ -77,10 +77,12 @@
 						
 							<div class="note_indicator"></div>
 							
-							<span class="datetime">
-								<span class="date">{{ note.datetime.strftime('%d-%b-%Y') }}</span>
-								<span class="time">{{ note.datetime.strftime('%I:%M %p').strip('0') }}</span>
-							</span>
+							{% if note.datetime %}
+								<span class="datetime">
+									<span class="date">{{ note.datetime.strftime('%d-%b-%Y') }}</span>
+									<span class="time">{{ note.datetime.strftime('%I:%M %p').strip('0') }}</span>
+								</span>
+							{% endif %}
 							
 							<div class="details">
 								<p>

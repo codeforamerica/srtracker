@@ -81,8 +81,15 @@ def show_request(request_id):
     if srs:
         sr = srs[0]
         sr['requested_datetime'] = iso8601.parse_date(sr['requested_datetime'])
+        
+        if 'notes' not in sr:
+            sr['notes'] = []
+        
+        relevant_notes = 0
         for note in sr['notes']:
             note['datetime'] = iso8601.parse_date(note['datetime'])
+            if note['type'] in ('follow_on', 'activity'):
+                relevant_notes += 1
         
         # add follow-on closure data
         by_id = {}
@@ -97,6 +104,13 @@ def show_request(request_id):
                     by_id[note_sr_id] = note
         
         sr['notes'].reverse()
+        
+        # if there's no activity yet, show 'under review'
+        if relevant_notes == 0:
+            sr['notes'].append({
+                'type': 'activity',
+                'summary': 'Under review by %s' % sr.get('agency_responsible', 'staff')
+            })
         
         subscribed = False
         if sr['status'] == 'open' and session.get('email', None):
