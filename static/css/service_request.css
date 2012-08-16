@@ -97,8 +97,17 @@ input {
 	}
 	
 	
+.activity_header {
+	margin: 32px 320px 1em 0;
+	font-family: ArvoBold, Helvetica, Arial, sans-serif;
+	font-size: 24px;
+	line-height: 34px;
+	font-weight: normal;
+	border-bottom: 2px solid #333;
+}
+
 	.notes_list {
-		margin: 40px 0 0 0;
+		margin: 40px 320px 0 0;
 		padding: 0;
 		list-style-type: none;
 	}

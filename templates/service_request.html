@@ -70,6 +70,7 @@
 				{% endif %}
 			</aside>
 			
+			<h2 class="activity_header">Activity</h2>
 			<ol class="notes_list">
 				{% for note in sr.notes %}
 					{% if (note.type != 'follow_on' or 'Closed' not in note.description) and note.type != 'opened' %}
