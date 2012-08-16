@@ -1,27 +1,23 @@
-<!DOCTYPE html>
-<html class="detail_page">
-	<head>
-		<meta charset="utf-8" />
-		<title>No Service Request Found - 311 Service Tracker</title>
-		<style>
-			article, aside, dialog, figure, footer, header,
-			hgroup, menu, nav, section { display: block; }
-		</style>
-		<link rel="stylesheet" href="/static/arvo-fontfacekit/stylesheet.css" type="text/css" />
-		<link rel="stylesheet" href="/static/css/base.css" type="text/css" />
-		<link rel="stylesheet" href="/static/css/service_request.css" type="text/css" />
-	</head>
-	<body>
-	  <header>
-	    <span class="site_title">311 Service Tracker</span>
-	  </header>
-	  <article  class="main_content_indent">
-	    <h1>No Service Request Found for ID {{ rid }}</h1>
-	    
-	    <p class="form_help">Don’t know your service request number? Call 311.</p>
-	    	    
-	  </article>
-		
-	</body>
+{% extends "base.html" %}
 
-</html>
+{% block page_title %}No Service Request Found - 311 Service Tracker{% endblock %}
+
+{% block page_class %}detail_page{% endblock %}
+
+{% block stylesheets %}
+	{{ super() }}
+	<link rel="stylesheet" href="/static/css/service_request.css" type="text/css" />
+{% endblock %}
+
+{% block page_header %}
+	<span class="site_title">311 Service Tracker</span>
+{% endblock %}
+
+{% block content %}
+	<article  class="main_content_indent">
+	  <h1>No Service Request Found for ID {{ rid }}</h1>
+	  
+	  <p class="form_help">Don’t know your service request number? Call 311.</p>
+	  		
+	</article>
+{% endblock %}

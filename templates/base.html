@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html class="{% block page_class %}{% endblock %}">
+	<head>
+		<meta charset="utf-8" />
+		<title>{% block page_title %}311 Service Tracker{% endblock %}</title>
+		{% block stylesheets %}
+			<link rel="stylesheet" href="/static/arvo-fontfacekit/stylesheet.css" type="text/css" />
+			<link rel="stylesheet" href="/static/css/base.css" type="text/css" />
+		{% endblock %}
+		
+		{% block scripts %}
+		{% endblock %}
+	</head>
+	<body>
+		{% block body %}
+			<header>
+				{% block page_header %}311 Chicago Service Tracker{% endblock %}
+			</header>
+			
+			{% block content %}
+			{% endblock %}
+		{% endblock %}
+	</body>
+</html>
