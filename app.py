@@ -48,7 +48,7 @@ def index():
     return render_template('index.html', service_requests=service_requests)
 
 
-@app.route("/requests")
+@app.route("/requests/")
 def request_search():
     if 'request_id' in request.args:
         return redirect(url_for('show_request', request_id=request.args['request_id']))
