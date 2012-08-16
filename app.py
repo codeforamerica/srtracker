@@ -109,7 +109,7 @@ def show_request(request_id):
         if relevant_notes == 0:
             sr['notes'].append({
                 'type': 'activity',
-                'summary': 'Under review by %s' % sr.get('agency_responsible', 'staff')
+                'summary': 'Under review by %s staff' % sr.get('agency_responsible', '')
             })
         
         subscribed = False
