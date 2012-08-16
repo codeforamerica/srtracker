@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block page_title %}Error - 311 Service Tracker{% endblock %}
+
+{% block page_class %}detail_page{% endblock %}
+
+{% block stylesheets %}
+	{{ super() }}
+	<link rel="stylesheet" href="/static/css/service_request.css" type="text/css" />
+{% endblock %}
+
+{% block content %}
+	<article class="main_content">
+		<h1>There was an error contacting city systems!</h1>
+
+		<p>
+			We’re sorry to say that a serious issue occurred while trying to contact the city’s 311 systems.
+			If you need immediate help or information about a service request, call 311. Otherwise, please try this site again later.
+		</p>
+
+	</article>
+{% endblock %}

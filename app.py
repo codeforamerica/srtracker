@@ -75,7 +75,7 @@ def show_request(request_id):
     elif r.status_code != 200:
         # TODO: need a template
         app.logger.error('OPEN311: Error (not 404) loading data for SR %s', request_id)
-        return ("There was an error getting data about service request #%s" % request_id, 404, None)
+        return render_template('error_311_api.html', request_id=request_id), 500
         
     srs = r.json
     if srs:
