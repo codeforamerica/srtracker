@@ -1,4 +1,5 @@
 header {
+	margin: 0 0 55px;
 	padding: 16px 40px;
 	background: #a4d2de;
 	line-height: 50px;
@@ -45,6 +46,7 @@ header {
 }
 
 h1 {
+	margin: 0;
 	font-family: Arvo, Helvetica, Arial, sans-serif;
 	font-size: 32px;
 }
@@ -53,16 +55,47 @@ input {
 	font-family: Helvetica, Arial, sans-serif;
 }
 
-.status_indicator {
-	font-family: ArvoBold, Helvetica, Arial, sans-serif;
-	color: #fff;
-	background: #d20a21;
-	padding: 10px 20px;
+.request_details {
+	position: relative;
+	margin-bottom: 20px;
+	padding: 24px 160px 24px 24px;
+	background: #f0f0f0;
+	box-shadow: 0 5px 5px rgba(0, 0, 0, 0.07);
 }
+.request_details.has_media {
+	padding-right: 320px;
+}
+	.request_media {
+		float: right;
+		max-width: 280px;
+		margin: 0 -300px 0 0;
+	}
 
-.status_indicator.status-closed {
-	background: #666;
-}
+	.status_indicator {
+		position: absolute;
+		right: 23px;
+		top: -12px;
+		width: 120px;
+		min-height: 60px;
+		margin: 0;
+		padding: 13px 10px;
+		font-family: ArvoBold, Helvetica, Arial, sans-serif;
+		font-size: 24px;
+		line-height: 30px;
+		color: #fff;
+		background: url("../img/status_ribbons.png") no-repeat -140px 100%;
+		text-align: center;
+	}
+	
+	.status_indicator.status-open {
+		background-position: 0px 100%;
+	}
+	
+	.request_id {
+		font-size: 22px;
+		font-weight: bold;
+	}
+	
 	
 	.notes_list {
 		margin: 40px 0 0 0;
@@ -91,7 +124,7 @@ input {
 				float: left;
 				text-align: right;
 				font-size: 16px;
-				color: #02bcc8;
+				color: #347eb3;
 			}
 			.note-follow_on .datetime {
 				font-size: 20px;
@@ -145,13 +178,14 @@ input {
 		z-index: 1;
 	}
 	
-	.request_details {
+	.extras_content {
+		position: relative;
 		margin-bottom: 20px;
-		padding: 24px 24px 1px;
-		background: #f6f6f6;
+		padding: 24px;
+		background: #f0f0f0;
 	}
 	
-		.request_details h2 {
+		.extras_content h2 {
 			margin: -24px -24px 16px;
 			padding: 4px 24px;
 			background: #333;
@@ -160,15 +194,15 @@ input {
 			font-size: 1em;
 		}
 	
-		.request_details dl {
+		.extras_content dl {
 			margin: 0;
 			padding: 0;
 		}
 		
-			.request_details dt {
+			.extras_content dt {
 				font-weight: bold;
 			}
-			.request_details dd {
+			.extras_content dd {
 				margin: 0 0 1em;
 				padding: 0;
 			}

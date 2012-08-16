@@ -133,3 +133,7 @@ button {
 .landing tr:hover a {
 	text-decoration: underline;
 }
+
+.clearfix {
+	clear: both;
+}

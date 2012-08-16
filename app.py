@@ -103,6 +103,9 @@ def show_request(request_id):
             # TODO: when subscription service supports more than e-mail, 
             # we should probably be able to show all your subscriptions here
             subscribed = updater.subscription_exists(request_id, 'email', session.get('email', ''))
+            
+        # test media
+        # sr['media_url'] = sr['media_url'] or 'http://farm5.staticflickr.com/4068/4286605571_c1a1751fdc_n.jpg'
         
         body = render_template('service_request.html', sr=sr, subscribed=subscribed)
         return (body, 200, None)
