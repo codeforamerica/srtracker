@@ -11,9 +11,26 @@
 
 {% block content %}
 	<article class="main_content">
-		<h1>No Service Request Found for ID {{ request_id }}</h1>
+		<h1>There was no Service Request found for “{{ request_id }}”</h1>
 		
-		<p class="form_help">Don’t know your service request number? Call 311.</p>
+		<p>
+			If you’re unsure of your service request number, call 311.
+		</p>
+		
+		<p>
+			This site also only supports a few of the different services you can request by calling 311.
+			If type of service request you’re looking for is not supported by this site, 
+			you can still call 311 to find the latest updates about it.
+		</p>
+		
+		<form method="GET" action="{{ url_for('request_search') }}" class="in_yo_face">
+			<p>
+				<label for="request_re_search">If you think you made a typo entering the service request number, you can try fixing it here:</label>
+			</p>
+			
+			<input type="text" name="request_id" id="request_re_search" class="search_field" placeholder="Enter service request #" value="{{ request_id }}" />
+			<input type="submit" class="submit" value="Submit" />
+		</form>
 		
 	</article>
 {% endblock %}

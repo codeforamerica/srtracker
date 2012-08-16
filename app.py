@@ -49,7 +49,7 @@ def index():
 
 
 @app.route("/requests")
-def redirect_request():
+def request_search():
     if 'request_id' in request.args:
         return redirect(url_for('show_request', request_id=request.args['request_id']))
     else:
