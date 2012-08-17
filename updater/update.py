@@ -91,7 +91,7 @@ def updated_srs_by_time():
         for sr in srs:
             updated_subscriptions = session.query(Subscription).filter(Subscription.sr_id == sr['service_request_id'])
             for subscription in updated_subscriptions:
-                updates.append((subscription.method, subscription.contact, sr))
+                updates.append((subscription.method, subscription.contact, subscription.key, sr))
                 if sr['status'] == 'closed':
                     session.delete(subscription)
             
@@ -177,7 +177,8 @@ def get_notifiers():
 
 
 def subscribe(request_id, method, address):
-    '''Create a new subscription the request identified by request_id.
+    '''
+    Create a new subscription the request identified by request_id.
     @param request_id: The request to subscribe to
     @param method:     The type of subscription (e.g. 'email' or 'sms')
     @param address:    The adress to send updates to (e.g. 'someone@example.com' or '63055512345')
@@ -186,20 +187,26 @@ def subscribe(request_id, method, address):
     # TODO: validate the subscription by seeing if the request_id exists via Open311?
     with db() as session:
         if not subscription_exists(request_id, method, address):
-            session.add(Subscription(
+            subscription = Subscription(
                 sr_id=request_id,
                 method=method,
-                contact=address))
+                contact=address)
+            session.add(subscription)
         
             # If we haven't ever updated, set the last update date
             last_update_info = session.query(UpdateInfoItem).filter(UpdateInfoItem.key == 'date').first()
             if not last_update_info:
                 # TODO: get the SR's updated_datetime and use that
                 session.add(UpdateInfoItem(key='date', value=datetime.datetime.now()))
+            
+            return subscription.key
+    
+    return False
 
 
 def subscription_exists(request_id, method, address):
-    '''Check whether a subscription already exists for the given request id with the specified method and address.
+    '''
+    Check whether a subscription already exists for the given request id with the specified method and address.
     @param request_id: The request to subscribe to
     @param method:     The type of subscription (e.g. 'email' or 'sms')
     @param address:    The adress to send updates to (e.g. 'someone@example.com' or '63055512345')
@@ -212,6 +219,52 @@ def subscription_exists(request_id, method, address):
             filter(Subscription.contact == address).\
             first()
         return existing != None
+
+
+def subscription_for_key(unique_id):
+    '''
+    Get a subscription object associated with a given unique key.
+    '''
+    with db() as session:
+        subscription = session.query(Subscription).filter(Subscription.key == unique_id).first()
+        return subscription
+    
+    return None
+
+
+def unsubscribe(request_id, method, address):
+    '''
+    Remove a subscription if it exists
+    @param request_id: The request to subscribe to
+    @param method:     The type of subscription (e.g. 'email' or 'sms')
+    @param address:    The adress to send updates to (e.g. 'someone@example.com' or '63055512345')
+    '''
+    with db() as session:
+        existing = session.query(Subscription).\
+            filter(Subscription.sr_id == request_id).\
+            filter(Subscription.method == method).\
+            filter(Subscription.contact == address).\
+            first()
+        if existing:
+            session.delete(existing)
+            return True
+    
+    return False
+
+
+def unsubscribe_with_key(unique_id):
+    '''
+    Remove a subscription with a given key if it exists. 
+    Returns true if the subscription existed and was removed and false otherwise.
+    @param unique_id: The key for the subscription to remove
+    '''
+    with db() as session:
+        subscription = session.query(Subscription).filter(Subscription.key == unique_id).first()
+        if subscription:
+            session.delete(subscription)
+            return True
+            
+    return False
 
 
 def initialize():

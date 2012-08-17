@@ -3,3 +3,8 @@ Subject: Chicago 311: Your {{ sr.service_name }} issue has been {% if sr.status 
 Service Request #{{ sr.service_request_id }} ({{ sr.service_name }}) has been {% if sr.status == 'open' %}updated.{% else %}completed!{% endif %} You can see more information about at:
 
     {{ details_url }}
+
+If you wish to no longer recieve status updates, go to the following URL to unsubscribe:
+
+    {{ unsubscribe_url }}
+

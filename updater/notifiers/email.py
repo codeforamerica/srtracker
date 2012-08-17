@@ -23,12 +23,12 @@ def send_notifications(notifications, options):
     
     # actually send emails
     for notification in notifications:
-        send_email_notification(notification[1], notification[2], smtp, options, template_env)
+        send_email_notification(notification[1], notification[2], notification[3], smtp, options, template_env)
 
     smtp.quit()
 
 
-def send_email_notification(address, sr, smtp, options, template_env):
+def send_email_notification(address, subscription_key, sr, smtp, options, template_env):
     # parse dates in SR (in case the template wants to display them)
     # could potentially do this in the core updater instead of the mail plugin
     sr['requested_datetime'] = parse_date(sr['requested_datetime'])
@@ -41,13 +41,14 @@ def send_email_notification(address, sr, smtp, options, template_env):
     from_address = options.EMAIL_FROM or options.EMAIL_USER
     default_subject = 'Chicago 311: Your %s issue has been %s' % (sr['service_name'], sr['status'] == 'open' and 'updated.' or 'completed!')
     details_url = options.SR_DETAILS_URL.format(sr_id=sr['service_request_id'])
+    unsubscribe_url = options.SR_UNSUBSCRIBE_URL.format(key=subscription_key)
     img_path = options.SR_TRACKER_IMG
     
     # render message template
     html_template = template_env.get_template('email.html')
     text_template = template_env.get_template('email.txt')
-    html_body = html_template.render(sr=sr, details_url=details_url, img=img_path, subject=default_subject)
-    text_body = text_template.render(sr=sr, details_url=details_url, img=img_path, subject=default_subject)
+    html_body = html_template.render(sr=sr, details_url=details_url, img=img_path, subject=default_subject, unsubscribe_url=unsubscribe_url)
+    text_body = text_template.render(sr=sr, details_url=details_url, img=img_path, subject=default_subject, unsubscribe_url=unsubscribe_url)
     
     # get subject
     html_subject, html_body = subject_from_message(html_body)
