@@ -1,0 +1,14 @@
+{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		<div class="message_overlay_backing">
+			<div class="aligner">
+				<div class="message_overlay">
+					{% for message in messages %}
+						<p>{{ message }}</p>
+					{% endfor %}
+					<a class="close_button" href="#">Close</a>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+{% endwith %}

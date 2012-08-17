@@ -1,6 +1,8 @@
+# -*- coding: utf-8 -*-
+
 import os
 import datetime
-from flask import Flask, render_template, request, abort, redirect, url_for, make_response, session
+from flask import Flask, render_template, request, abort, redirect, url_for, make_response, session, flash
 import requests
 import iso8601
 import pytz
@@ -137,6 +139,20 @@ def subscribe(request_id):
         # TODO: should we get back a secret subscription key and use that instead?
         session['email'] = email
     return redirect(url_for('show_request', request_id=request_id))
+
+
+@app.route("/unsubscribe/<subscription_key>", methods=["GET", "POST"])
+def unsubscribe(subscription_key):
+    subscription = updater.subscription_for_key(subscription_key)
+    if subscription:
+        sr_id = subscription.sr_id
+        updater.unsubscribe_with_key(subscription_key)
+        destination = url_for('show_request', request_id=sr_id)
+    else:
+        destination = url_for('index')
+        
+    flash(u'You‘ve been unsubscribed from this service request. You will no longer receive e-mails when it is updated.')
+    return redirect(destination)
 
 
 #--------------------------------------------------------------------------

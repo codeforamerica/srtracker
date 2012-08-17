@@ -93,6 +93,51 @@ button {
 		padding: 0;
 	}
 
+.message_overlay_backing {
+	position: fixed;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.35);
+	overflow: hidden;
+	z-index: 1000;
+}
+	.message_overlay_backing > .aligner {
+		position: absolute;
+		left: 50%;
+		top: 33%;
+		width: 450px;
+		max-width: 90%;
+		max-height: 90%;
+	}
+	.message_overlay {
+		position: relative;
+		left: -50%;
+		padding: 10px;
+		background: #fff;
+		border-radius: 5px;
+		box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.75);
+	}
+		.message_overlay .close_button {
+			position: absolute;
+			right: 5px;
+			top: 5px;
+			width: 20px;
+			height: 20px;
+			background: url("../img/close_button.png");
+			text-indent: -100em;
+			overflow: hidden;
+			opacity: 0.65;
+		}
+		.message_overlay .close_button:hover {
+			opacity: 0.9;
+		}
+
+
+.clearfix {
+	clear: both;
+}
 
 /* 
  * Landing Page
@@ -132,8 +177,4 @@ button {
 
 .landing tr:hover a {
 	text-decoration: underline;
-}
-
-.clearfix {
-	clear: both;
 }
