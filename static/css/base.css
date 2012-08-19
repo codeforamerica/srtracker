@@ -63,6 +63,7 @@ button {
 	color: #fff;
 	text-transform: uppercase;
 	font-weight: bold;
+	-webkit-appearance: none;
 }
 
 .in_yo_face input {
