@@ -61,9 +61,10 @@
 		
 		<h2 class="activity_header">Activity</h2>
 		<ol class="notes_list">
-			{% for note in sr.notes %}
-				{% if (note.type != 'follow_on' or 'Closed' not in note.description) and note.type != 'opened' %}
-					<li class="note note-{{ note.type }}">
+			{% for note in sr.notes|reverse %}
+				{% if note.type != 'follow_on_closed' and note.type != 'opened' %}
+					{% set type_name = note.type == 'follow_on_created' and 'follow_on' or 'activity' %}
+					<li class="note note-{{ type_name }}">
 					
 						<div class="note_indicator"></div>
 						
@@ -76,7 +77,7 @@
 						
 						<div class="details">
 							<p>
-								{% if note.type == 'follow_on' %}
+								{% if note.type == 'follow_on_created' %}
 									<strong>{{ note.extended_attributes.service_name }}</strong><br/>
 									Department: {{ note.extended_attributes.agency_responsible }}
 									{% if note.extended_attributes.closed_datetime %}

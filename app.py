@@ -84,28 +84,34 @@ def show_request(request_id):
         sr = srs[0]
         sr['requested_datetime'] = iso8601.parse_date(sr['requested_datetime'])
         
+        # sometimes an SR doesn't include notes even though there should always be an "opened" note
         if 'notes' not in sr:
             sr['notes'] = []
         
         relevant_notes = 0
         for note in sr['notes']:
             note['datetime'] = iso8601.parse_date(note['datetime'])
-            if note['type'] in ('follow_on', 'activity'):
+            if note['type'] in ('follow_on', 'follow_on_created', 'activity'):
                 relevant_notes += 1
         
-        # add follow-on closure data
+        # add follow-on closure data, fix types, etc, etc
         by_id = {}
         for note in sr['notes']:
-            if note['type'] == 'follow_on':
+            if note['type'] in ('follow_on', 'follow_on_created', 'follow_on_closed'):
                 note_sr_id = note['extended_attributes']['service_request_id']
-                if note_sr_id in by_id:
-                    if note['description'].endswith('Closed'):
+                
+                # old-style is just "follow_on" for everything related to follow-ons
+                # new-style is "follow_on_created" and "follow_on_closed"
+                # update old notes so templates don't get crazy complicated :(
+                if note['type'] == 'follow_on_created' or note['description'].endswith('Created'):
+                    note['type'] = 'follow_on_created'
+                    by_id[note_sr_id] = note
+                    
+                elif note['type'] == 'follow_on_closed' or note['description'].endswith('Closed'):
+                    note['type'] = 'follow_on_closed'
+                    if note_sr_id in by_id:
                         original = by_id[note_sr_id]
                         original['extended_attributes']['closed_datetime'] = note['datetime']
-                else:
-                    by_id[note_sr_id] = note
-        
-        sr['notes'].reverse()
         
         # if there's no activity yet, show 'under review'
         if relevant_notes == 0:
