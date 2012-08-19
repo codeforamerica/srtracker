@@ -21,7 +21,8 @@ body {
 	.box > h1 {
 		margin: 0 0 18px;
 		padding: 0 0 10px;
-		font-family: Arvo, Helvetica, Arial, sans-serif;
+		font-family: ArvoBold, Helvetica, Arial, sans-serif;
+		font-weight: normal;
 		line-height: 1em;
 		text-align: left;
 		font-size: 28px;

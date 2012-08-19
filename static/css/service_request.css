@@ -47,8 +47,9 @@ header {
 
 h1 {
 	margin: 0;
-	font-family: Arvo, Helvetica, Arial, sans-serif;
+	font-family: ArvoBold, Helvetica, Arial, sans-serif;
 	font-size: 32px;
+	font-weight: normal;
 }
 
 input {
@@ -207,7 +208,8 @@ input {
 			padding: 8px 24px;
 			background: #333;
 			color: #fff;
-			font-family: Arvo, Helvetica, Arial, sans-serif;
+			font-family: ArvoBold, Helvetica, Arial, sans-serif;
+			font-weight: bold;
 			font-size: 1em;
 			line-height: 1.35;
 			text-align: center;
