@@ -23,9 +23,23 @@
 			
 			<div class="request_id">#{{ sr.service_request_id }}</div>
 			
-			<p><strong>Description:</strong> {{ sr.description }}</p>
-			<p><strong>Address:</strong> {{ sr.address.title().split(",", 1)[0] }}, {{ sr.address.title().split(",", 1)[1].replace("Il", "IL") }}</p>
-			<p><strong>Created:</strong> {{ sr.requested_datetime.strftime('%B %d, %Y') }}</p>
+			<p><strong>Description:</strong> {{ sr.description or 'N/A' }}</p>
+			<p>
+				<strong>Address:</strong> 
+				{% if sr.address %}
+					{{ sr.address.title().split(",", 1)[0] }}, {{ sr.address.title().split(",", 1)[1].replace("Il", "IL") }}
+				{% else %}
+					Unknown
+				{% endif %}
+			</p>
+			<p>
+				<strong>Created:</strong> 
+				{% if sr.address %}
+					{{ sr.requested_datetime.strftime('%B %d, %Y') }}
+				{% else %}
+					Unknown
+				{% endif %}
+			</p>
 			{%  if sr.extended_attributes and sr.extended_attributes.channel %}
 				<p><strong>Received via:</strong> {{ sr.extended_attributes.channel.title() }}</p>
 			{% endif %}
@@ -103,14 +117,18 @@
 			{# And of course the SR itself... #}
 			<li class="note note-initial note-follow_on">
 				<div class="note_indicator"></div>
-				<span class="datetime">
-					<span class="date">{{ sr.requested_datetime.strftime('%d-%b-%Y') }}</span>
-					<span class="time">{{ sr.requested_datetime.strftime('%I:%M %p').strip('0') }}</span>
-				</span>
+				{% if sr.requested_datetime %}
+					<span class="datetime">
+						<span class="date">{{ sr.requested_datetime.strftime('%d-%b-%Y') }}</span>
+						<span class="time">{{ sr.requested_datetime.strftime('%I:%M %p').strip('0') }}</span>
+					</span>
+				{% endif %}
 				<div class="details">
 					<p>
-						<strong>{{ sr.service_name }}</strong><br/>
-						Department: {{ sr.agency_responsible }}
+						<strong>{{ sr.service_name }}</strong>
+						{% if sr.agency_responsible %}
+							<br/>Department: {{ sr.agency_responsible }}
+						{% endif %}
 						{%  if sr.extended_attributes and sr.extended_attributes.channel %}
 							<br/>via {{ sr.extended_attributes.channel.title() }}
 						{% endif %}

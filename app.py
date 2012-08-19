@@ -81,8 +81,10 @@ def show_request(request_id):
         
     srs = r.json
     if srs:
-        sr = srs[0]
-        sr['requested_datetime'] = iso8601.parse_date(sr['requested_datetime'])
+        sr = fixup_sr(srs[0], request_id)
+        
+        if 'requested_datetime' in sr:
+            sr['requested_datetime'] = iso8601.parse_date(sr['requested_datetime'])
         
         # sometimes an SR doesn't include notes even though there should always be an "opened" note
         if 'notes' not in sr:
@@ -187,6 +189,9 @@ def friendly_time(dt, past_="ago", future_="from now", default="just now"):
     or "time until" e.g.
     3 days ago, 5 hours from now etc.
     """
+    
+    if dt == None:
+        return ''
 
     if isinstance(dt, basestring):
         dt = iso8601.parse_date(dt)
@@ -220,6 +225,28 @@ def friendly_time(dt, past_="ago", future_="from now", default="just now"):
                 past_ if dt_is_past else future_)
 
     return default
+
+
+#--------------------------------------------------------------------------
+# UTILITIES
+#--------------------------------------------------------------------------
+
+def fixup_sr(sr, request_id=None):
+    '''
+    Fix up an SR to try and ensure some basic info.
+    (In Chicago's API, any field can be missing, even if it's required.)
+    '''
+    
+    if 'service_request_id' not in sr:
+        sr['service_request_id'] = request_id or sr.get('token', 'UNKNOWN')
+        
+    if 'status' not in sr:
+        sr['status'] = 'open'
+        
+    if 'service_name' not in sr:
+        sr['service_name'] = 'Miscellaneous Services'
+        
+    return sr
 
 
 #--------------------------------------------------------------------------

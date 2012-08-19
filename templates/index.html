@@ -34,11 +34,13 @@
 			<table>
 				<tbody>
 					{% for sr in service_requests %}
-						<tr>
-							<th><a href="requests/{{ sr.service_request_id }}">{{ sr.service_name }}</a></th>
-							<td class="number_col"><a href="requests/{{ sr.service_request_id }}">#{{ sr.service_request_id }}</a></td>
-							<td class="number_col time_col"><a href="requests/{{ sr.service_request_id }}">{{ sr.requested_datetime|friendly_time }}</a></td>
-						</tr>
+						{% if sr.service_request_id %}
+							<tr>
+								<th><a href="requests/{{ sr.service_request_id }}">{{ sr.service_name or '?' }}</a></th>
+								<td class="number_col"><a href="requests/{{ sr.service_request_id }}">#{{ sr.service_request_id }}</a></td>
+								<td class="number_col time_col"><a href="requests/{{ sr.service_request_id }}">{{ sr.requested_datetime|friendly_time }}</a></td>
+							</tr>
+						{% endif %}
 					{% endfor %}
 				</tbody>
 			</table>
