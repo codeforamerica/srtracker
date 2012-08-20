@@ -2,6 +2,7 @@
 
 import os
 import datetime
+import re
 from flask import Flask, render_template, request, abort, redirect, url_for, make_response, session, flash
 import requests
 import iso8601
@@ -58,9 +59,19 @@ def request_search():
         abort(404)
 
 
-@app.route("/requests/<request_id>")
+@app.route("/requests/<request_id>", methods=["GET", "POST"])
 def show_request(request_id):
     request_id = request_id.lstrip('#')
+    
+    # receive subscription
+    form_errors = []
+    submitted_email = None
+    if request.method == 'POST':
+        submitted_email = request.form.get('update_email')
+        if submitted_email:
+            success = subscribe_to_sr(request_id, submitted_email)
+            if not success:
+                form_errors.append('Please use a valid e-mail address.')
     
     # TODO: Should probably use Three or something nice for this...
     url = '%s/requests/%s.json' % (app.config['OPEN311_SERVER'], request_id)
@@ -131,7 +142,7 @@ def show_request(request_id):
         # test media
         # sr['media_url'] = sr['media_url'] or 'http://farm5.staticflickr.com/4068/4286605571_c1a1751fdc_n.jpg'
         
-        body = render_template('service_request.html', sr=sr, subscribed=subscribed)
+        body = render_template('service_request.html', sr=sr, subscribed=subscribed, errors=form_errors, submitted_email=submitted_email)
         return (body, 200, None)
     
     else:
@@ -141,11 +152,10 @@ def show_request(request_id):
 @app.route("/subscribe/<request_id>", methods=["POST"])
 def subscribe(request_id):
     email = request.form.get('update_email')
-    # TODO: validate email
     if email:
-        updater.subscribe(request_id, 'email', email)
-        # TODO: should we get back a secret subscription key and use that instead?
-        session['email'] = email
+        success = subscribe_to_sr(request_id, email)
+        if not success:
+            flash('Please use a valid e-mail address.', 'error')
     return redirect(url_for('show_request', request_id=request_id))
 
 
@@ -247,6 +257,19 @@ def fixup_sr(sr, request_id=None):
         sr['service_name'] = 'Miscellaneous Services'
         
     return sr
+
+
+def subscribe_to_sr(request_id, email):
+    # validate e-mail
+    match = re.match(r'[A-Z0-9._%+\-]+@[A-Z0-9.\-]+\.[A-Z]{2,4}$', email, re.IGNORECASE)
+    if match:
+        key = updater.subscribe(request_id, 'email', email)
+        if key:
+            # TODO: should we use the subscription key instead?
+            session['email'] = email
+            return True
+        
+    return False
 
 
 #--------------------------------------------------------------------------

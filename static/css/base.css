@@ -135,6 +135,11 @@ button {
 		.message_overlay .close_button:hover {
 			opacity: 0.9;
 		}
+		
+		.message_overlay .message_error {
+			font-weight: bold;
+			color: #933;
+		}
 
 
 .clearfix {
