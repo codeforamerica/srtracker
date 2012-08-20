@@ -134,10 +134,10 @@ def show_request(request_id):
             })
         
         subscribed = False
-        if sr['status'] == 'open' and session.get('email', None):
+        if sr['status'] == 'open' and session.get('addr', None):
             # TODO: when subscription service supports more than e-mail, 
             # we should probably be able to show all your subscriptions here
-            subscribed = updater.subscription_exists(request_id, 'email', session.get('email', ''))
+            subscribed = updater.subscription_exists(request_id, 'email', session.get('addr', ''))
             
         # test media
         # sr['media_url'] = sr['media_url'] or 'http://farm5.staticflickr.com/4068/4286605571_c1a1751fdc_n.jpg'
@@ -266,8 +266,11 @@ def subscribe_to_sr(request_id, email):
         key = updater.subscribe(request_id, 'email', email)
         if key:
             # TODO: should we use the subscription key instead?
-            session['email'] = email
+            session['addr'] = email
+            session.permanent = True
             return True
+        else:
+            app.logger.error('Error creating a subscription for %s on %s', email, request_id)
         
     return False
 

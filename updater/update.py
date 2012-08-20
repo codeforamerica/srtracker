@@ -186,7 +186,11 @@ def subscribe(request_id, method, address):
     
     # TODO: validate the subscription by seeing if the request_id exists via Open311?
     with db() as session:
-        if not subscription_exists(request_id, method, address):
+        subscription = get_subscription(request_id, method, address)
+        if subscription:
+            return subscription.key
+            
+        else:
             subscription = Subscription(
                 sr_id=request_id,
                 method=method,
@@ -204,9 +208,9 @@ def subscribe(request_id, method, address):
     return False
 
 
-def subscription_exists(request_id, method, address):
+def get_subscription(request_id, method, address):
     '''
-    Check whether a subscription already exists for the given request id with the specified method and address.
+    Get the subscription associated with a given request_id, method, and address
     @param request_id: The request to subscribe to
     @param method:     The type of subscription (e.g. 'email' or 'sms')
     @param address:    The adress to send updates to (e.g. 'someone@example.com' or '63055512345')
@@ -218,7 +222,18 @@ def subscription_exists(request_id, method, address):
             filter(Subscription.method == method).\
             filter(Subscription.contact == address).\
             first()
-        return existing != None
+        return existing
+
+
+def subscription_exists(request_id, method, address):
+    '''
+    Check whether a subscription already exists for the given request id with the specified method and address.
+    @param request_id: The request to subscribe to
+    @param method:     The type of subscription (e.g. 'email' or 'sms')
+    @param address:    The adress to send updates to (e.g. 'someone@example.com' or '63055512345')
+    '''
+    
+    return get_subscription(request_id, method, address) != None
 
 
 def subscription_for_key(unique_id):
