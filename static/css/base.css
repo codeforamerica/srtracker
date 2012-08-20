@@ -10,7 +10,6 @@ body {
 }
 
 .box {
-	width: 660px;
 	margin: 0 auto 30px;
 	padding: 45px 60px;
 	background: #fff;
@@ -152,12 +151,18 @@ button {
  
 .landing header {
 	margin: 0 auto 24px;
-	/* TODO: @2x support */
 	background: url("../img/311_service_tracker_logo_big.png");
+	background-size: 436px 190px;
 	width: 436px;
 	height: 190px;
 	text-indent: -100em;
 	overflow: hidden;
+}
+
+.landing .main_content {
+	margin: 0 auto;
+	width: 780px;
+	max-width: 95%;
 }
 
 .landing form {
@@ -167,11 +172,15 @@ button {
 	.landing .search_field {
 		float: left;
 		width: 416px;
+		width: 68%;
+		-webkit-appearance: none;
+		box-sizing: border-box;
 	}
 	
 	.landing .submit {
 		float: right;
 		width: 206px;
+		width: 30%;
 	}
 
 .landing th > a,
@@ -184,4 +193,72 @@ button {
 
 .landing tr:hover a {
 	text-decoration: underline;
+}
+
+
+/***********************************************************
+ * Small Screens
+ **********************************************************/
+
+@media only screen and (max-width: 500px) {
+	.landing header {
+		margin: 0 auto 10px;
+		background: url("../img/311_service_tracker_logo.png");
+		background-size: 279px 123px;
+		width: 279px;
+		height: 123px;
+	}
+	
+	.box {
+		/* On a 320-wide screen, this aligns the content with the logo. */
+		padding: 12px 18px;
+	}
+		.box > h1 {
+			margin: 0 0 6px;
+			padding: 0 0 6px;
+			font-size: 22px;
+		}
+	
+	.landing .search_field {
+		float: none;
+		display: block;
+		width: 100%;
+	}
+	
+	.landing .submit {
+		float: none;
+		width: 100%;
+	}
+	
+	/* Too skinny for a side-by-side table */
+	.request_list tr {
+		display: block;
+		padding: 0.5em 0;
+		border-bottom: 1px solid #dbdbdb;
+	}
+		.request_list td,
+		.request_list th {
+			display: block;
+			text-align: left;
+		}
+			.landing th > a,
+			.landing td > a {
+				padding: 0;
+			}
+}
+
+/***********************************************************
+ * HiDPI
+ **********************************************************/
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+	.landing header {
+		background: url("../img/311_service_tracker_logo_big_x2.png");
+	}
+}
+
+@media only screen and (max-width: 500px) and (-webkit-min-device-pixel-ratio: 2) {
+	.landing header {
+		background: url("../img/311_service_tracker_logo_x2.png");
+	}
 }
