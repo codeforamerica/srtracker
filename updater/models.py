@@ -16,11 +16,11 @@ class Subscription(Base):
     def __init__(self, **kwargs):
         # if we aren't being initialized with a unique key, create one
         if 'key' not in kwargs:
-            self.key = self._generate_uuid()
+            self.key = self.generate_uuid()
             
         super(Subscription, self).__init__(**kwargs)
     
-    def _generate_uuid(self):
+    def generate_uuid(self):
         '''Generate a unique key for this subscription.'''
         return str(uuid.uuid4()).replace('-', '')
 

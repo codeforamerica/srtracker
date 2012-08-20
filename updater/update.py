@@ -298,6 +298,21 @@ def initialize():
 def initialize_db():
     with db() as session:
         db.create(Base)
+        try:
+            session.execute('ALTER TABLE subscriptions ADD key character varying')
+            session.execute('CREATE UNIQUE INDEX ON subscriptions (key)')
+        except:
+            print 'Failed to add "key" column to subscriptions. It is probably already present.'
+        finally:
+            session.commit()
+        
+        print 'Adding keys for any subscriptions without them...'
+        added_keys = 0
+        for subscription in session.query(Subscription).all():
+            if not subscription.key:
+                subscription.key = subscription.generate_uuid()
+                added_keys += 1
+        print 'Added %d keys.' % added_keys
 
 
 if __name__ == "__main__":
