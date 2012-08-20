@@ -53,6 +53,7 @@ input {
 	border: 1px solid #dbdbdb;
 	border-radius: 5px;
 	box-shadow: inset 5px 5px 18px rgba(0, 0, 0, 0.13);
+	-webkit-appearance: none;
 }
 
 input[type="submit"],

@@ -10,6 +10,7 @@ header {
 		left: 34px;
 		top: 0;
 		background: url("../img/311_service_tracker_logo.png");
+		background-size: 279px 123px;
 		width: 279px;
 		height: 123px;
 		text-indent: -100em;
@@ -97,9 +98,17 @@ input {
 		font-weight: bold;
 	}
 	
-	
+
+.secondary_content {
+	position: relative;
+	padding: 0 320px 0 0;
+}
+
+.request_history {
+}
+
 .activity_header {
-	margin: 0 320px 1em 0;
+	margin: 0 0 1em 0;
 	font-family: ArvoBold, Helvetica, Arial, sans-serif;
 	font-size: 24px;
 	line-height: 34px;
@@ -108,7 +117,7 @@ input {
 }
 
 	.notes_list {
-		margin: 40px 320px 0 0;
+		margin: 40px 0 0 0;
 		padding: 0;
 		list-style-type: none;
 	}
@@ -190,8 +199,9 @@ input {
 			}
 	
 	.request_extras {
-		position: relative;
-		float: right;
+		position: absolute;
+		right: 0;
+		top: 0;
 		width: 300px;
 		z-index: 1;
 	}
@@ -223,6 +233,7 @@ input {
 		}
 	
 		.extras_content input {
+			display: block;
 			width: 100%;
 			-webkit-box-sizing: border-box;
 			-moz-box-sizing: border-box;
@@ -247,4 +258,108 @@ input {
 
 .invalid .error_message {
 	display: block;
+}
+
+
+/***********************************************************
+ * Small Screens
+ **********************************************************/
+
+@media only screen and (max-width: 500px) {
+	header {
+		margin: 0 0 10px;
+		padding: 0;
+		background: transparent;
+	}
+	.site_title {
+		position: static;
+		display: block;
+		margin: 0 auto;
+	}
+	header form {
+		display: none;
+	}
+	
+	.main_content {
+		padding: 0 26px;
+	}
+	
+	h1 {
+		font-size: 22px;
+	}
+	
+	.request_details {
+		margin-bottom: 32px;
+		padding: 10px;
+	}
+	.request_details.has_media {
+		padding: 10px;
+	}
+		.request_media {
+			max-width: 100%;
+			margin: 0 0 0.5em;
+		}
+	
+		.status_indicator {
+			right: 12px;
+			top: 0px;
+			width: 60px;
+			min-height: 30px;
+			padding: 10px 5px;
+			font-size: 16px;
+			line-height: 20px;
+			background-position: -70px 100%;
+			background-size: 140px 80px;
+			text-align: center;
+		}
+	
+	.secondary_content {
+		padding: 0;
+	}
+	
+	.request_history {
+		float: none;
+		margin: 0;
+		padding: 0;
+	}
+		.notes_list .note::before {
+			left: 22px;
+		}
+		.note_indicator {
+			left: 16px;
+		}
+		.note-follow_on .note_indicator {
+			left: 0;
+		}
+		.note .datetime {
+			float: none;
+			width: auto;
+			margin-left: 68px;
+			font-size: 1em;
+			text-align: left;
+		}
+			.note .datetime .date,
+			.note .datetime .time {
+				display: inline;
+			}
+		.note .details {
+			margin-left: 68px;
+		}
+	
+	.request_extras {
+		position: relative;
+		float: none;
+		width: auto;
+		margin-top: 2em;
+	}
+}
+
+/***********************************************************
+ * HiDPI
+ **********************************************************/
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+	.site_title {
+		background: url("../img/311_service_tracker_logo_x2.png");
+	}
 }
