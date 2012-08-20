@@ -419,7 +419,7 @@
 
 
                                                 <!-- // Begin Module: Standard Content \\ -->
-                                                {% set note = sr.notes|last %}
+                                                {% set note = sr.notes and sr.notes|last %}
                                                 <table id="updates" border="0" cellpadding="20" cellspacing="0" width="100%">
                                                     <tr>
                                                       <td valign="top">
@@ -427,7 +427,9 @@
                                                             <tr>
                                                                 <td valign="top" width="120">
                                                                   <div style="text-align: right;">
-                                                                    {{ note.datetime.strftime('%d-%b-%Y') }}
+                                                                    {% if note %}
+                                                                      {{ note.datetime.strftime('%d-%b-%Y') }}
+                                                                    {% endif %}
                                                                   </div>
                                                                 </td>
                                                                 <td valign="middle" width="50">
@@ -437,12 +439,14 @@
                                                                 </td>
                                                                 <td valign="top">
                                                                   <div>
-                                                                    {% if note.type == 'follow_on' %}
-                                                                      Assigned to {{ note.extended_attributes.agency_responsible }}
-                                                                      for {{ note.extended_attributes.service_name }}
-                                                                    {% else %}
-                                                                        {% if note.summary %}{{ note.summary }}<br />{% endif %}
-                                                                        {% if note.description %}{{ note.description }}{% endif %}
+                                                                    {% if note %}
+                                                                      {% if note.type == 'follow_on' %}
+                                                                        Assigned to {{ note.extended_attributes.agency_responsible }}
+                                                                        for {{ note.extended_attributes.service_name }}
+                                                                      {% else %}
+                                                                          {% if note.summary %}{{ note.summary }}<br />{% endif %}
+                                                                          {% if note.description %}{{ note.description }}{% endif %}
+                                                                      {% endif %}
                                                                     {% endif %}
                                                                   </div>
                                                                 </td>

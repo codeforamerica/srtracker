@@ -48,8 +48,9 @@ def parse_date_utc(date_string):
 def get_updates(since):
    url = '%s/requests.json' % config.OPEN311_SERVER
    params = {
-      'start_updated_date': since.isoformat(),
+      'updated_after': since.isoformat(),
       'page_size': config.OPEN311_PAGE_SIZE,
+      'extensions': 'true'
    }
    if config.OPEN311_API_KEY:
       params['api_key'] = config.OPEN311_API_KEY
