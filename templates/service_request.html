@@ -62,7 +62,7 @@
 					<div class="extras_content">
 						<h2>Stay Up To Date</h2>
 						<p>Get notified of any changes to this service request by email.</p>
-						<form method="POST" action="{{ url_for('show_request', request_id=sr.service_request_id) }}" id="subscription_form" class="{% if errors|length %}invalid{% endif %}">
+						<form method="POST" data-action="{{ url_for('show_request', request_id=sr.service_request_id) }}" id="subscription_form" class="{% if errors|length %}invalid{% endif %}">
 							<label for="update_email" class="use_placeholder">E-Mail:</label>
 							<input type="email" id="update_email" name="update_email" placeholder="Enter your e-mail address" {% if errors|length %}value="{{ submitted_email }}"{% endif %} />
 							{% if errors|length %}

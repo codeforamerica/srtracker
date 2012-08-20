@@ -42,4 +42,12 @@ $(document).ready(function() {
             }
         }
     });
+    
+    // delay setting of form action to cut down on form spam
+    // this has the unfortunate side-effect of requiring JS for this form :\
+    $(window).on("load", function() {
+        setTimeout(function() {
+            subscriptionForm.attr("action", subscriptionForm.attr("data-action"))
+        }, 1000);
+    });
 });
