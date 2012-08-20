@@ -177,6 +177,9 @@ input {
 				width: 14px;
 				height: 14px;
 				-webkit-border-radius: 7px;
+				   -moz-border-radius: 7px;
+				    -ms-border-radius: 7px;
+				     -o-border-radius: 7px;
 				        border-radius: 7px;
 			}
 	
@@ -189,6 +192,9 @@ input {
 				width: 46px;
 				height: 46px;
 				-webkit-border-radius: 23px;
+				   -moz-border-radius: 23px;
+				    -ms-border-radius: 23px;
+				     -o-border-radius: 23px;
 				        border-radius: 23px;
 			}
 			
@@ -240,10 +246,10 @@ input {
 			display: block;
 			width: 100%;
 			-webkit-box-sizing: border-box;
-			-moz-box-sizing: border-box;
-			-o-box-sizing: border-box;
-			-ms-box-sizing: border-box;
-			box-sizing: border-box;
+			   -moz-box-sizing: border-box;
+			     -o-box-sizing: border-box;
+			    -ms-box-sizing: border-box;
+			        box-sizing: border-box;
 		}
 		
 		.extras_content .submit {
