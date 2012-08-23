@@ -85,7 +85,8 @@ def show_request(request_id):
         request_id_digits = re.sub(r'\D', '', request_id)
         if len(request_id_digits) == 10:
             reformatted = '%s-%s' % (request_id_digits[:2], request_id_digits[2:])
-            return redirect(url_for('show_request', request_id=reformatted))
+            if reformatted != request_id:
+                return redirect(url_for('show_request', request_id=reformatted))
         
         # It would be nice to log this for analytical purposes (what requests are being checked that we can't show?)
         # but that would be better done through GA or KISS Metrics than through server logging
