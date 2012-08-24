@@ -219,7 +219,7 @@ button {
  * Small Screens
  **********************************************************/
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 759px) {
 	.landing header {
 		margin: 0 auto 10px;
 		background: url("../img/311_service_tracker_logo.png");
@@ -276,7 +276,7 @@ button {
 	}
 }
 
-@media only screen and (max-width: 500px) and (-webkit-min-device-pixel-ratio: 2) {
+@media only screen and (max-width: 759px) and (-webkit-min-device-pixel-ratio: 2) {
 	.landing header {
 		background: url("../img/311_service_tracker_logo_x2.png");
 	}

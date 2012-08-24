@@ -275,7 +275,7 @@ input {
  * Small Screens
  **********************************************************/
 
-@media only screen and (max-width: 500px) {
+@media only screen and (max-width: 759px) {
 	body {
 		min-width: 0;
 	}
