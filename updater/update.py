@@ -90,16 +90,19 @@ def updated_srs_by_time():
         # actually find the updated subscriptions
         latest_update = None
         for sr in srs:
-            updated_subscriptions = session.query(Subscription).filter(Subscription.sr_id == sr['service_request_id'])
-            for subscription in updated_subscriptions:
-                updates.append((subscription.method, subscription.contact, subscription.key, sr))
-                if sr['status'] == 'closed':
-                    session.delete(subscription)
-            
-            # track the latest update time so we know when to start from next time we poll
-            sr_update_time = parse_date(sr['updated_datetime'])
-            if latest_update == None or latest_update < sr_update_time:
-                latest_update = sr_update_time
+            # Some SRs may come back without a service_request_id if the SR was
+            # of the "batch" type (which should have a "token")
+            if 'service_request_id' in sr:
+                updated_subscriptions = session.query(Subscription).filter(Subscription.sr_id == sr['service_request_id'])
+                for subscription in updated_subscriptions:
+                    updates.append((subscription.method, subscription.contact, subscription.key, sr))
+                    if sr['status'] == 'closed':
+                        session.delete(subscription)
+                
+                # track the latest update time so we know when to start from next time we poll
+                sr_update_time = parse_date(sr['updated_datetime'])
+                if latest_update == None or latest_update < sr_update_time:
+                    latest_update = sr_update_time
         
         # in case of systems that are slow to update or batch updates (e.g. nightly),
         # don't update the last update time unless we actually got some results
