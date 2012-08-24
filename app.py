@@ -112,7 +112,7 @@ def show_request(request_id):
         relevant_notes = 0
         for note in sr['notes']:
             note['datetime'] = iso8601.parse_date(note['datetime'])
-            if note['type'] in ('follow_on', 'follow_on_created', 'activity'):
+            if note['type'] in ('follow_on', 'follow_on_created', 'activity', 'closed'):
                 relevant_notes += 1
         
         # add follow-on closure data, fix types, etc, etc
