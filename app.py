@@ -83,6 +83,9 @@ def show_request(request_id):
         # TODO: how to generalize this?
         # Chicago's SR IDs are always \d\d-\d{8}, if we get just digits, reformat and try again
         request_id_digits = re.sub(r'\D', '', request_id)
+        if len(request_id_digits) == 8:
+            # Try prepending the year if it's only 8 digits
+            request_id_digits = datetime.date.today().strftime('%y') + request_id_digits
         if len(request_id_digits) == 10:
             reformatted = '%s-%s' % (request_id_digits[:2], request_id_digits[2:])
             if reformatted != request_id:
