@@ -13,15 +13,30 @@
 	</style>
 {% endblock %}
 
+{% block scripts %}
+	{{ super() }}
+	<script type="text/javascript">
+		if (window.matchMedia) {
+			$(document).ready(function() {
+				if (matchMedia("only screen and (max-width: 759px)").matches) {
+					$("#search_field").attr("placeholder", "Enter service request #");
+				}
+			});
+		}
+	</script>
+{% endblock %}
+
 {% block page_header %}<span class="site_title">311 Chicago Service Tracker</span>{% endblock %}
 
 {% block content %}
 	<div class="main_content">
 		<div class="box">
 			<h1>Find out the status of your 311 service request</h1>
+
+			{% set example_id = service_requests and service_requests[0].service_request_id or '12-01516712' %}
 			
 			<form method="GET" action="{{ url_for('request_search') }}" class="in_yo_face">
-				<input type="text" name="request_id" class="search_field" placeholder="Enter service request #" />
+				<input type="text" name="request_id" id="search_field" class="search_field" placeholder="Request #, e.g. {{ example_id }}" />
 				<input type="submit" class="submit" value="Submit" />
 			</form>
 			
