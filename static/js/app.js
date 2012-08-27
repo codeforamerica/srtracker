@@ -68,4 +68,34 @@ $(document).ready(function() {
             // this means the second time the user taps, they won't get the number keyboard.
         });
     }
+
+
+    // HTML5 Placeholder Shim
+    var SUPPORTS_PLACEHOLDER = "placeholder" in document.createElement("input");
+    if (!SUPPORTS_PLACEHOLDER) {
+        $("input").each(function(index, input) {
+            var $input = $(input);
+            var placeholderText = input.getAttribute("placeholder");
+
+            if (placeholderText) {
+                // $.data stores a boolean in "showingPlaceholder" for whether the placeholder is visible
+                // The input gets the class "placeholder" when placeholder text is showing
+                var focusHandler = function() {
+                    if ($input.data("showingPlaceholder")) {
+                        input.value = "";
+                        $input.removeClass("placeholder");
+                    }
+                };
+                var showPlaceholder = function() {
+                    var showPlaceholder = !input.value;
+                    if (showPlaceholder) {
+                        input.value = placeholderText;
+                    }
+                    $input.data("showingPlaceholder", showPlaceholder)[showPlaceholder ? "addClass" : "removeClass"]("placeholder");
+                };
+                $input.on("focus", focusHandler).on("blur", showPlaceholder);
+                showPlaceholder();
+            }
+        });
+    }
 });

@@ -82,6 +82,10 @@ button:hover {
 	border-color: #3ba8cc;
 }
 
+.placeholder {
+	color: #999;
+}
+
 .in_yo_face input {
 	font-size: 22px;
 	line-height: 28px;
