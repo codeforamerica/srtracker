@@ -60,7 +60,7 @@ input {
 	   -moz-border-radius: 5px;
 	    -ms-border-radius: 5px;
 	     -o-border-radius: 5px;
-		    border-radius: 5px;
+	        border-radius: 5px;
 	box-shadow: inset 5px 5px 18px rgba(0, 0, 0, 0.13);
 	-webkit-appearance: none;
 }
@@ -74,6 +74,12 @@ button {
 	text-transform: uppercase;
 	font-weight: bold;
 	-webkit-appearance: none;
+	cursor: pointer;
+}
+input[type="submit"]:hover,
+button:hover {
+	background: #3ba8cc;
+	border-color: #3ba8cc;
 }
 
 .in_yo_face input {
