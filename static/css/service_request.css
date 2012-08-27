@@ -251,6 +251,11 @@ input {
 			    -ms-box-sizing: border-box;
 			        box-sizing: border-box;
 		}
+
+		.extras_content .input_email {
+			/* IE7- doesn't do border-box, so we need explicit sizing here */
+			*width: 234px;
+		}
 		
 		.extras_content .submit {
 			margin-top: 1em;

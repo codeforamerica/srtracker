@@ -55,6 +55,8 @@ input {
 	padding: 6px 8px;
 	font-size: 14px;
 	line-height: 18px;
+	/* IE7 needs height explicitly set, otherwise it gets a bit hairy */
+	*height: 18px;
 	border: 1px solid #dbdbdb;
 	-webkit-border-radius: 5px;
 	   -moz-border-radius: 5px;
@@ -67,6 +69,8 @@ input {
 
 input[type="submit"],
 button {
+	/* IE7 needs height explicitly set, otherwise it gets a bit hairy */
+	*height: 32px;
 	box-shadow: none;
 	background: #347eb3;
 	border-color: #347eb3;
@@ -89,7 +93,14 @@ button:hover {
 .in_yo_face input {
 	font-size: 22px;
 	line-height: 28px;
+	/* IE7 needs height to be set */
+	*height: 28px;
 	border-width: 3px;
+}
+
+.in_yo_face input[type="submit"] {
+	/* IE7 needs height to be set */
+	*height: 46px;
 }
 
 .form_help {
@@ -195,8 +206,9 @@ button:hover {
 
 	.landing .search_field {
 		float: left;
-		width: 416px;
 		width: 68%;
+		/* IE7- doesn't stupport box-sizing, so it needs to be smaller */
+		*width: 62%;
 		-webkit-appearance: none;
 		
 		-webkit-box-sizing: border-box;
