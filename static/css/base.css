@@ -124,10 +124,12 @@ button:hover {
 	border-bottom: 3px solid #333;
 }
 
-.request_list tr {
+.request_list th,
+.request_list td {
 	border-bottom: 1px solid #dbdbdb;
 }
-.request_list tr:last-child {
+.request_list tr:last-child th,
+.request_list tr:last-child td {
 	border-bottom: none;
 }
 
@@ -233,7 +235,7 @@ button:hover {
 	display: block;
 	padding: 18px 0;
 	text-decoration: none;
-	color: inherit;
+	color: #333;
 }
 
 .landing tr:hover a {
