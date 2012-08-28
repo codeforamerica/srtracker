@@ -35,7 +35,7 @@
 
 			{% set example_id = service_requests and service_requests[0].service_request_id or '12-01516712' %}
 			
-			<form method="GET" action="{{ url_for('request_search') }}" class="in_yo_face">
+			<form method="GET" action="{{ url_for('request_search') }}" class="in_yo_face search_form">
 				<input type="text" name="request_id" id="search_field" class="search_field" placeholder="Request #, e.g. {{ example_id }}" />
 				<input type="submit" class="submit" value="Submit" />
 			</form>

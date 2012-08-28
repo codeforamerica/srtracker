@@ -31,7 +31,7 @@
 			<header>
 				{% block page_header %}
 					<a href="{{ url_for('index') }}" class="site_title">311 Service Tracker</a>
-					<form method="GET" action="{{ url_for('request_search') }}">
+					<form method="GET" action="{{ url_for('request_search') }}" class="search_form">
 						<label id="request_id_label" for="status_lookup">Check the status of:</label>
 						<input name="request_id" id="status_lookup" class="search_field" type="text" placeholder="Enter Service Request #" />
 						<input type="submit" class="submit" value="Submit" />

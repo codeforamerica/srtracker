@@ -70,6 +70,26 @@ $(document).ready(function() {
     }
 
 
+    // Disable form submission until the user actually enters something
+    var formHasData = function(form) {
+        var hasData = false;
+        $(form).find("input").each(function(index, input) {
+            if (input.type !== "submit" && input.value) {
+                hasData = true;
+                return false;
+            }
+        });
+        return hasData;
+    };
+    $(".search_form").on("submit", function(event) {
+        if (!formHasData(this)) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    });
+
+
+
     // HTML5 Placeholder Shim
     var SUPPORTS_PLACEHOLDER = "placeholder" in document.createElement("input");
     if (!SUPPORTS_PLACEHOLDER) {
