@@ -53,8 +53,10 @@ NOTIFIERS_DIR = config.get('NOTIFIERS_DIR', os.path.abspath('notifiers'))
 config['TEMPLATE_PATH'] = os.path.abspath(config.get('TEMPLATE_PATH', 'templates'))
 
 db = DB(config['DB_STRING'])
-logging.basicConfig()
+
+# logging
 logger = logging.getLogger(__name__)
+logger.addHandler(logging.StreamHandler())
 
 
 # FIXME: start using this
