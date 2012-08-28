@@ -10,6 +10,7 @@ import pytz
 import updater
 
 # Config
+DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'config.py')
 DEBUG = True
 OPEN311_SERVER = 'http://localhost:5000'
 OPEN311_API_KEY = ''
@@ -290,14 +291,25 @@ def subscribe_to_sr(request_id, email):
 # INIT
 #--------------------------------------------------------------------------
 
+def bool_from_string(value):
+    return value in (True, 'True', 'true', 'T', 't', '1')
+
+def bool_from_env(envvar, default=False):
+    return bool_from_string(os.environ.get(envvar, default))
+
 if __name__ == "__main__":
     app.config.from_object(__name__)
-    app.debug = os.environ.get('DEBUG', str(app.debug)) == 'True'
-    app.secret_key = os.environ.get('SECRET_KEY', app.secret_key)
-    app.config['OPEN311_SERVER'] = os.environ.get('OPEN311_SERVER', OPEN311_SERVER)
-    app.config['OPEN311_API_KEY'] = os.environ.get('OPEN311_API_KEY', OPEN311_API_KEY)
-    app.config['PASSWORD_PROTECTED'] = os.environ.get('PASSWORD_PROTECTED', str(PASSWORD_PROTECTED)) == 'True'
-    app.config['PASSWORD'] = os.environ.get('PASSWORD', '')
+    # we want to support a nice fallback, so use from_pyfile directly instead of from_envvar
+    config_path = os.environ.get('SRTRACKER_CONFIG', DEFAULT_CONFIG_PATH)
+    if os.path.isfile(config_path):
+        app.config.from_pyfile(config_path)
+    else:
+        app.debug = bool_from_env('DEBUG', app.debug)
+        app.secret_key = os.environ.get('SECRET_KEY', app.secret_key)
+        app.config['OPEN311_SERVER'] = os.environ.get('OPEN311_SERVER', OPEN311_SERVER)
+        app.config['OPEN311_API_KEY'] = os.environ.get('OPEN311_API_KEY', OPEN311_API_KEY)
+        app.config['PASSWORD_PROTECTED'] = bool_from_env('PASSWORD_PROTECTED', PASSWORD_PROTECTED)
+        app.config['PASSWORD'] = os.environ.get('PASSWORD', '')
     
     port = int(os.environ.get('PORT', 5100))
     app.run(host='0.0.0.0', port=port)
