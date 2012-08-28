@@ -298,7 +298,7 @@ def subscribe_to_sr(request_id, email):
 if __name__ == "__main__":
     app.config.from_object(__name__)
     # we want to support a nice fallback, so use from_pyfile directly instead of from_envvar
-    config_path = os.environ.get('SRTRACKER_CONFIGURATION', DEFAULT_CONFIG_PATH)
+    config_path = os.path.abspath(os.environ.get('SRTRACKER_CONFIGURATION', DEFAULT_CONFIG_PATH))
     if os.path.isfile(config_path):
         app.config.from_pyfile(config_path)
     else:

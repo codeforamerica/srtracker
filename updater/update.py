@@ -15,8 +15,17 @@ from dateutil.parser import parse as parse_date
 from db import DB
 from models import Subscription, UpdateInfoItem, Base
 
-# Config
+# Default configuration
 DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'configuration.py')
+DEFAULT_NOTIFIERS_DIR = os.path.join(os.path.dirname(__file__), 'notifiers')
+DEFAULT_TEMPLATE_PATH = os.path.join(os.path.dirname(__file__), 'templates')
+
+# Max number of SRs to return per request (per spec it's 50)
+SR_INFO_CHUNK_SIZE = 50
+
+# logging
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.StreamHandler())
 
 def config_from_file(path, base_configuration=None):
     '''Load a configuration dictionary from a file path.
@@ -40,23 +49,16 @@ def config_from_file(path, base_configuration=None):
     return results
 
 # Try updater-specific configuration and fall back to unified configuration (STRACKER_CONFIGURATION), and finally a local config.py file
-config_path = os.environ.get('UPDATER_CONFIGURATION', os.environ.get('SRTRACKER_CONFIGURATION', DEFAULT_CONFIG_PATH))
+config_path = os.path.abspath(os.environ.get('UPDATER_CONFIGURATION', os.environ.get('SRTRACKER_CONFIGURATION', DEFAULT_CONFIG_PATH)))
 config = config_from_file(config_path)
 
-# Max number of SRs to return per request (per spec it's 50)
-SR_INFO_CHUNK_SIZE = 50
-
 # Where to get notification plugins
-NOTIFIERS_DIR = config.get('NOTIFIERS_DIR', os.path.abspath('notifiers'))
+config['NOTIFIERS_DIR'] = os.path.abspath(config.get('NOTIFIERS_DIR', DEFAULT_NOTIFIERS_DIR))
 
 # Set default template path
-config['TEMPLATE_PATH'] = os.path.abspath(config.get('TEMPLATE_PATH', 'templates'))
+config['TEMPLATE_PATH'] = os.path.abspath(config.get('TEMPLATE_PATH', DEFAULT_TEMPLATE_PATH))
 
 db = DB(config['DB_STRING'])
-
-# logging
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler())
 
 
 # FIXME: start using this
@@ -180,11 +182,11 @@ def poll_and_notify():
 
 def get_notifiers():
     notifiers = defaultdict(list) # organized by type
-    for file_name in os.listdir(NOTIFIERS_DIR):
+    for file_name in os.listdir(config['NOTIFIERS_DIR']):
         module_name, ext = os.path.splitext(file_name)
-        if ext == '.py' or os.path.isdir(os.path.join(NOTIFIERS_DIR, file_name)):
+        if ext == '.py' or os.path.isdir(os.path.join(config['NOTIFIERS_DIR'], file_name)):
             # Warning: this will raise ImportError if the file isn't importable (that's a good thing)
-            module_info = imp.find_module(module_name, [NOTIFIERS_DIR])
+            module_info = imp.find_module(module_name, [config['NOTIFIERS_DIR']])
             module = None
             try:
                 module = imp.load_module(module_name, *module_info)
