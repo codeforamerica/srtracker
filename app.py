@@ -10,7 +10,7 @@ import pytz
 import updater
 
 # Config
-DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'config.py')
+DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'configuration.py')
 DEBUG = True
 OPEN311_SERVER = 'http://localhost:5000'
 OPEN311_API_KEY = ''
@@ -300,7 +300,7 @@ def bool_from_env(envvar, default=False):
 if __name__ == "__main__":
     app.config.from_object(__name__)
     # we want to support a nice fallback, so use from_pyfile directly instead of from_envvar
-    config_path = os.environ.get('SRTRACKER_CONFIG', DEFAULT_CONFIG_PATH)
+    config_path = os.environ.get('SRTRACKER_CONFIGURATION', DEFAULT_CONFIG_PATH)
     if os.path.isfile(config_path):
         app.config.from_pyfile(config_path)
     else:

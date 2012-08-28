@@ -16,22 +16,43 @@ from db import DB
 from models import Subscription, UpdateInfoItem, Base
 
 # Config
-config_file = os.environ.get('UPDATER_CONFIGURATION', 'configuration')
-config = __import__(config_file, globals(), locals(), [], -1)
+DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'configuration.py')
+
+def config_from_file(path, base_configuration=None):
+    '''Load a configuration dictionary from a file path.
+    This is basically the same as config.from_pyfile ins Flask.
+    This version exists so we don't have the whole Flask dependency in updater.
+    One minor difference - second param is a basic configuration dictionary to update
+    rather than a silent switch.'''
+
+    config_module = imp.new_module('config')
+    config_module.__file__ = path
+    try:
+        execfile(path, config_module.__dict__)
+    except IOError, e:
+        e.strerror = 'Unable to load configuration file (%s)' % e.strerror
+        raise
+
+    results = base_configuration or {}
+    for key in dir(config_module):
+        if key.isupper():
+            results[key] = getattr(config_module, key)
+    return results
+
+# Try updater-specific configuration and fall back to unified configuration (STRACKER_CONFIGURATION), and finally a local config.py file
+config_path = os.environ.get('UPDATER_CONFIGURATION', os.environ.get('SRTRACKER_CONFIGURATION', DEFAULT_CONFIG_PATH))
+config = config_from_file(config_path)
 
 # Max number of SRs to return per request (per spec it's 50)
 SR_INFO_CHUNK_SIZE = 50
 
 # Where to get notification plugins
-NOTIFIERS_DIR = 'NOTIFIERS_DIR' in dir(config) and config.NOTIFIERS_DIR or os.path.abspath('notifiers')
+NOTIFIERS_DIR = config.get('NOTIFIERS_DIR', os.path.abspath('notifiers'))
 
 # Set default template path
-if 'TEMPLATE_PATH' in dir(config):
-    config.TEMPLATE_PATH = os.path.abspath(config.TEMPLATE_PATH)
-else:
-    config.TEMPLATE_PATH = os.path.abspath('templates')
+config['TEMPLATE_PATH'] = os.path.abspath(config.get('TEMPLATE_PATH', 'templates'))
 
-db = DB(config.DB_STRING)
+db = DB(config['DB_STRING'])
 logging.basicConfig()
 logger = logging.getLogger(__name__)
 
@@ -46,14 +67,14 @@ def parse_date_utc(date_string):
 
 
 def get_updates(since):
-   url = '%s/requests.json' % config.OPEN311_SERVER
+   url = '%s/requests.json' % config['OPEN311_SERVER']
    params = {
       'updated_after': since.isoformat(),
-      'page_size': config.OPEN311_PAGE_SIZE,
+      'page_size': config['OPEN311_PAGE_SIZE'],
       'extensions': 'true'
    }
-   if config.OPEN311_API_KEY:
-      params['api_key'] = config.OPEN311_API_KEY
+   if config['OPEN311_API_KEY']:
+      params['api_key'] = config['OPEN311_API_KEY']
    # paging starts at 1 (not 0)
    page = 1
    results = []
@@ -136,9 +157,9 @@ def poll_and_notify():
     logger.debug('Sending %d notifications...', len(notifications))
     # Need to unhardcode "email" updates so we can support things like SMS, Twitter, etc.
     # Should break up the list by update method and have a thread pool for each
-    if config.THREADED_UPDATES:
+    if config['THREADED_UPDATES']:
         notification_count = len(notifications)
-        max_threads = config.EMAIL_MAX_THREADS
+        max_threads = config['EMAIL_MAX_THREADS']
         per_thread = int(math.ceil(float(notification_count) / max_threads))
         threads = []
         # Create threads

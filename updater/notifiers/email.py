@@ -15,17 +15,17 @@ def send_notifications(notifications, options):
     Sends notifications via SMTP e-mail.
     '''
     # get email server
-    SMTPClass = options.EMAIL_SSL and smtplib.SMTP_SSL or smtplib.SMTP
-    smtp = SMTPClass(options.EMAIL_HOST, options.EMAIL_PORT)
+    SMTPClass = options['EMAIL_SSL'] and smtplib.SMTP_SSL or smtplib.SMTP
+    smtp = SMTPClass(options['EMAIL_HOST'], options['EMAIL_PORT'])
     
     # Don't try and log in without a username and password. 
     # Remove one of these from the config or make it the empty string to disable login.
-    username = getattr(options, 'EMAIL_USER', None)
-    password = getattr(options, 'EMAIL_PASS', None)
+    username = options.get('EMAIL_USER', None)
+    password = options.get('EMAIL_PASS', None)
     if username and password:
-        smtp.login(options.EMAIL_USER, options.EMAIL_PASS)
+        smtp.login(username, password)
     
-    template_env = Environment(loader=FileSystemLoader(options.TEMPLATE_PATH))
+    template_env = Environment(loader=FileSystemLoader(options['TEMPLATE_PATH']))
     
     # actually send emails
     for notification in notifications:
@@ -44,11 +44,11 @@ def send_email_notification(address, subscription_key, sr, smtp, options, templa
             note['datetime'] = parse_date(note['datetime'])
     
     # basic stuff needed for sending and templates
-    from_address = getattr(options, 'EMAIL_FROM', getattr(options, 'EMAIL_USER', ''))
+    from_address = options.get('EMAIL_FROM', options.get('EMAIL_USER', ''))
     default_subject = 'Chicago 311: Your %s issue has been %s' % (sr['service_name'], sr['status'] == 'open' and 'updated.' or 'completed!')
-    details_url = options.SR_DETAILS_URL.format(sr_id=sr['service_request_id'])
-    unsubscribe_url = options.SR_UNSUBSCRIBE_URL.format(key=subscription_key)
-    img_path = options.SR_TRACKER_IMG
+    details_url = options['SR_DETAILS_URL'].format(sr_id=sr['service_request_id'])
+    unsubscribe_url = options['SR_UNSUBSCRIBE_URL'].format(key=subscription_key)
+    img_path = options['SR_TRACKER_IMG']
     
     # render message template
     html_template = template_env.get_template('email.html')
