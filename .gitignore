@@ -5,3 +5,6 @@
 # Config files for foreman
 .env
 .env*
+
+# Local config file
+configuration.py
