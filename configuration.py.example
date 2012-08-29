@@ -20,6 +20,4 @@ EMAIL_FROM         = 'test@example.com'
 EMAIL_SSL          = True
 EMAIL_MAX_THREADS  = 5
 
-SR_DETAILS_URL     = 'http://localhost:5000/requests/{sr_id}'
-SR_TRACKER_IMG     = 'http://localhost:5000/static/img/'
-SR_UNSUBSCRIBE_URL = 'http://localhost:5000/unsubscribe/{key}'
+SRTRACKER_URL     = 'http://localhost:5000/'

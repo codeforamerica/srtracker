@@ -69,6 +69,16 @@ def configure(path=None):
 
     db = DB(config['DB_STRING'])
 
+    # Paths for templating and linking
+    if not config['SRTRACKER_URL'].endswith('/'):
+        config['SRTRACKER_URL'] = config['SRTRACKER_URL'] + '/'
+    if 'SR_DETAILS_URL' not in config:
+        config['SR_DETAILS_URL'] = '%srequests/{sr_id}' % config['SRTRACKER_URL']
+    if 'SR_TRACKER_IMG' not in config:
+        config['SR_TRACKER_IMG'] = '%sstatic/img/' % config['SRTRACKER_URL']
+    if 'SR_UNSUBSCRIBE_URL' not in config:
+        config['SR_UNSUBSCRIBE_URL'] = '%sunsubscribe/{key}' % config['SRTRACKER_URL']
+
 
 # FIXME: start using this
 utczone = dateutil.tz.tzutc()

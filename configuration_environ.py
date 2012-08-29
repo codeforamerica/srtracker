@@ -23,6 +23,4 @@ EMAIL_FROM         = environ.get('EMAIL_FROM')
 EMAIL_SSL          = environ.get('EMAIL_SSL', True)
 EMAIL_MAX_THREADS  = environ.get('EMAIL_MAX_THREADS', 5)
 
-SR_DETAILS_URL     = environ.get('SR_DETAILS_URL', 'http://chicagosrtracker/requests/{sr_id}')
-SR_TRACKER_IMG     = environ.get('SR_TRACKER_IMG', 'http://chicagosrtracker/static/img/')
-SR_UNSUBSCRIBE_URL = environ.get('SR_UNSUBSCRIBE_URL', 'http://chicagosrtracker/unsubscribe/{key}')
+SRTRACKER_URL     = environ.get('SRTRACKER_URL', 'http://chicagosrtracker/')
