@@ -27,6 +27,11 @@ SR_INFO_CHUNK_SIZE = 50
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 
+# These will be set by configure()
+config = None
+db = None
+
+
 def config_from_file(path, base_configuration=None):
     '''Load a configuration dictionary from a file path.
     This is basically the same as config.from_pyfile ins Flask.
@@ -48,17 +53,21 @@ def config_from_file(path, base_configuration=None):
             results[key] = getattr(config_module, key)
     return results
 
-# Try updater-specific configuration and fall back to unified configuration (STRACKER_CONFIGURATION), and finally a local config.py file
-config_path = os.path.abspath(os.environ.get('UPDATER_CONFIGURATION', os.environ.get('SRTRACKER_CONFIGURATION', DEFAULT_CONFIG_PATH)))
-config = config_from_file(config_path)
 
-# Where to get notification plugins
-config['NOTIFIERS_DIR'] = os.path.abspath(config.get('NOTIFIERS_DIR', DEFAULT_NOTIFIERS_DIR))
+def configure(path=None):
+    global config, db
 
-# Set default template path
-config['TEMPLATE_PATH'] = os.path.abspath(config.get('TEMPLATE_PATH', DEFAULT_TEMPLATE_PATH))
+    if not path:
+        path = os.path.abspath(os.environ.get('UPDATER_CONFIGURATION', os.environ.get('SRTRACKER_CONFIGURATION', DEFAULT_CONFIG_PATH)))
 
-db = DB(config['DB_STRING'])
+    config = config_from_file(path)
+    # Where to get notification plugins
+    config['NOTIFIERS_DIR'] = os.path.abspath(config.get('NOTIFIERS_DIR', DEFAULT_NOTIFIERS_DIR))
+
+    # Set default template path
+    config['TEMPLATE_PATH'] = os.path.abspath(config.get('TEMPLATE_PATH', DEFAULT_TEMPLATE_PATH))
+
+    db = DB(config['DB_STRING'])
 
 
 # FIXME: start using this
@@ -347,12 +356,17 @@ def initialize_db():
 if __name__ == "__main__":
     parser = OptionParser()
     parser.add_option("-i", "--initialize", dest="initialize_db", action="store_true", help="Initialize the database.")
+    parser.add_option("-c", "--config", dest="config_path", help="Path to a configuration file.")
     # parser.add_option("-d", "--date", dest="start_date", help="Start datetime in the format 'YYYY-MM-DDTHH:MM:SS'", default=None)
     (options, args) = parser.parse_args()
+
+    configure(options.config_path)
     
     if options.initialize_db:
         initialize_db()
     else:
         initialize()
         poll_and_notify()
-    
+
+else:
+    config = configure()
