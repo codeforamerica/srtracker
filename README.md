@@ -12,14 +12,34 @@ It includes the following components:
 Installation & Configuration
 ----------------------------
 
-SRTracker's `app.py` web app requires the following environment variables:
+SRTracker is broken into two components: the web app and the updater, which polls an Open311 endpoint and sends notifications about updated service requests. They can be configured together or separately.
 
-- `OPEN311_SERVER`: the fully qualified URL for the endpoint server, e.g. _'http://311.baltimorecity.gov/open311/v2'_
-- `OPEN311_API_KEY`: the API key, [if necessary](http://wiki.open311.org/GeoReport_v2/Servers), for the Open311 server
-- `PASSWORD_PROTECTED`: Whether SRTracker requires a password to access; for example, if it accesses a private/internal Open311 API
-- `PASSWORD`: the password necessary to access this SRTracker instance
+By default, SRTracker will look for a file named `configuration.py` in its directory. Alternatively, you can specify a path to the config file in the environment variable `SRTRACKER_CONFIGURATION` (this is especially useful for services like Heroku). The updater will use this path as well unless you also specify a separate `UPDATER_CONFIGURATION` env var.
 
-SRTracker's `updater.py` email update script requires email, database and other environment variables as defined in [`configuration_environ.py`](https://github.com/codeforamerica/srtracker/blob/master/updater/configuration_environ.py).
+The configuration file itself should be a python file with the following vars:
+
+- `DEBUG`: True or False for debug mode
+- `SECRET_KEY`: A random string used as an encryption key for cookies, etc.
+- `OPEN311_SERVER`: URL to the Open311 endpoint you are using
+- `OPEN311_API_KEY`: The API Key for the Open311 server
+- `DB_STRING`: DB connection string for storing subscriptions
+- `EMAIL_HOST`: Hostname for the SMTP server to send updates
+- `EMAIL_PORT`: Port for the SMTP server to send updates
+- `EMAIL_USER`: Username for the SMTP server to send updates
+- `EMAIL_PASS`: Password for the SMTP server to send updates
+- `EMAIL_FROM`: Email address updates should be sent from
+- `EMAIL_SSL`: True or False for whether to use SSL to send updates
+- `SRTRACKER_URL`: URL for SRTracker, e.g. 'http://localhost:5000/'. This is used to generate links in updates.
+
+If you want to do all your configuration via environment vars, point `SRTRACKER_CONFIGURATION` at `configuration_environ.py`. It'll read in all above vars from your environment. This is great for services like Heroku.
+
+_If you are using Apache with mod_wsgi, you'll also want to make sure you configure the app before calling `run()` on it in your .wsgi file. The easiest method is to setup your configuration as above and do the following in your .wsgi file:_
+
+```
+from app import app as application
+application.config.from_envvar('SRTRACKER_CONFIGURATION')
+```
+
 
 Chicago-specific Open311 Extensions
 -----------------------------------
