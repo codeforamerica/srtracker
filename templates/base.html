@@ -14,16 +14,16 @@
 		<title>{% block page_title %}311 Service Tracker{% endblock %}</title>
 		
 		{% block stylesheets %}
-			<link rel="stylesheet" href="/static/arvo-fontfacekit/stylesheet.css" type="text/css" />
-			<link rel="stylesheet" href="/static/css/base.css" type="text/css" />
+			<link rel="stylesheet" href="{{ url_for("static", filename="arvo-fontfacekit/stylesheet.css") }}" type="text/css" />
+			<link rel="stylesheet" href="{{ url_for("static", filename="css/base.css") }}" type="text/css" />
 		{% endblock %}
 		
 		{% block scripts %}
 			<!--[if IE]>
-			<script src="/static/js/html5shiv.js" type="text/javascript" charset="utf-8"></script>
+			<script src="{{ url_for("static", filename="js/html5shiv.js") }}" type="text/javascript" charset="utf-8"></script>
 			<![endif]-->
-			<script src="/static/js/jquery-1.8.0.min.js" type="text/javascript" charset="utf-8"></script>
-			<script src="/static/js/app.js" type="text/javascript" charset="utf-8"></script>
+			<script src="{{ url_for("static", filename="js/jquery-1.8.0.min.js") }}" type="text/javascript" charset="utf-8"></script>
+			<script src="{{ url_for("static", filename="js/app.js") }}" type="text/javascript" charset="utf-8"></script>
 		{% endblock %}
 	</head>
 	<body>

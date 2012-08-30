@@ -6,7 +6,7 @@
 
 {% block stylesheets %}
 	{{ super() }}
-	<link rel="stylesheet" href="/static/css/service_request.css" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for("static", filename="css/service_request.css") }}" type="text/css" />
 {% endblock %}
 
 {% block content %}
