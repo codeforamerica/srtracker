@@ -45,11 +45,12 @@
 		
 		{% if service_requests %}
 			<div class="box request_list">
-				<h1>Most Recent Service Requests</h1>
+				<h1>Recent Service Requests</h1>
 				
 				<table>
 					<tbody>
-						{% for sr in service_requests %}
+						{# most recent requests first, in order #}
+						{% for sr in service_requests|sort(reverse=True, attribute='requested_datetime') %}
 							{% if sr.service_request_id %}
 								<tr>
 									<th><a href="{{ url_for("show_request", request_id=sr.service_request_id) }}">{{ sr.service_name or '?' }}</a></th>
