@@ -6,6 +6,8 @@ DEBUG              = bool_from_env('DEBUG')
 SECRET_KEY         = environ.get('SECRET_KEY')
 PASSWORD_PROTECTED = bool_from_env('PASSWORD_PROTECTED')
 PASSWORD           = environ.get('PASSWORD', '')
+MAX_RECENT_SRS     = int(environ.get('MAX_RECENT_SRS', 50))
+RECENT_SRS_TIME    = int(environ.get('RECENT_SRS_TIME', 7 * 24 * 60 * 60))  # (in seconds)
 
 # SHARED
 OPEN311_SERVER     = environ.get('OPEN311_SERVER')
@@ -23,4 +25,4 @@ EMAIL_FROM         = environ.get('EMAIL_FROM')
 EMAIL_SSL          = environ.get('EMAIL_SSL', True)
 EMAIL_MAX_THREADS  = environ.get('EMAIL_MAX_THREADS', 5)
 
-SRTRACKER_URL     = environ.get('SRTRACKER_URL', 'http://chicagosrtracker/')
+SRTRACKER_URL      = environ.get('SRTRACKER_URL', 'http://chicagosrtracker/')

@@ -43,15 +43,29 @@ def password_protect():
 @app.route("/")
 def index():
     url = '%s/requests.json' % app.config['OPEN311_SERVER']
-    params = {'extensions': 'true', 'legacy': 'false'}
+    max_recent_srs = app.config.get('MAX_RECENT_SRS', 50)
+    recent_sr_timeframe = app.config.get('RECENT_SRS_TIME')
+
+    params = {
+        'extensions': 'true',
+        'legacy': 'false',
+        'page_size': max_recent_srs
+    }
+    if recent_sr_timeframe:
+        start_datetime = datetime.datetime.utcnow() - datetime.timedelta(seconds=recent_sr_timeframe)
+        params['start_date'] = start_datetime.isoformat() + 'Z'
     if app.config['OPEN311_API_KEY']:
         params['api_key'] = app.config['OPEN311_API_KEY']
+
+    app.logger.debug('RECENT SRs: %s', params)
+
     r = requests.get(url, params=params)
     if r.status_code != 200:
         app.logger.error('OPEN311: Failed to load recent requests from Open311 server. Status Code: %s, Response: %s', r.status_code, r.text)
         service_requests = None
     else:
-        service_requests = r.json
+        # need to slice with max_recent_srs in case an endpoint doesn't support page_size
+        service_requests = r.json[:max_recent_srs]
     
     return render_template('index.html', service_requests=service_requests)
 
