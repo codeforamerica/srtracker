@@ -23,7 +23,10 @@
 			
 			<div class="request_id">#{{ sr.service_request_id }}</div>
 			
-			<p><strong>Description:</strong> {{ sr.description or 'N/A' }}</p>
+			{% if 'description' in sr %}
+				<p><strong>Description:</strong> {{ sr.description }}</p>
+			{% endif %}
+
 			<p>
 				<strong>Address:</strong> 
 				{% if sr.address %}

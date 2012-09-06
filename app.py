@@ -277,6 +277,8 @@ def fixup_sr(sr, request_id=None):
     (In Chicago's API, any field can be missing, even if it's required.)
     '''
     
+    remove_blacklisted_fields(sr)
+
     if 'service_request_id' not in sr:
         sr['service_request_id'] = request_id or sr.get('token', 'UNKNOWN')
         
@@ -287,6 +289,14 @@ def fixup_sr(sr, request_id=None):
         sr['service_name'] = 'Miscellaneous Services'
         
     return sr
+
+
+def remove_blacklisted_fields(sr):
+    blacklist = app.config.get('SR_FIELD_BLACKLIST')
+    if blacklist:
+        for field in blacklist:
+            if field in sr:
+                del sr[field]
 
 
 def subscribe_to_sr(request_id, email):
