@@ -21,7 +21,18 @@
 			This site also only supports a few of the different services you can request by calling 311.
 			If type of service request you’re looking for is not supported by this site, 
 			you can still call 311 to find the latest updates about it.
+
+			{% if services and services|length > 0 %}
+				The supported services are:
 		</p>
+		<ul>
+			{% for service in services %}
+				<li>{{ service.service_name }}</li>
+			{% endfor %}
+		</ul>
+			{% else %}
+		</p>
+			{% endif %}
 		
 		<form method="GET" action="{{ url_for('request_search') }}" class="in_yo_face">
 			<p>

@@ -9,6 +9,7 @@ import iso8601
 import pytz
 import updater
 from util import bool_from_env
+import open311tools
 
 # Config
 DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'configuration.py')
@@ -112,11 +113,10 @@ def show_request(request_id):
         
         # It would be nice to log this for analytical purposes (what requests are being checked that we can't show?)
         # but that would be better done through GA or KISS Metrics than through server logging
-        # TODO: need a template
-        return render_template('error_no_sr.html', request_id=request_id), 404
+        services = open311tools.services(app.config['OPEN311_SERVER'], app.config['OPEN311_API_KEY'])
+        return render_template('error_no_sr.html', request_id=request_id, services=services), 404
         
     elif r.status_code != 200:
-        # TODO: need a template
         app.logger.error('OPEN311: Error (not 404) loading data for SR %s', request_id)
         return render_template('error_311_api.html', request_id=request_id), 500
         
