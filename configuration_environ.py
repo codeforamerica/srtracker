@@ -10,6 +10,7 @@ MAX_RECENT_SRS     = int(environ.get('MAX_RECENT_SRS', 50))
 RECENT_SRS_TIME    = int(environ.get('RECENT_SRS_TIME', 7 * 24 * 60 * 60))  # (in seconds)
 if 'SR_FIELD_BLACKLIST' in environ:
 	SR_FIELD_BLACKLIST = map(lambda item: item.strip(), environ['SR_FIELD_BLACKLIST'].split(','))
+DOCUMENTATION_LINK  = environ.get('DOCUMENTATION_LINK')
 
 # SHARED
 OPEN311_SERVER     = environ.get('OPEN311_SERVER')

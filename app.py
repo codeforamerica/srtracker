@@ -68,7 +68,7 @@ def index():
         # need to slice with max_recent_srs in case an endpoint doesn't support page_size
         service_requests = r.json[:max_recent_srs]
     
-    return render_template('index.html', service_requests=service_requests)
+    return render_app_template('index.html', service_requests=service_requests)
 
 
 @app.route("/requests/")
@@ -114,11 +114,11 @@ def show_request(request_id):
         # It would be nice to log this for analytical purposes (what requests are being checked that we can't show?)
         # but that would be better done through GA or KISS Metrics than through server logging
         services = open311tools.services(app.config['OPEN311_SERVER'], app.config['OPEN311_API_KEY'])
-        return render_template('error_no_sr.html', request_id=request_id, services=services), 404
+        return render_app_template('error_no_sr.html', request_id=request_id, services=services), 404
         
     elif r.status_code != 200:
         app.logger.error('OPEN311: Error (not 404) loading data for SR %s', request_id)
-        return render_template('error_311_api.html', request_id=request_id), 500
+        return render_app_template('error_311_api.html', request_id=request_id), 500
         
     srs = r.json
     if srs:
@@ -172,11 +172,11 @@ def show_request(request_id):
         # test media
         # sr['media_url'] = sr['media_url'] or 'http://farm5.staticflickr.com/4068/4286605571_c1a1751fdc_n.jpg'
         
-        body = render_template('service_request.html', sr=sr, subscribed=subscribed, errors=form_errors, submitted_email=submitted_email)
+        body = render_app_template('service_request.html', sr=sr, subscribed=subscribed, errors=form_errors, submitted_email=submitted_email)
         return (body, 200, None)
     
     else:
-        return render_template('error_no_sr.html', request_id=request_id), 404
+        return render_app_template('error_no_sr.html', request_id=request_id), 404
 
 
 @app.route("/subscribe/<request_id>", methods=["POST"])
@@ -209,12 +209,12 @@ def unsubscribe(subscription_key):
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('error_404.html'), 404
+    return render_app_template('error_404.html'), 404
 
 
 @app.errorhandler(500)
 def generic_error(error):
-    return render_template('error_generic.html'), 500
+    return render_app_template('error_generic.html'), 500
 
 
 #--------------------------------------------------------------------------
@@ -270,6 +270,14 @@ def friendly_time(dt, past_="ago", future_="from now", default="just now"):
 #--------------------------------------------------------------------------
 # UTILITIES
 #--------------------------------------------------------------------------
+
+def render_app_template(template, **kwargs):
+    '''Add some goodies to all templates.'''
+
+    if 'config' not in kwargs:
+        kwargs['config'] = app.config
+    return render_template(template, **kwargs)
+
 
 def fixup_sr(sr, request_id=None):
     '''
