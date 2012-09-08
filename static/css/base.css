@@ -355,6 +355,7 @@ button:hover {
 		.request_list th {
 			display: block;
 			text-align: left;
+			border: none;
 		}
 			.landing th > a,
 			.landing td > a {
