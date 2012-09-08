@@ -328,16 +328,22 @@ button:hover {
 			font-size: 22px;
 		}
 	
-	.landing .search_field {
+	.in_yo_face input {
+		margin-bottom: 10px;
+	}
+
+	.in_yo_face .search_field {
 		float: none;
 		display: block;
 		width: 100%;
 	}
 	
-	.landing .submit {
+	.in_yo_face .submit {
 		float: none;
 		width: 100%;
+		margin-bottom: 0;
 	}
+
 	
 	/* Too skinny for a side-by-side table */
 	.request_list tr {
@@ -356,7 +362,7 @@ button:hover {
 			}
 
 	.page_footer {
-		padding: 18px 10px;
+		padding: 18px 26px;
 	}
 		.footer_links {
 			float: none;
