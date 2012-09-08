@@ -57,10 +57,12 @@ $(document).ready(function() {
         // but don't have the browser validate, because non-numeric characters (e.g. "-") may be input
         $("input[name='request_id']").each(function(index, element) {
             // need to use each because jQuery attr() explicitly refuses setting "type"
-            try {
-                element.setAttribute("type", "number");
+            if (!element.value) {
+                try {
+                    element.setAttribute("type", "number");
+                }
+                catch(ex) {}
             }
-            catch(ex) {}
         }).on("focus", function() {
             // change the type back to text so browser doesn't try and validate
             this.type = "text";
