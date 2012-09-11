@@ -75,6 +75,19 @@ def index():
     return render_app_template('index.html', service_requests=service_requests)
 
 
+@app.route("/requests/create", methods=["GET", "POST"])
+def create_request():
+    if not app.config.get('REQUEST_CREATION', False):
+        abort(404)
+
+    if request.method == 'GET':
+        service_groups = open311tools.services_by_group(app.config['OPEN311_SERVER'], app.config['OPEN311_API_KEY'])
+        return render_app_template('create_sr.html', service_groups=service_groups)
+
+    else:
+        raise NotImplementedError
+
+
 @app.route("/requests/")
 def request_search():
     if 'request_id' in request.args:

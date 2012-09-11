@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block page_title %}Request a City Service - 311 Service Tracker{% endblock %}
+
+{% block page_class %}create_page{% endblock %}
+
+{% block stylesheets %}
+	{{ super() }}
+	<link rel="stylesheet" href="{{ url_for("static", filename="css/service_request.css") }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for("static", filename="css/create_service_request.css") }}" type="text/css" />
+{% endblock %}
+
+{% block content %}
+	<article class="main_content">
+	
+		<h1>Request a City Service</h1>
+
+		<form>
+
+			<div class="service_chooser">
+				<p>Choose a service type:</p>
+				<ul>
+					{% for group_name, services in service_groups.iteritems() %}
+						<li class="service_group">
+							<strong>{{ group_name }}</strong>
+							<ul>
+								{% for service in services %}
+									{# TODO: show service description somewhere (on hover?) #}
+									<li><a href="#">{{ service.service_name }}</a></li>
+								{% endfor %}
+							</ul>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+
+			<div>
+				<label for="sr_location">Location</label>
+				<input id="sr_location" type="text" value="" placeholder="Address, e.g. 121 North La Salle Street, Chicago, IL 60602" />
+				{# TODO: map, geolocation #}
+			</div>
+
+			<div>
+				<label for="sr_description">Description</label>
+				<textarea id="sr_description"></textarea>
+			</div>
+
+			<div>
+				{# TODO: Additional attributes #}
+			</div>
+
+			<div>
+				<p>Personal Info</p>
+				<label for="sr_personal_first_name">First Name</label>
+				<input id="sr_personal_first_name" type="text" />
+
+				<label for="sr_personal_last_name">Last Name</label>
+				<input id="sr_personal_last_name" type="text" />
+
+				<label for="sr_personal_email">E-mail</label>
+				<input id="sr_personal_email" type="email" />
+
+				<label for="sr_personal_phone">Phone Number</label>
+				<input id="sr_personal_phone" type="tel" />
+			</div>
+
+			<input type="submit" value="Submit Service Request" />
+
+	</form>
+
+
+	</article>
+{% endblock %}

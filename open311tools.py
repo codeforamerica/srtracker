@@ -2,6 +2,7 @@
 # This is open source software, released under a standard 3-clause
 # BSD-style license; see the file LICENSE for details.
 
+from collections import defaultdict
 import datetime
 import requests
 
@@ -24,3 +25,13 @@ def services(open311_url, open311_api_key=None):
             services_list = []
 
     return services_list
+
+def services_by_group(open311_url, open311_api_key=None):
+    # TODO: cache these results alongside the services_list
+    services_list = services(open311_url, open311_api_key)
+    groups = defaultdict(list)
+
+    for service in services_list:
+        groups[service['group']].append(service)
+
+    return groups

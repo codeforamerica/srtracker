@@ -1,0 +1,23 @@
+a {
+	color: #347eb3;
+}
+a:hover {
+	color: #3ba8cc;
+}
+
+.service_chooser {
+	overflow: hidden;
+}
+	.service_chooser ul {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+	}
+		.service_chooser li {
+			margin: 0;
+			padding: 0;
+		}
+		.service_chooser .service_group {
+			float: left;
+			margin-right: 20px;
+		}
