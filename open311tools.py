@@ -35,3 +35,14 @@ def services_by_group(open311_url, open311_api_key=None):
         groups[service['group']].append(service)
 
     return groups
+
+def service_definition(service_id, open311_url, open311_api_key=None):
+    # TODO: cache these results alongside the services_list
+    url = '%s/services/%s.json' % (open311_url, service_id)
+    params = open311_api_key and {'api_key': open311_api_key} or None
+    r = requests.get(url, params=params)
+
+    if r.status_code == 200:
+        return r.json
+    else:
+        return None

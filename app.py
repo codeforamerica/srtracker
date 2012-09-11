@@ -7,7 +7,7 @@
 import os
 import datetime
 import re
-from flask import Flask, render_template, request, abort, redirect, url_for, make_response, session, flash
+from flask import Flask, render_template, request, abort, redirect, url_for, make_response, session, flash, jsonify
 import requests
 import iso8601
 import pytz
@@ -86,6 +86,15 @@ def create_request():
 
     else:
         raise NotImplementedError
+
+
+@app.route("/services/<service_id>.json")
+def get_service_details(service_id):
+    details = open311tools.service_definition(service_id, app.config['OPEN311_SERVER'], app.config['OPEN311_API_KEY'])
+    if details:
+        return jsonify(**details)
+    else:
+        abort(404)
 
 
 @app.route("/requests/")
