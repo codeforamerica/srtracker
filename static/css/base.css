@@ -69,7 +69,8 @@ table {
 		color: #555;
 	}
 
-input {
+input,
+button {
 	display: inline-block;
 	padding: 6px 8px;
 	font-size: 14px;

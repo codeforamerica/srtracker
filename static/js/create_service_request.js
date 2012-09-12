@@ -149,4 +149,81 @@ $(document).ready(function() {
 			closeServiceChooser($this.text());
 		}
 	});
+
+	var map;
+	var locationMarker;
+	var geocoder = new google.maps.Geocoder();
+	var initMap = function(position, zoom) {
+		if (position) {
+			var center = new google.maps.LatLng(position.latitude, position.longitude);
+		}
+		else {
+			var center = new google.maps.LatLng(41.8838, -87.632344);
+		}
+
+		var mapOptions = {
+			center: center,
+			zoom: 17,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+		map = new google.maps.Map(document.getElementById("sr_map"), mapOptions);
+	};
+
+	var setMapLatLng = function(position) {
+		var point = new google.maps.LatLng(position.latitude, position.longitude);
+		map.setCenter(point);
+		if (locationMarker) {
+			locationMarker.setPosition(point);
+		}
+		else {
+			locationMarker = new google.maps.Marker({
+				position: point,
+				map: map
+			});
+		}
+	};
+
+	if (navigator.geolocation) {
+		navigator.geolocation.getCurrentPosition(function(position) {
+			initMap(position.coords);
+		}, function(error) {
+			initMap();
+		});
+
+		$(".gps_button").show().on("click", function(event) {
+			event.preventDefault();
+
+			navigator.geolocation.getCurrentPosition(function(position) {
+				setMapLatLng(position.coords);
+				var point = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+				geocoder.geocode({latLng: point}, function(results, status) {
+					if (status === google.maps.GeocoderStatus.OK && results.length) {
+						$("#sr_location").val(results[0].formatted_address);
+					}
+				});
+			});
+		});
+
+		$("#sr_location").on("keypress", function(event) {
+			if (event.keyCode === 13) {
+				event.preventDefault();
+
+				geocoder.geocode({address: this.value}, function(results, status) {
+					if (status === google.maps.GeocoderStatus.OK && results.length) {
+						console.log(results);
+						var location = results[0].geometry.location;
+						setMapLatLng({
+							latitude: location.lat(),
+							longitude: location.lng()
+						});
+						// $("#sr_location").val(results[0].formatted_address);
+					}
+				});
+			}
+		});
+	}
+	else {
+		initMap();
+	}
+	
 });

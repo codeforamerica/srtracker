@@ -15,6 +15,7 @@
 	<script type="text/javascript">
 		var BASE_URL = "{{ config.APPLICATION_ROOT or "/" }}";
 	</script>
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key={{ config.GOOGLE_MAPS_API_KEY }}&sensor=false"></script>
 	<script type="text/javascript" src="{{ url_for("static", filename="js/create_service_request.js") }}"></script>
 {% endblock %}
 
@@ -23,7 +24,7 @@
 	
 		<h1>Request a City Service</h1>
 
-		<form>
+		<form class="sr_form">
 
 			<div class="service_info">
 				<div class="service_chooser">
@@ -49,7 +50,9 @@
 			<div>
 				<label for="sr_location">Location</label>
 				<input id="sr_location" type="text" value="" placeholder="Address, e.g. 121 North La Salle Street, Chicago, IL 60602" />
+				<button class="gps_button">GPS</button>
 				{# TODO: map, geolocation #}
+				<div id="sr_map"></div>
 			</div>
 
 			<div>

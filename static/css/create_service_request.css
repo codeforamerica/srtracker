@@ -5,6 +5,10 @@ a:hover {
 	color: #3ba8cc;
 }
 
+.sr_form label {
+	display: block;
+}
+
 .service_info {
 	position: relative;
 	overflow: hidden;
@@ -45,3 +49,11 @@ a:hover {
 		margin: 0;
 	}
 
+#sr_map {
+	width: 100%;
+	height: 300px;
+}
+
+.gps_button {
+	display: none;
+}
