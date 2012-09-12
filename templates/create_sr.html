@@ -10,6 +10,14 @@
 	<link rel="stylesheet" href="{{ url_for("static", filename="css/create_service_request.css") }}" type="text/css" />
 {% endblock %}
 
+{% block scripts %}
+	{{ super() }}
+	<script type="text/javascript">
+		var BASE_URL = "{{ config.APPLICATION_ROOT or "/" }}";
+	</script>
+	<script type="text/javascript" src="{{ url_for("static", filename="js/create_service_request.js") }}"></script>
+{% endblock %}
+
 {% block content %}
 	<article class="main_content">
 	
@@ -17,21 +25,25 @@
 
 		<form>
 
-			<div class="service_chooser">
-				<p>Choose a service type:</p>
-				<ul>
-					{% for group_name, services in service_groups.iteritems() %}
-						<li class="service_group">
-							<strong>{{ group_name }}</strong>
-							<ul>
-								{% for service in services %}
-									{# TODO: show service description somewhere (on hover?) #}
-									<li><a href="#">{{ service.service_name }}</a></li>
-								{% endfor %}
-							</ul>
-						</li>
-					{% endfor %}
-				</ul>
+			<div class="service_info">
+				<div class="service_chooser">
+					<p>Choose a service type:</p>
+					<ul>
+						{% for group_name, services in service_groups.iteritems() %}
+							<li class="service_group">
+								<strong>{{ group_name }}</strong>
+								<ul>
+									{% for service in services %}
+										{# TODO: show service description somewhere (on hover?) #}
+										<li class="service" data-service-id="{{ service.service_code }}"><a href="#">{{ service.service_name }}</a></li>
+									{% endfor %}
+								</ul>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+
+				<p class="selected_service">Service: <span class="selected_service_name"></span></p>
 			</div>
 
 			<div>
@@ -45,8 +57,7 @@
 				<textarea id="sr_description"></textarea>
 			</div>
 
-			<div>
-				{# TODO: Additional attributes #}
+			<div class="sr_attributes">
 			</div>
 
 			<div>

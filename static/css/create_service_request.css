@@ -5,19 +5,43 @@ a:hover {
 	color: #3ba8cc;
 }
 
-.service_chooser {
+.service_info {
+	position: relative;
 	overflow: hidden;
+	margin: 20px 0 20px;
 }
-	.service_chooser ul {
-		list-style-type: none;
-		margin: 0;
-		padding: 0;
+
+	.service_chooser p {
+		margin: 0 0 1em;
 	}
-		.service_chooser li {
+
+		.service_chooser ul {
+			list-style-type: none;
 			margin: 0;
 			padding: 0;
 		}
-		.service_chooser .service_group {
-			float: left;
-			margin-right: 20px;
-		}
+			.service_chooser li {
+				margin: 0;
+				padding: 0;
+			}
+			.service_chooser .service_group {
+				float: left;
+				margin-right: 20px;
+			}
+
+			.service a {
+				display: block;
+			}
+
+			.service.selected {
+				background: #ccc;
+			}
+
+	.selected_service {
+		display: none;
+		position: absolute;
+		left: 0;
+		top: 0;
+		margin: 0;
+	}
+
