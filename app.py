@@ -77,7 +77,12 @@ def index():
 
 @app.route("/requests/create", methods=["GET", "POST"])
 def create_request():
-    if not app.config.get('REQUEST_CREATION', False):
+    requirements = \
+        app.config.get('REQUEST_CREATION', False) and \
+        app.config.get('GOOGLE_MAPS_API_KEY') and \
+        app.config.get('OPEN311_API_KEY')
+
+    if not requirements:
         abort(404)
 
     if request.method == 'GET':
