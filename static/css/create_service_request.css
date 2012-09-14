@@ -30,7 +30,8 @@ a:hover {
 			}
 			.service_chooser .service_group {
 				float: left;
-				margin-right: 20px;
+				width: 200px;
+				margin: 0 20px 20px 0;
 			}
 
 			.service a {
@@ -56,4 +57,13 @@ a:hover {
 
 .gps_button {
 	display: none;
+}
+
+@media only screen and (max-width: 759px) {
+
+	.service_chooser .service_group {
+		float: none;
+		width: 100%;
+	}
+
 }
