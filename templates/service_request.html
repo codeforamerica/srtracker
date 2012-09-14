@@ -30,7 +30,7 @@
 			<p>
 				<strong>Address:</strong> 
 				{% if sr.address %}
-					{{ sr.address.title().split(",", 1)[0] }}, {{ sr.address.title().split(",", 1)[1].replace("Il", "IL") }}
+					{{ sr.address|title_address }}
 				{% else %}
 					Unknown
 				{% endif %}

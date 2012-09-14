@@ -267,6 +267,17 @@ def friendly_time(dt, past_="ago", future_="from now", default="just now"):
     return default
 
 
+state_pattern = re.compile(r'\b(\w\w)(,?\s*\d{5}(?:-\d{4})?)?$')
+@app.template_filter()
+def title_address(address):
+    '''Slightly improved title() method for address strings
+    Makes sure state abbreviations are upper-case.'''
+    
+    titled = address.title()
+    titled = state_pattern.sub(lambda match: match.group(1).upper() + (match.group(2) or ''), titled)
+    return titled
+
+
 #--------------------------------------------------------------------------
 # UTILITIES
 #--------------------------------------------------------------------------
