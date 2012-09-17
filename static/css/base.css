@@ -1,3 +1,9 @@
+/**
+ * Copyright (C) 2012, Code for America
+ * This is open source software, released under a standard 3-clause
+ * BSD-style license; see the file LICENSE for details.
+ */
+
 /* HTML5 Support */
 article, aside, dialog, figure, footer, header,
 hgroup, menu, nav, section { display: block; }

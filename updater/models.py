@@ -1,3 +1,7 @@
+# Copyright (C) 2012, Code for America
+# This is open source software, released under a standard 3-clause
+# BSD-style license; see the file LICENSE for details.
+
 import uuid
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Sequence

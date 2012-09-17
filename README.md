@@ -89,4 +89,4 @@ We use the [GitHub issue tracker][issues] to track bugs and features. Before sub
 ## Copyright
 Copyright (c) 2012 Code for America. See [LICENSE][] for details.
 
-[license]: https://github.com/codeforamerica/cfa_template/blob/master/LICENSE.mkd
+[license]: https://github.com/codeforamerica/srtracker/blob/master/LICENSE
