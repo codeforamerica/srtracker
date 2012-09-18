@@ -29,6 +29,17 @@
 			<div class="service_info">
 				<div class="service_chooser">
 					<p>Choose a service type:</p>
+
+					<select id="sr_service_code" name="sr_service_code">
+						{% for group_name, services in service_groups.iteritems() %}
+							<optgroup label="{{ group_name }}">
+								{% for service in services %}
+									<option value="{{ service.service_code }}">{{ service.service_name }}</option>
+								{% endfor %}
+							</optgroup>
+						{% endfor %}
+					</select>
+
 					<ul>
 						{% for group_name, services in service_groups.iteritems() %}
 							<li class="service_group">
@@ -47,39 +58,44 @@
 				<p class="selected_service">Service: <span class="selected_service_name"></span></p>
 			</div>
 
-			<div>
-				<label for="sr_location">Location</label>
-				<input id="sr_location" type="text" value="" placeholder="Address, e.g. 121 North La Salle Street, Chicago, IL 60602" />
-				<button class="gps_button">GPS</button>
-				{# TODO: map, geolocation #}
-				<div id="sr_map"></div>
+			<div class="sr_details">
+				<div class="sr_form_section sr_location_chooser">
+					<label for="sr_location">Location</label>
+					<div class="address_input">
+						<input id="sr_location" type="text" value="" placeholder="Address, e.g. 121 North La Salle Street, Chicago, IL 60602" />
+						<button class="gps_button">Find Me</button>
+					</div>
+					{# TODO: map, geolocation #}
+					<div id="sr_map"></div>
+				</div>
+
+				<div class="sr_form_section">
+					<label for="sr_description">Description</label>
+					<textarea id="sr_description" rows="4"></textarea>
+				</div>
+
+				<div class="sr_form_section sr_attributes">
+				</div>
+
+				<fieldset class="sr_form_section sr_requester_info">
+					<p class="legend">Contact Information</p>
+					<p class="legend-details"><em>This information is not shared publicly. You can also leave this section blank if you wish to submit anonymously.</em></p>
+
+					<label for="sr_personal_first_name">First Name</label>
+					<input id="sr_personal_first_name" type="text" />
+
+					<label for="sr_personal_last_name">Last Name</label>
+					<input id="sr_personal_last_name" type="text" />
+
+					<label for="sr_personal_email">E-mail</label>
+					<input id="sr_personal_email" type="email" />
+
+					<label for="sr_personal_phone">Phone Number</label>
+					<input id="sr_personal_phone" type="tel" />
+				</fieldset>
+
+				<input type="submit" class="submit" value="Submit Service Request" />
 			</div>
-
-			<div>
-				<label for="sr_description">Description</label>
-				<textarea id="sr_description"></textarea>
-			</div>
-
-			<div class="sr_attributes">
-			</div>
-
-			<div>
-				<p>Personal Info</p>
-				<label for="sr_personal_first_name">First Name</label>
-				<input id="sr_personal_first_name" type="text" />
-
-				<label for="sr_personal_last_name">Last Name</label>
-				<input id="sr_personal_last_name" type="text" />
-
-				<label for="sr_personal_email">E-mail</label>
-				<input id="sr_personal_email" type="email" />
-
-				<label for="sr_personal_phone">Phone Number</label>
-				<input id="sr_personal_phone" type="tel" />
-			</div>
-
-			<input type="submit" value="Submit Service Request" />
-
 	</form>
 
 

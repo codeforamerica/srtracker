@@ -70,6 +70,7 @@ table {
 	}
 
 input,
+textarea,
 button {
 	display: inline-block;
 	padding: 6px 8px;

@@ -5,8 +5,44 @@ a:hover {
 	color: #3ba8cc;
 }
 
+.required_note {
+	margin-left: 0.5em;
+	font-size: 0.8em;
+	color: #955;
+}
+
+.sr_form_section {
+	max-width: 420px;
+	width: 100%;
+	margin: 20px 0 0;
+}
+	.sr_form_section input,
+	.sr_form_section textarea {
+		width: 100%;
+	}
+	.sr_form_section input[type="submit"] {
+		width: auto;
+	}
+
+fieldset.sr_form_section {
+	border: none;
+	padding: 0;
+}
+	fieldset.sr_form_section legend,
+	fieldset.sr_form_section .legend {
+		display: block;
+		margin: 0;
+		padding: 0;
+		font-size: 24px;
+	}
+	fieldset .legend-details {
+		font-size: 0.8em;
+		color: #666;
+	}
+
 .sr_form label {
 	display: block;
+	margin: 0 0 5px;
 }
 
 .service_info {
@@ -14,6 +50,10 @@ a:hover {
 	overflow: hidden;
 	margin: 20px 0 20px;
 }
+
+	#sr_service_code {
+		display: none;
+	}
 
 	.service_chooser p {
 		margin: 0 0 1em;
@@ -50,14 +90,68 @@ a:hover {
 		margin: 0;
 	}
 
+.sr_details {
+	display: none;
+}
+
+.sr_form_section.sr_location_chooser {
+	max-width: none;
+}
+
 #sr_map {
 	width: 100%;
 	height: 300px;
 }
 
+.address_input {
+	display: -webkit-box;
+	display: -moz-box;
+	display: box;
+	display: flex;
+	max-width: 100%;
+	width: 420px;
+	margin: 0 0 5px;
+	position: relative;
+	z-index: 1;
+
+	-webkit-box-sizing: border-box;
+}
+	.address_input input {
+		display: -webkit-box;
+		display: -moz-box;
+		display: box;
+		-webkit-box-flex: 1;
+		-moz-box-flex: 1;
+		box-flex: 1;
+		flex: 1 1 auto;
+
+		margin-right: 0.5em;
+	}
+
 .gps_button {
 	display: none;
 }
+
+#sr_description {
+	resize: none;
+	height: 100px;
+}
+
+.sr_attribute {
+	margin: 20px 0;
+}
+
+.sr_form_section.sr_requester_info {
+	margin-top: 40px;
+}
+.sr_requester_info label {
+	margin: 20px 0 0;
+}
+
+.sr_form .submit {
+	margin: 20px 0 0;
+}
+
 
 @media only screen and (max-width: 759px) {
 
