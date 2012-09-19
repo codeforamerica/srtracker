@@ -150,6 +150,7 @@ $(document).ready(function() {
 			input.required = true;
 		}
 
+		input.name = 'attribute[' + attribute.code + ']';
 		input.id = attributeId;
 		return input;
 	};
@@ -166,6 +167,7 @@ $(document).ready(function() {
 			$this.addClass("selected");
 
 			var serviceId = this.getAttribute("data-service-id");
+			$("#sr_service_code").val(serviceId);
 			getAttributeData(serviceId);
 
 			closeServiceChooser($this.text());
@@ -196,6 +198,9 @@ $(document).ready(function() {
 							$("#sr_location").val(results[0].formatted_address);
 						}
 					});
+
+					$("#sr_lat").val(position.coords.latitude);
+					$("#sr_long").val(position.coords.longitude);
 				});
 			});
 
@@ -211,6 +216,8 @@ $(document).ready(function() {
 								latitude: location.lat(),
 								longitude: location.lng()
 							});
+							$("#sr_lat").val(location.lat());
+							$("#sr_long").val(location.lng());
 							// $("#sr_location").val(results[0].formatted_address);
 						}
 					});

@@ -75,7 +75,7 @@ def index():
     return render_app_template('index.html', service_requests=service_requests)
 
 
-@app.route("/requests/create", methods=["GET", "POST"])
+@app.route("/new-request", methods=["GET", "POST"])
 def create_request():
     requirements = \
         app.config.get('REQUEST_CREATION', False) and \
@@ -86,11 +86,60 @@ def create_request():
         abort(404)
 
     if request.method == 'GET':
+        # TODO: generate CSRF token
         service_groups = open311tools.services_by_group(app.config['OPEN311_SERVER'], app.config['OPEN311_API_KEY'])
         return render_app_template('create_sr.html', service_groups=service_groups)
 
     else:
-        raise NotImplementedError
+        # TODO: check CSRF token
+        # TODO: validate form
+        sr_info = {
+            'api_key': app.config.get('OPEN311_API_KEY'),
+            'service_code': request.form['service_code'],
+            # TODO: what type of location should be configurable based on endpoint; Chicago requires lat/long
+            'lat': request.form.get('lat', 0, float),
+            'long': request.form.get('long', 0, float),
+            'description': request.form.get('description', '')
+        }
+        if 'address_string' in request.form:
+            sr_info['address_string'] = request.form['address_string']
+        if 'first_name' in request.form:
+            sr_info['first_name'] = request.form['first_name']
+        if 'last_name' in request.form:
+            sr_info['last_name'] = request.form['last_name']
+        if 'phone' in request.form:
+            sr_info['phone'] = request.form['phone']
+        if 'email' in request.form:
+            sr_info['email'] = request.form['email']
+            # TODO: if email is provided, subscribe to updates
+
+        # TODO: media support
+
+        # attributes, no special treatment
+        for key, value in request.form.iteritems():
+            if key.startswith('attribute['):
+                sr_info[key] = value
+
+        url = '%s/requests.json' % app.config['OPEN311_SERVER']
+        r = requests.post(url, data=sr_info)
+        if r.status_code >= 200 and r.status_code < 300:
+            data = r.json[0]
+            sr_id = data.get('service_request_id')
+            token = data.get('token')
+            if token and not sr_id:
+                url = '%s/tokens/%s.json' % (app.config['OPEN311_SERVER'], token)
+                r = requests.get(url)
+                if r.status_code == 201 or r.status_code == 200:
+                    sr_id = r.json[0].get('service_request_id')
+            # return something intelligible
+            if sr_id:
+                return 'Success! %s' % sr_id
+            else:
+                return 'Only a token :(<br/>%s' % token
+        else:
+
+            # TODO: nice errors
+            abort(400)
 
 
 @app.route("/services/<service_id>.json")

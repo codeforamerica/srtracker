@@ -24,13 +24,13 @@
 	
 		<h1>Request a City Service</h1>
 
-		<form class="sr_form">
+		<form class="sr_form" method="POST">
 
 			<div class="service_info">
 				<div class="service_chooser">
 					<p>Choose a service type:</p>
 
-					<select id="sr_service_code" name="sr_service_code">
+					<select id="sr_service_code" name="service_code">
 						{% for group_name, services in service_groups.iteritems() %}
 							<optgroup label="{{ group_name }}">
 								{% for service in services %}
@@ -62,7 +62,9 @@
 				<div class="sr_form_section sr_location_chooser">
 					<label for="sr_location">Location</label>
 					<div class="address_input">
-						<input id="sr_location" type="text" value="" placeholder="Address, e.g. 121 North La Salle Street, Chicago, IL 60602" />
+						<input id="sr_location" name="address_string" type="text" value="" placeholder="Address, e.g. 121 North La Salle Street, Chicago, IL 60602" />
+						<input type="hidden" id="sr_lat" name="lat" />
+						<input type="hidden" id="sr_long" name="long" />
 						<button class="gps_button">Find Me</button>
 					</div>
 					{# TODO: map, geolocation #}
@@ -71,7 +73,7 @@
 
 				<div class="sr_form_section">
 					<label for="sr_description">Description</label>
-					<textarea id="sr_description" rows="4"></textarea>
+					<textarea id="sr_description" rows="4" name="description"></textarea>
 				</div>
 
 				<div class="sr_form_section sr_attributes">
@@ -82,16 +84,16 @@
 					<p class="legend-details"><em>This information is not shared publicly. You can also leave this section blank if you wish to submit anonymously.</em></p>
 
 					<label for="sr_personal_first_name">First Name</label>
-					<input id="sr_personal_first_name" type="text" />
+					<input id="sr_personal_first_name" type="text" name="first_name" />
 
 					<label for="sr_personal_last_name">Last Name</label>
-					<input id="sr_personal_last_name" type="text" />
+					<input id="sr_personal_last_name" type="text" name="last_name" />
 
 					<label for="sr_personal_email">E-mail</label>
-					<input id="sr_personal_email" type="email" />
+					<input id="sr_personal_email" type="email" name="email" />
 
 					<label for="sr_personal_phone">Phone Number</label>
-					<input id="sr_personal_phone" type="tel" />
+					<input id="sr_personal_phone" type="tel" name="phone" />
 				</fieldset>
 
 				<input type="submit" class="submit" value="Submit Service Request" />
