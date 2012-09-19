@@ -5,6 +5,8 @@ $(document).ready(function() {
 		longitude: -87.632344
 	};
 
+	var SMALL_SCREEN_WIDTH = 759;
+
 	var detailsVisible = false;
 
 	var closeServiceChooser = function(selectedServiceName) {
@@ -218,15 +220,49 @@ $(document).ready(function() {
 		var position = position || DEFAULT_POSITION;
 		var center = new google.maps.LatLng(position.latitude, position.longitude);
 
+		var supportsTouch = "createTouch" in document;
+		var smallTouchScreen = supportsTouch && document.body.offsetWidth <= SMALL_SCREEN_WIDTH;
 		var mapContainer = document.getElementById("sr_map");
 		var mapOptions = {
 			center: center,
 			zoom: 17,
 			mapTypeId: google.maps.MapTypeId.ROADMAP,
-			streetViewControl: false
+			streetViewControl: false,
+			scrollwheel: false,
+			disableDefaultUI: smallTouchScreen
 		};
 		map = new google.maps.Map(mapContainer, mapOptions);
 		setMapLatLng(position);
+
+		// for small touch screens, don't bother with allowing dragging; it just makes scrolling hard
+		if (smallTouchScreen) {
+			var overlay = document.createElement("div");
+			$(overlay).css({
+				position: "absolute",
+				left: "0",
+				top: "0",
+				width: "100%",
+				height: "100%",
+				"z-index": "1000"
+				// background: "-webkit-gradient(radial, 50% 50%, 80, 50% 50%, 140, from(rgba(255,255,255,0.2)), to(rgba(255,255,255,1)))",
+				// "box-shadow": "inset 0 0 100px #fff"
+			});
+			mapContainer.style.position = "relative";
+			mapContainer.appendChild(overlay);
+
+			// var overlayVisible = true;
+			// overlay.addEventListener("click", function(event) {
+			// 	event.stopPropagation();
+			// 	$(this).fadeOut();
+			// 	overlayVisible = false;
+			// }, false);
+			// document.body.addEventListener("click", function(event) {
+			// 	if (!overlayVisible) {
+			// 		overlayVisible = true;
+			// 		$(overlay).fadeIn();
+			// 	}
+			// }, false);
+		}
 	};
 
 	var setMapLatLng = function(position) {
