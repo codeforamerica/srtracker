@@ -5,6 +5,7 @@ PASSWORD_PROTECTED = False
 PASSWORD           = ''
 MAX_RECENT_SRS     = 50
 RECENT_SRS_TIME    = 60 * 60  # (in seconds)
+OPEN311_NOTIFIES_TOKENS = False
 
 # SHARED
 OPEN311_SERVER     = 'http://localhost:5000/api'
@@ -13,6 +14,7 @@ OPEN311_API_KEY    = ''
 # UPDATER
 OPEN311_PAGE_SIZE  = 1000
 DB_STRING          = 'postgresql://localhost:5432/srtracker'
+SUPPORTS_TOKEN_ID  = False
 THREADED_UPDATES   = False
 EMAIL_HOST         = 'smtp.example.com'
 EMAIL_PORT         = 465

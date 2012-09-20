@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block page_title %}Waiting for your Service Request ID - 311 Service Tracker{% endblock %}
+
+{% block page_class %}wait_for_id_page{% endblock %}
+
+{% block stylesheets %}
+	{{ super() }}
+	<link rel="stylesheet" href="{{ url_for("static", filename="css/service_request.css") }}" type="text/css" />
+	<link rel="stylesheet" href="{{ url_for("static", filename="css/wait_for_id.css") }}" type="text/css" />
+{% endblock %}
+
+{% block scripts %}
+	{{ super() }}
+	<script type="text/javascript">
+		var BASE_URL = "{{ config.APPLICATION_ROOT or "/" }}";
+		var SR_TOKEN = "{{ token }}";
+	</script>
+	<script type="text/javascript" src="{{ url_for("static", filename="js/spin.min.js") }}"></script>
+	<script type="text/javascript" src="{{ url_for("static", filename="js/wait_for_id.js") }}"></script>
+{% endblock %}
+
+{% block content %}
+	<article class="main_content">
+	
+		<h1>Your request has been submitted.</h1>
+
+		<p>
+			However, we’re still waiting for it to get verified by the city’s systems and assigned a tracking number.
+			This process usually takes anywhere from a few seconds to a few minutes, though it can sometimes take longer.
+		</p>
+
+		{% if submitted_email %}
+			<p>
+				You can wait for a tracking number by staying on this, but we’ll also send you an e-mail when it’s ready.
+			</p>
+		{% else %}
+			<p id="notification_email_label">
+				You can wait on this page for a tracking number or enter your e-mail address below and we'll send you a note when it’s ready.
+			</p>
+			<p id="notification_email_success">
+				We’ll e-mail you when a tracking number for your service request is available.
+			</p>
+
+			<form method="POST" action="" id="notification_email_form">
+				<input type="email" name="email" id="id_notification_email" required />
+				<input type="submit" value="Notify Me" />
+			</form>
+		{% endif %}
+
+		<div id="waiting_spinner"></div>
+
+	</article>
+{% endblock %}

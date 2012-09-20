@@ -131,24 +131,24 @@ def create_request():
                 r = requests.get(url)
                 if r.status_code == 201 or r.status_code == 200:
                     sr_id = r.json[0].get('service_request_id')
-            # return something intelligible
+
             if sr_id:
-                return 'Success! %s' % sr_id
+                # TODO: add a nice flash message ?
+                redirect(url_for('show_request', request_id=sr_id))
             else:
-                return 'Only a token :(<br/>%s' % token
+                # automatically send e-mail notifications when token is resolved
+                # NOTE: OPEN311_NOTIFIES_TOKENS indicates that the Open311 endpoint has this
+                # capability baked in, so we don't need to do it.
+                email = request.form.get('email')
+                if email and not app.config['OPEN311_NOTIFIES_TOKENS']:
+                    updater.subscribe_to_token(token, 'email', email)
+
+                # show the waiting page
+                return render_app_template('wait_for_id.html', token=token, submitted_email=email)
         else:
 
             # TODO: nice errors
             abort(400)
-
-
-@app.route("/services/<service_id>.json")
-def get_service_details(service_id):
-    details = open311tools.service_definition(service_id, app.config['OPEN311_SERVER'], app.config['OPEN311_API_KEY'])
-    if details:
-        return jsonify(**details)
-    else:
-        abort(404)
 
 
 @app.route("/requests/")
@@ -281,6 +281,41 @@ def unsubscribe(subscription_key):
         
     flash(u'You‘ve been unsubscribed from this service request. You will no longer receive e-mails when it is updated.')
     return redirect(destination)
+
+
+#--------------------------------------------------------------------------
+# API/AJAX ROUTES
+#--------------------------------------------------------------------------
+
+@app.route("/tokens/<token>.json", methods=["GET", "POST"])
+def id_for_token(token):
+    if request.method == 'GET':
+        sr_id = None
+
+        url = '%s/tokens/%s.json' % (app.config['OPEN311_SERVER'], token)
+        r = requests.get(url)
+        if r.status_code >= 200 and r.status_code < 300:
+            sr_id = r.json[0].get('service_request_id')
+
+        return jsonify(service_request_id=sr_id)
+
+    else:
+        email = request.form.get('email')
+        if not email:
+            return jsonify(error='No email address'), 400
+        else:
+            # since this is a a one-time thing with only one way to do it, don't bother with sessions, etc.
+            updater.subscribe_to_token(token, 'email', email)
+            return jsonify(success=True)
+
+
+@app.route("/services/<service_id>.json")
+def get_service_details(service_id):
+    details = open311tools.service_definition(service_id, app.config['OPEN311_SERVER'], app.config['OPEN311_API_KEY'])
+    if details:
+        return jsonify(**details)
+    else:
+        abort(404)
 
 
 #--------------------------------------------------------------------------

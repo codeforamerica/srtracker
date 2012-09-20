@@ -178,6 +178,22 @@ $(document).ready(function() {
 	var locationMarker;
 	var geocoder = new google.maps.Geocoder();
 
+	var updateMapAddress = function(address) {
+		geocoder.geocode({address: address}, function(results, status) {
+			if (status === google.maps.GeocoderStatus.OK && results.length) {
+				console.log(results);
+				var location = results[0].geometry.location;
+				setMapLatLng({
+					latitude: location.lat(),
+					longitude: location.lng()
+				});
+				$("#sr_lat").val(location.lat());
+				$("#sr_long").val(location.lng());
+				// $("#sr_location").val(results[0].formatted_address);
+			}
+		});
+	};
+
 	var initLocation = function() {
 		if (navigator.geolocation) {
 			// navigator.geolocation.getCurrentPosition(function(position) {
@@ -187,7 +203,7 @@ $(document).ready(function() {
 			// });
 			initMap();
 
-			$(".gps_button").show().on("click", function(event) {
+			$(".gps_button").css({display:"inline-block"}).on("click", function(event) {
 				event.preventDefault();
 
 				navigator.geolocation.getCurrentPosition(function(position) {
@@ -207,21 +223,10 @@ $(document).ready(function() {
 			$("#sr_location").on("keypress", function(event) {
 				if (event.keyCode === 13) {
 					event.preventDefault();
-
-					geocoder.geocode({address: this.value}, function(results, status) {
-						if (status === google.maps.GeocoderStatus.OK && results.length) {
-							console.log(results);
-							var location = results[0].geometry.location;
-							setMapLatLng({
-								latitude: location.lat(),
-								longitude: location.lng()
-							});
-							$("#sr_lat").val(location.lat());
-							$("#sr_long").val(location.lng());
-							// $("#sr_location").val(results[0].formatted_address);
-						}
-					});
+					updateMapAddress(this.value);
 				}
+			}).on("change, blur", function(event) {
+				updateMapAddress(this.value);
 			});
 		}
 		else {

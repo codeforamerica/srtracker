@@ -18,7 +18,7 @@ import requests
 import dateutil
 from dateutil.parser import parse as parse_date
 from db import DB
-from models import Subscription, UpdateInfoItem, Base
+from models import Subscription, TokenSubscription, UpdateInfoItem, Base
 
 # Default configuration
 DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'configuration.py')
@@ -31,6 +31,7 @@ SR_INFO_CHUNK_SIZE = 50
 # logging
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
+logger.setLevel(logging.INFO)
 
 # These will be set by configure()
 config = None
@@ -66,11 +67,17 @@ def configure(path=None):
         path = os.path.abspath(os.environ.get('UPDATER_CONFIGURATION', os.environ.get('SRTRACKER_CONFIGURATION', DEFAULT_CONFIG_PATH)))
 
     config = config_from_file(path)
+    # Debug
+    if config.get('DEBUG'):
+        logger.setLevel(logging.DEBUG)
+
     # Where to get notification plugins
     config['NOTIFIERS_DIR'] = os.path.abspath(config.get('NOTIFIERS_DIR', DEFAULT_NOTIFIERS_DIR))
 
     # Set default template path
     config['TEMPLATE_PATH'] = os.path.abspath(config.get('TEMPLATE_PATH', DEFAULT_TEMPLATE_PATH))
+
+    config['SUPPORTS_TOKEN_ID'] = config.get('SUPPORTS_TOKEN_ID', False)
 
     db = DB(config['DB_STRING'])
 
@@ -95,29 +102,29 @@ def parse_date_utc(date_string):
 
 
 def get_updates(since):
-   url = '%s/requests.json' % config['OPEN311_SERVER']
-   params = {
-      'updated_after': since.isoformat(),
-      'page_size': config['OPEN311_PAGE_SIZE'],
-      'extensions': 'true'
-   }
-   if config['OPEN311_API_KEY']:
-      params['api_key'] = config['OPEN311_API_KEY']
-   # paging starts at 1 (not 0)
-   page = 1
-   results = []
-   while page:
-      params['page'] = page
-      request = requests.get(url, params=params)
-      if request.status_code == requests.codes.ok:
-         result = request.json
-         results.extend(result)
-         page = len(result) > 0 and page + 1 or 0
-      else:
-         # TODO: raise exception?
-         break
-   
-   return results
+    url = '%s/requests.json' % config['OPEN311_SERVER']
+    params = {
+        'updated_after': since.isoformat(),
+        'page_size': config['OPEN311_PAGE_SIZE'],
+        'extensions': 'true'
+    }
+    if config['OPEN311_API_KEY']:
+        params['api_key'] = config['OPEN311_API_KEY']
+    # paging starts at 1 (not 0)
+    page = 1
+    results = []
+    while page:
+        params['page'] = page
+        request = requests.get(url, params=params)
+        if request.status_code == requests.codes.ok:
+            result = request.json
+            results.extend(result)
+            page = len(result) > 0 and page + 1 or 0
+        else:
+            # TODO: raise exception?
+            break
+    
+    return results
 
 
 def updated_srs_by_time():
@@ -162,6 +169,50 @@ def updated_srs_by_time():
     return updates
 
 
+def get_sr_for_token(token):
+    if config['SUPPORTS_TOKEN_ID']:
+        sr = get_sr(token)
+        # We could have service_request_id = None, 
+        # so test the value instead of the key's presence
+        if sr.get('service_request_id'):
+            return sr
+    else:
+        # First see if there's an SR ID for the token
+        url = '%s/tokens/%s.json' % (config['OPEN311_SERVER'], token)
+        request = requests.get(url)
+        logger.debug('GOT: %s', request.json)
+        if request.status_code == requests.codes.ok and len(request.json):
+            sr_id = request.json[0].get('service_request_id')
+
+            # if so, then get the request data
+            if sr_id:
+                return get_sr(sr_id)
+
+
+def get_sr(sr_id):
+    url = '%s/requests/%s.json' % (config['OPEN311_SERVER'], sr_id)
+    params = {'extensions': 'true'}
+    if config['OPEN311_API_KEY']:
+        params['api_key'] = config['OPEN311_API_KEY']
+    request = requests.get(url, params=params)
+    if request.status_code == requests.codes.ok:
+        return request.json[0]
+    else:
+        return None
+
+
+def get_subscribed_token_srs():
+    srs = []
+    with db() as session:
+        for subscription in session.query(TokenSubscription):
+            sr = get_sr_for_token(subscription.token)
+            if sr:
+                session.delete(subscription)
+                srs.append((subscription.method, subscription.contact, None, sr))
+
+    return srs
+
+
 def send_notifications(notifications):
     # split up notifications by method
     by_method = defaultdict(list)
@@ -178,11 +229,7 @@ def send_notifications(notifications):
             logger.error('No notifier for "%s" - skipping %d notifications', method, len(notes))
 
 
-def poll_and_notify():
-    logger.debug('Getting updates from Open311...')
-    notifications = updated_srs_by_time()
-    
-    logger.debug('Sending %d notifications...', len(notifications))
+def notify(notifications):
     # Need to unhardcode "email" updates so we can support things like SMS, Twitter, etc.
     # Should break up the list by update method and have a thread pool for each
     if config['THREADED_UPDATES']:
@@ -202,6 +249,28 @@ def poll_and_notify():
             thread.join()
     else:
         send_notifications(notifications)
+
+
+def poll_and_notify():
+    # Updates
+    logger.debug('Getting updates from Open311...')
+    notifications = updated_srs_by_time()
+    logger.debug('Sending %d notifications...', len(notifications))
+    notify(notifications)
+
+    # Tokens waiting to be resolved
+    logger.debug('Getting resolved tokens from Open311...')
+    token_notifications = get_subscribed_token_srs()
+
+    # transform token notifications into real subscriptions
+    new_token_notifications = []
+    for note in token_notifications:
+        key = subscribe(note[3]['service_request_id'], note[0], note[1])
+        new_token_notifications.append((note[0], note[1], key, note[3]))
+
+    # actually send the notifications
+    logger.debug('Sending %d token notifications...', len(new_token_notifications))
+    notify(new_token_notifications)
 
 
 def get_notifiers():
@@ -257,6 +326,33 @@ def subscribe(request_id, method, address):
                 session.add(UpdateInfoItem(key='date', value=datetime.datetime.now()))
             
             return subscription.key
+    
+    return False
+
+
+def subscribe_to_token(token, method, address):
+    '''
+    Create a new subscription for the creation of an SR ID.
+    This subscription should be removed as soon as an SR ID is acquired.
+    @param token:      The SR token to subscribe to
+    @param method:     The type of subscription (e.g. 'email' or 'sms')
+    @param address:    The adress to send updates to (e.g. 'someone@example.com' or '63055512345')
+    '''
+    
+    # TODO: validate the subscription by seeing if the token exists via Open311?
+    with db() as session:
+        subscription = session.query(Subscription).\
+            filter(TokenSubscription.token == token).\
+            filter(TokenSubscription.method == method).\
+            filter(TokenSubscription.contact == address).\
+            first()
+        if not subscription:
+            subscription = TokenSubscription(
+                token=token,
+                method=method,
+                contact=address)
+            session.add(subscription)
+            return True
     
     return False
 

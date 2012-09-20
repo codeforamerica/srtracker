@@ -15,7 +15,7 @@ class Subscription(Base):
     sr_id   = Column(String, index=True)
     method  = Column(String)
     contact = Column(String)
-    key    = Column(String, index=True)
+    key     = Column(String, index=True)
     
     def __init__(self, **kwargs):
         # if we aren't being initialized with a unique key, create one
@@ -27,6 +27,15 @@ class Subscription(Base):
     def generate_uuid(self):
         '''Generate a unique key for this subscription.'''
         return str(uuid.uuid4()).replace('-', '')
+
+
+class TokenSubscription(Base):
+    __tablename__ = 'tokensubscriptions'
+    
+    id      = Column(Integer, Sequence('tokensubscription_id_seq'), primary_key=True)
+    token   = Column(String, index=True)
+    method  = Column(String)
+    contact = Column(String)
 
 
 class UpdateInfoItem(Base):

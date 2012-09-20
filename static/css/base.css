@@ -71,7 +71,8 @@ table {
 
 input,
 textarea,
-button {
+button,
+.button {
 	display: inline-block;
 	padding: 6px 8px;
 	font-size: 14px;
@@ -97,7 +98,8 @@ button {
 }
 
 input[type="submit"],
-button {
+button,
+.button {
 	/* IE7 needs height explicitly set, otherwise it gets a bit hairy */
 	*height: 32px;
 	box-shadow: none;
@@ -108,11 +110,14 @@ button {
 	font-weight: bold;
 	-webkit-appearance: none;
 	cursor: pointer;
+	text-decoration: none;
 }
 input[type="submit"]:hover,
-button:hover {
+button:hover,
+.button:hover {
 	background: #3ba8cc;
 	border-color: #3ba8cc;
+	color: #fff;
 }
 
 .placeholder {
