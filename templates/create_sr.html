@@ -24,7 +24,7 @@
 	
 		<h1>Request a City Service</h1>
 
-		<form class="sr_form" method="POST">
+		<form class="sr_form" method="POST" enctype="multipart/form-data">
 
 			<div class="service_info">
 				<div class="service_chooser">
@@ -74,6 +74,8 @@
 				<div class="sr_form_section">
 					<label for="sr_description">Description</label>
 					<textarea id="sr_description" rows="4" name="description"></textarea>
+
+					<input type="file" name="media" />
 				</div>
 
 				<div class="sr_form_section sr_attributes">

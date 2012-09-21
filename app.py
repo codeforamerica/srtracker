@@ -7,7 +7,8 @@
 import os
 import datetime
 import re
-from flask import Flask, render_template, request, abort, redirect, url_for, make_response, session, flash, jsonify
+import uuid
+from flask import Flask, render_template, request, abort, redirect, url_for, make_response, session, flash, jsonify, send_from_directory
 import requests
 import iso8601
 import pytz
@@ -25,6 +26,7 @@ OPEN311_SERVER = 'http://localhost:5000'
 OPEN311_API_KEY = ''
 PASSWORD_PROTECTED = False
 SECRET_KEY = 'please_please_change_this!'
+ACCEPTABLE_MEDIA = ('png', 'gif', 'jpg', 'jpeg')
 
 app = Flask(__name__)
 
@@ -62,8 +64,6 @@ def index():
     if app.config['OPEN311_API_KEY']:
         params['api_key'] = app.config['OPEN311_API_KEY']
 
-    app.logger.debug('RECENT SRs: %s', params)
-
     r = requests.get(url, params=params)
     if r.status_code != 200:
         app.logger.error('OPEN311: Failed to load recent requests from Open311 server. Status Code: %s, Response: %s', r.status_code, r.text)
@@ -75,8 +75,9 @@ def index():
     return render_app_template('index.html', service_requests=service_requests)
 
 
-@app.route("/new-request", methods=["GET", "POST"])
-def create_request():
+@app.route("/new-request/", methods=["GET", "POST"])
+@app.route("/new-request/<service_id>", methods=["GET", "POST"])
+def create_request(service_id=None):
     requirements = \
         app.config.get('REQUEST_CREATION', False) and \
         app.config.get('GOOGLE_MAPS_API_KEY') and \
@@ -113,7 +114,13 @@ def create_request():
             sr_info['email'] = request.form['email']
             # TODO: if email is provided, subscribe to updates
 
-        # TODO: media support
+        # TODO: GeoReport v2.1 will support multiple file upload. We should do that, too
+        # needs config for whether the endpoint can handle it
+        for file_key, file in request.files.iteritems():
+            file_info = save_uploaded_media(file)
+            if file_info:
+                media_name = file_info[0]
+                sr_info['media_url'] = file_info[1]
 
         # attributes, no special treatment
         for key, value in request.form.iteritems():
@@ -146,6 +153,10 @@ def create_request():
                 # show the waiting page
                 return render_app_template('wait_for_id.html', token=token, submitted_email=email)
         else:
+            app.logger.error('Open311 error while submitting SR: %s\nSubmitted: %s', r.text, sr_info)
+            if 'media_url' in sr_info:
+                app.logger.debug('Removing saved media: %s', media_name)
+                remove_uploaded_media(media_name)
 
             # TODO: nice errors
             abort(400)
@@ -281,6 +292,15 @@ def unsubscribe(subscription_key):
         
     flash(u'You‘ve been unsubscribed from this service request. You will no longer receive e-mails when it is updated.')
     return redirect(destination)
+
+
+@app.route("/requestmedia/<filename>")
+def get_request_media(filename):
+    path = app.config.get('MEDIA_STORAGE_PATH')
+    if path:
+        return send_from_directory(app.config['MEDIA_STORAGE_PATH'], filename)
+    else:
+        abort(404)
 
 
 #--------------------------------------------------------------------------
@@ -447,6 +467,57 @@ def subscribe_to_sr(request_id, email):
             app.logger.error('Error creating a subscription for %s on %s', email, request_id)
         
     return False
+
+
+def save_uploaded_media(media):
+    extension = '.' in media.filename and media.filename.rsplit('.')[1]
+
+    if extension in app.config['ACCEPTABLE_MEDIA']:
+        unique_name = str(uuid.uuid4())
+        if extension:
+            unique_name = '%s.%s' % (unique_name, extension)
+
+        storage_type = app.config.get('MEDIA_STORAGE_TYPE')
+        # TODO: upload methodologies should be their own module
+        if storage_type == 'file':
+            media.save(os.path.join(app.config['MEDIA_STORAGE_PATH'], unique_name))
+        elif storage_type == 's3':
+            import boto
+            s3_connection = boto.connect_s3(app.config['AWS_ACCESS_KEY_ID'], app.config['AWS_SECRET_KEY'])
+            bucket_name = app.config['MEDIA_S3_BUCKET']
+            bucket = s3_connection.get_bucket(bucket_name)
+            key = boto.s3.key.Key(bucket)
+            key.key = unique_name
+            key.set_contents_from_file(media)
+            key.make_public()
+            url = 'http://%s.s3.amazonaws.com/%s' % (bucket_name, unique_name)
+            app.logger.debug('S3 URL for %s: %s', media.filename, url)
+
+            # for S3, prefer the actual AWS URL, since it's public and there's no reason to funnel it through SR Tracker
+            return (unique_name, url)
+        
+        # return this more generically, since we should theoretically be able to use it for any storage type
+        return (unique_name, url_for('get_request_media', filename=unique_name, _external=True))
+
+    return None
+
+
+def remove_uploaded_media(filename):
+    storage_type = app.config.get('MEDIA_STORAGE_TYPE')
+    if storage_type == 'file':
+        path = os.path.join(app.config['MEDIA_STORAGE_PATH'], filename)
+        if os.path.isfile(path):
+            try:
+                os.remove(path)
+            except:
+                pass
+
+    elif storage_type == 's3':
+        import boto
+        s3_connection = boto.connect_s3(app.config['AWS_ACCESS_KEY_ID'], app.config['AWS_SECRET_KEY'])
+        bucket_name = app.config['MEDIA_S3_BUCKET']
+        bucket = s3_connection.get_bucket(bucket_name)
+        bucket.delete_key(filename)
 
 
 #--------------------------------------------------------------------------

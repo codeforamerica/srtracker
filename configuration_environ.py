@@ -37,3 +37,12 @@ EMAIL_SSL          = environ.get('EMAIL_SSL', True)
 EMAIL_MAX_THREADS  = environ.get('EMAIL_MAX_THREADS', 5)
 
 SRTRACKER_URL      = environ.get('SRTRACKER_URL', 'http://chicagosrtracker/')
+
+MEDIA_STORAGE_TYPE = environ.get('MEDIA_STORAGE_TYPE')
+# for "FILE" type
+MEDIA_STORAGE_PATH = environ.get('MEDIA_STORAGE_PATH')
+MEDIA_STORAGE_URL  = environ.get('MEDIA_STORAGE_URL')
+# for "S3" type
+MEDIA_S3_BUCKET    = environ.get('MEDIA_S3_BUCKET')
+AWS_ACCESS_KEY_ID  = environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_KEY     = environ.get('AWS_SECRET_KEY')
