@@ -41,6 +41,10 @@
 			</form>
 			
 			<p class="form_help">Don’t know your service request number? Call 311.</p>
+
+			{% if config.REQUEST_CREATION %}
+				<p>Or <a href="{{ url_for('create_request') }}">submit a new service request.</a></p>
+			{% endif %}
 		</div>
 		
 		{% if service_requests %}
