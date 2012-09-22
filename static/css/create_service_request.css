@@ -17,6 +17,12 @@ a:hover {
 	color: #955;
 }
 
+.optional_note {
+	margin-left: 0.5em;
+	font-size: 0.8em;
+	color: #666;
+}
+
 .sr_form_section {
 	max-width: 420px;
 	width: 100%;
