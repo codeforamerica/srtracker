@@ -41,6 +41,10 @@ The configuration file itself should be a python file with the following vars:
 
 If you want to do all your configuration via environment vars, point `SRTRACKER_CONFIGURATION` at `configuration_environ.py`. It'll read in all above vars from your environment. This is great for services like Heroku.
 
+To run:
+
+    python app.py
+
 _If you are using Apache with mod_wsgi, you'll also want to make sure you configure the app before calling `run()` on it in your .wsgi file. The easiest method is to setup your configuration as above and do the following in your .wsgi file:_
 
 ```
