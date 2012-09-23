@@ -12,6 +12,14 @@ It includes the following components:
 Installation & Configuration
 ----------------------------
 
+To install:
+
+    pip install -r requirements.txt
+    cp configuration.py.example configuration.py
+    cd updater
+    ln -s configuration.py ../configuration.py
+    # edit configuration.py as described below
+
 SRTracker is broken into two components: the web app and the updater, which polls an Open311 endpoint and sends notifications about updated service requests. They can be configured together or separately.
 
 By default, SRTracker will look for a file named `configuration.py` in its directory. Alternatively, you can specify a path to the config file in the environment variable `SRTRACKER_CONFIGURATION` (this is especially useful for services like Heroku). The updater will use this path as well unless you also specify a separate `UPDATER_CONFIGURATION` env var.
