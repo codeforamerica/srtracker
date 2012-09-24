@@ -265,6 +265,7 @@ $(document).ready(function() {
 
 		// for small touch screens, don't bother with allowing dragging; it just makes scrolling hard
 		if (smallTouchScreen) {
+			mapContainer.setAttribute("aria-hidden", "true");
 			var overlay = document.createElement("div");
 			$(overlay).css({
 				position: "absolute",

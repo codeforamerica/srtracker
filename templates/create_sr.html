@@ -47,7 +47,7 @@
 								<ul>
 									{% for service in services %}
 										{# TODO: show service description somewhere (on hover?) #}
-										<li class="service" data-service-id="{{ service.service_code }}"><a href="#">{{ service.service_name }}</a></li>
+										<li class="service" data-service-id="{{ service.service_code }}"><a href="#" role="button">{{ service.service_name }}</a></li>
 									{% endfor %}
 								</ul>
 							</li>
@@ -65,7 +65,7 @@
 						<input id="sr_location" name="address_string" type="text" value="" placeholder="Address, e.g. 121 North La Salle Street, Chicago, IL 60602" />
 						<input type="hidden" id="sr_lat" name="lat" />
 						<input type="hidden" id="sr_long" name="long" />
-						<a href="#" class="button gps_button">Find Me</a>
+						<a href="#" class="button gps_button" role="button">Find Me</a>
 					</div>
 					{# TODO: map, geolocation #}
 					<div id="sr_map"></div>
