@@ -125,11 +125,22 @@ $(document).ready(function() {
 			}
 
 			var values = attribute.values;
+			var nullOption;
 			for (var i = 0, len = values.length; i < len; i++) {
 				var option = document.createElement("option");
 				option.value = values[i].key;
 				option.appendChild(document.createTextNode(values[i].name));
 				input.appendChild(option);
+				if (!values[i].key) {
+					nullOption = values[i];
+				}
+			}
+			
+			// Singlevaluelists that are optional should have a "no value" option
+			if (!attribute.required && attribute.datatype === "singlevaluelist" && !nullOption) {
+				var option = document.createElement("option");
+				option.value = "";
+				input.insertBefore(option, input.firstChild);
 			}
 		}
 		else {
