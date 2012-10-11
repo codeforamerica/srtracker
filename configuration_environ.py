@@ -15,6 +15,7 @@ RECENT_SRS_TIME    = int(environ.get('RECENT_SRS_TIME', 7 * 24 * 60 * 60))  # (i
 if 'SR_FIELD_BLACKLIST' in environ:
 	SR_FIELD_BLACKLIST = map(lambda item: item.strip(), environ['SR_FIELD_BLACKLIST'].split(','))
 DOCUMENTATION_LINK  = environ.get('DOCUMENTATION_LINK')
+GOGGLE_ANALYTICS_ACCOUNT = environ.get('GOGGLE_ANALYTICS_ACCOUNT')
 
 # SHARED
 OPEN311_SERVER     = environ.get('OPEN311_SERVER')
