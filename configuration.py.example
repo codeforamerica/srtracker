@@ -1,10 +1,12 @@
 # SR TRACKER
-DEBUG              = True
-SECRET_KEY         = 'please_please_change_this!'
-PASSWORD_PROTECTED = False
-PASSWORD           = ''
-MAX_RECENT_SRS     = 50
-RECENT_SRS_TIME    = 60 * 60  # (in seconds)
+DEBUG                    = True
+SECRET_KEY               = 'please_please_change_this!'
+PASSWORD_PROTECTED       = False
+PASSWORD                 = ''
+MAX_RECENT_SRS           = 50
+RECENT_SRS_TIME          = 60 * 60  # (in seconds)
+GOOGLE_ANALYTICS_ACCOUNT = ''
+
 
 # SHARED
 OPEN311_SERVER     = 'http://localhost:5000/api'
