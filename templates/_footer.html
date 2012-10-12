@@ -11,10 +11,10 @@
 		<a href="http://codeforamerica.org/" class="logo logo_cfa">Code for America</a>
 	</div>
 
-	{% if config.GOGGLE_ANALYTICS_ACCOUNT %}
+	{% if config.GOOGLE_ANALYTICS_ACCOUNT %}
 		<script type="text/javascript">
 		  var _gaq = _gaq || [];
-		  _gaq.push(['_setAccount', '{{ config.GOGGLE_ANALYTICS_ACCOUNT }}']);
+		  _gaq.push(['_setAccount', '{{ config.GOOGLE_ANALYTICS_ACCOUNT }}']);
 		  _gaq.push(['_trackPageview']);
 
 		  (function() {
