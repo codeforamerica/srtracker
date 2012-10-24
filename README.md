@@ -12,7 +12,7 @@ It includes the following components:
 Installation & Configuration
 ----------------------------
 
-To install:
+To install (you may need to do this as root):
 
     pip install -r requirements.txt
     cp configuration.py.example configuration.py
