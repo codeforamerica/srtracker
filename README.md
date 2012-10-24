@@ -17,7 +17,7 @@ To install (you may need to do this as root):
     pip install -r requirements.txt
     cp configuration.py.example configuration.py
     cd updater
-    ln -s configuration.py ../configuration.py
+    ln -s ../configuration.py configuration.py
     # edit configuration.py as described below
 
 SRTracker is broken into two components: the web app and the updater, which polls an Open311 endpoint and sends notifications about updated service requests. They can be configured together or separately.
