@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block page_class %}landing{% endblock %}
+
+{% block stylesheets %}
+	{{ super() }}
+	<style type="text/css" media="screen">
+		body {
+			background: #a4d2de url("{{ url_for("static", filename="img/sr_icons.png") }}");
+			margin: 0;
+			font-family: Helvetica, Arial, sans-serif;
+		}
+	</style>
+{% endblock %}
+
+{% block scripts %}
+	{{ super() }}
+	<script type="text/javascript">
+		if (window.matchMedia) {
+			$(document).ready(function() {
+				if (matchMedia("only screen and (max-width: 759px)").matches) {
+					$("#search_field").attr("placeholder", "Enter service request #");
+				}
+			});
+		}
+	</script>
+{% endblock %}
+
+{% block page_header %}<span class="site_title">311 Chicago Service Tracker: Request Search</span>{% endblock %}
+
+{% block content %}
+	<div class="main_content">
+		<div class="box">
+			<h1>Search 311 service requests</h1>
+
+			<form method="GET" action="{{ url_for('request_search') }}" class="in_yo_face search_form">
+				<input type="text" name="q" id="search_field" class="search_field" placeholder="description, SR number, etc" />
+				<input type="submit" class="submit" value="Submit" />
+			</form>
+		</div>
+		
+                {% include "_results_list.html" %}
+
+	</div>
+{% endblock %}
