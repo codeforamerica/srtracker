@@ -39,7 +39,8 @@
 			</form>
 		</div>
 		
-                {% include "_results_list.html" %}
-
+		{% block content %}
+			{% include "_results_list.html" %}
+		{% endblock %}
 	</div>
 {% endblock %}
