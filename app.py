@@ -74,16 +74,16 @@ def index():
     
     return render_app_template('index.html', service_requests=service_requests)
 
-@app.route("/search/", defaults={'q' : None})
-@app.route("/search/<q>", methods=["GET", "POST"])
-def search(q):
-    if q is None:
+@app.route("/search/", defaults={'query': None})
+@app.route("/search/<query>", methods=["GET", "POST"])
+def search(query):
+    if query is None:
         service_requests=[]
     else:
         url = '%s/requests.json' % app.config['OPEN311_SERVER']
         params = {
             'extensions': 'true',
-            'q': '%s' % q,
+            'q': '%s' % query,
             'page_size': 499
         }
         app.logger.debug('REQUEST PARAMS: %s', params)
@@ -100,8 +100,8 @@ def search(q):
 def request_search():
     if 'request_id' in request.args:
         return redirect(url_for('show_request', request_id=request.args['request_id']))
-    elif 'q' in request.args:
-        return redirect(url_for('search', q=request.args['q']))
+    elif 'query' in request.args:
+        return redirect(url_for('search', query=request.args['query']))
     else:
         abort(404)
 
