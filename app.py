@@ -143,23 +143,25 @@ def show_request(request_id):
         
         # add follow-on closure data, fix types, etc, etc
         by_id = {}
+        follow_flg = False
         for note in sr['notes']:
             if note['type'] in ('follow_on', 'follow_on_created', 'follow_on_closed'):
                 note_sr_id = note['extended_attributes']['service_request_id']
-                
+                follow_flg = True
                 # old-style is just "follow_on" for everything related to follow-ons
                 # new-style is "follow_on_created" and "follow_on_closed"
                 # update old notes so templates don't get crazy complicated :(
                 if note['type'] == 'follow_on_created' or note['description'].endswith('Created'):
                     note['type'] = 'follow_on_created'
                     by_id[note_sr_id] = note
-                    
+
                 elif note['type'] == 'follow_on_closed' or note['description'].endswith('Closed'):
                     note['type'] = 'follow_on_closed'
                     if note_sr_id in by_id:
                         original = by_id[note_sr_id]
                         original['extended_attributes']['closed_datetime'] = note['datetime']
-        
+        if follow_flg:
+            sr['notes'] = [n for n in sr['notes'] if not n['type'] == 'closed']
         # if there's no activity yet, show 'under review'
         if relevant_notes == 0:
             sr['notes'].append({
