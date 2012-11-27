@@ -165,23 +165,26 @@ def show_request(request_id):
                         original = by_id[note_sr_id]
                         original['extended_attributes']['closed_datetime'] = note['datetime']
 
-        # if we opened a follow on flag, then delete it's closed note
+        # if we hit any follow_on_opened notes
         if follow_on_open_count >0:
-            # remove the closed flag
+            # remove the notes that claim the request is closed
             sr['notes'] = [n for n in sr['notes'] if not n['type'] == 'closed']
             # set the request to open
             sr['status'] = 'open'
-            
+
+            # if we hit as many follow_on_closed as follow_on_opened notes, then request is really closed
             if follow_on_open_count == follow_on_close_count:
-                # if the follow on is closed close this
+                # set the request status to closed
                 sr['status'] = 'closed'
                 tmp_note = {}
-                # add 
+                # add a closing note
                 tmp_note['type'] = 'closed'
                 tmp_note['summary'] = 'All follow-on requests closed'
                 # this is brittle, but shouldn't break
                 tmp_datetime = sorted([n['extended_attributes']['closed_datetime'] for n in by_id.values()])
+                # set the closed datetime to be the datetime of the last-closed follow-on
                 tmp_note['datetime'] = tmp_datetime[0]
+                # add the extra note
                 sr['notes'].append(tmp_note)
             
         # if there's no activity yet, show 'under review'
