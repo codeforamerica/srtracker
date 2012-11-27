@@ -143,23 +143,50 @@ def show_request(request_id):
         
         # add follow-on closure data, fix types, etc, etc
         by_id = {}
+        follow_on_open_count = 0
+        follow_on_close_count = 0
         for note in sr['notes']:
             if note['type'] in ('follow_on', 'follow_on_created', 'follow_on_closed'):
                 note_sr_id = note['extended_attributes']['service_request_id']
+
                 
                 # old-style is just "follow_on" for everything related to follow-ons
                 # new-style is "follow_on_created" and "follow_on_closed"
                 # update old notes so templates don't get crazy complicated :(
                 if note['type'] == 'follow_on_created' or note['description'].endswith('Created'):
                     note['type'] = 'follow_on_created'
+                    follow_on_open_count += 1
                     by_id[note_sr_id] = note
-                    
+
                 elif note['type'] == 'follow_on_closed' or note['description'].endswith('Closed'):
+                    follow_on_close_count += 1
                     note['type'] = 'follow_on_closed'
                     if note_sr_id in by_id:
                         original = by_id[note_sr_id]
                         original['extended_attributes']['closed_datetime'] = note['datetime']
-        
+
+        # if we hit any follow_on_opened notes
+        if follow_on_open_count >0:
+            # remove the notes that claim the request is closed
+            sr['notes'] = [n for n in sr['notes'] if not n['type'] == 'closed']
+            # set the request to open
+            sr['status'] = 'open'
+
+            # if we hit as many follow_on_closed as follow_on_opened notes, then request is really closed
+            if follow_on_open_count == follow_on_close_count:
+                # set the request status to closed
+                sr['status'] = 'closed'
+                tmp_note = {}
+                # add a closing note
+                tmp_note['type'] = 'closed'
+                tmp_note['summary'] = 'Request Completed'
+                # this is brittle, but shouldn't break
+                tmp_datetime = sorted([n['extended_attributes']['closed_datetime'] for n in by_id.values()])
+                # set the closed datetime to be the datetime of the last-closed follow-on
+                tmp_note['datetime'] = tmp_datetime[0]
+                # add the extra note
+                sr['notes'].append(tmp_note)
+            
         # if there's no activity yet, show 'under review'
         if relevant_notes == 0:
             sr['notes'].append({
