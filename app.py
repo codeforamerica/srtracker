@@ -179,7 +179,7 @@ def show_request(request_id):
                 tmp_note = {}
                 # add a closing note
                 tmp_note['type'] = 'closed'
-                tmp_note['summary'] = 'All follow-on requests closed'
+                tmp_note['summary'] = 'Request Completed'
                 # this is brittle, but shouldn't break
                 tmp_datetime = sorted([n['extended_attributes']['closed_datetime'] for n in by_id.values()])
                 # set the closed datetime to be the datetime of the last-closed follow-on
