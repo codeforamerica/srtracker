@@ -70,8 +70,8 @@
 								
 								<div class="details">
 									<p>
- 										{% if note.type == 'follow_on_created' %}
-   										        <strong>Requests transfered to:</strong><br/>
+										{% if note.type == 'follow_on_created' %}
+											<strong>Transferred to:</strong><br/>
 											<strong>{{ note.extended_attributes.service_name }}</strong><br/>
 											Department: {{ note.extended_attributes.agency_responsible }}
 											{% if note.extended_attributes.closed_datetime %}
