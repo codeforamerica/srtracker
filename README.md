@@ -1,5 +1,4 @@
-Service Request Tracker
-=======================
+# Service Request Tracker
 
 This web application is built for the City of Chicago as an interface to service requests submitted through their 311 system. It uses Chicago's Open311 API---including Chicago-specific extensions---to provide listings, lookups and subscription capabilities.
 
@@ -9,8 +8,7 @@ It includes the following components:
 
 ![Screenshot of SR Tracker](https://raw.github.com/codeforamerica/srtracker/master/screenshot.png)
 
-Installation & Configuration
-----------------------------
+## Installation & Configuration
 
 To install (you may need to do this as root):
 
@@ -55,7 +53,7 @@ application.config.from_envvar('SRTRACKER_CONFIGURATION')
 
 ## Tests
 
-You can run the application's tests using _Nose_ and _Mock_. They are not included in requirements.txt; to install them, run:
+You can run the application's tests using _Nose_ and _Mock_. They are not included in `requirements.txt`; to install them, run:
 
 ```
 pip install nose
@@ -77,8 +75,7 @@ foreman run "nosetests"
 If you are working on a patch to fix a bug or add functionality, please make sure you add tests to complement your work.
 
 
-Chicago-specific Open311 Extensions
------------------------------------
+## Chicago-specific Open311 Extensions
 
 This application relies upon extensions to the [Open311 GeoReport v2 Spec](http://wiki.open311.org/GeoReport_v2) that are specific to Chicago (for the time being). These include:
 
