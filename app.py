@@ -62,8 +62,6 @@ def index():
     if app.config['OPEN311_API_KEY']:
         params['api_key'] = app.config['OPEN311_API_KEY']
 
-    app.logger.debug('RECENT SRs: %s', params)
-
     r = requests.get(url, params=params)
     if r.status_code != 200:
         app.logger.error('OPEN311: Failed to load recent requests from Open311 server. Status Code: %s, Response: %s', r.status_code, r.text)
