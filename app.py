@@ -369,7 +369,7 @@ def subscribe_to_sr(request_id, email):
 # INIT
 #--------------------------------------------------------------------------
 
-if __name__ == "__main__":
+def configure():
     app.config.from_object(__name__)
     # we want to support a nice fallback, so use from_pyfile directly instead of from_envvar
     config_path = os.path.abspath(os.environ.get('SRTRACKER_CONFIGURATION', DEFAULT_CONFIG_PATH))
@@ -378,7 +378,9 @@ if __name__ == "__main__":
     else:
         app.logger.warn('''YOU ARE USING THE QUICK-START CONFIG, WHICH IS NOT RECOMMENDED.
             PUT SOMETHING IN "./configuration.py" OR SET THE "SRTRACKER_CONFIGURATION" ENV VAR INSTEAD.''')
-    
+
+if __name__ == "__main__":
+    configure()
     port = int(os.environ.get('PORT', 5100))
     app.run(host='0.0.0.0', port=port)
     
