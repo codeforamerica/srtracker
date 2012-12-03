@@ -53,6 +53,30 @@ application.config.from_envvar('SRTRACKER_CONFIGURATION')
 ```
 
 
+## Tests
+
+You can run the application's tests using _Nose_ and _Mock_. They are not included in requirements.txt; to install them, run:
+
+```
+pip install nose
+pip install mock
+```
+
+Then, to run the tests:
+
+```
+nosetests
+```
+
+Or if you are configuring for Heroku:
+
+```
+foreman run "nosetests"
+```
+
+If you are working on a patch to fix a bug or add functionality, please make sure you add tests to complement your work.
+
+
 Chicago-specific Open311 Extensions
 -----------------------------------
 
@@ -95,8 +119,9 @@ We use the [GitHub issue tracker][issues] to track bugs and features. Before sub
 1. Fork the project.
 2. Create a topic branch.
 3. Implement your feature or bug fix.
-6. Commit and push your changes.
-7. Submit a pull request.
+4. Add tests.
+5. Commit and push your changes.
+6. Submit a pull request.
 
 ## Copyright
 Copyright (c) 2012 Code for America. See [LICENSE][] for details.
