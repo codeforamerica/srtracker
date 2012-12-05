@@ -4,6 +4,7 @@ SECRET_KEY               = 'please_please_change_this!'
 PASSWORD_PROTECTED       = False
 PASSWORD                 = ''
 MAX_RECENT_SRS           = 50
+SRS_PAGE_SIZE            = 50
 RECENT_SRS_TIME          = 60 * 60  # (in seconds)
 GOOGLE_ANALYTICS_ACCOUNT = ''
 
