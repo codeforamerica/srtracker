@@ -47,7 +47,7 @@ def password_protect():
 @app.route("/",defaults={'page':1})
 @app.route("/<int:page>")
 def index(page):
-    url = '%s/requests.json?page_size=50&page=%d' % (app.config['OPEN311_SERVER'],page)
+    url = '%s/requests.json' % (app.config['OPEN311_SERVER'],page)
     page_size = app.config.get('SRS_PAGE_SIZE', 50)
     recent_sr_timeframe = app.config.get('RECENT_SRS_TIME')
     
