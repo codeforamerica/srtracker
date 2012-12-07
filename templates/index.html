@@ -64,9 +64,9 @@
 			</div>
 		{% endif %}
 			{% if page != 1 %}
-			<a href="{{ url_for("index",page=page-1) }}" style="float : left;">Previous Page</a>
+				<a href="{{ url_for("index",page=page-1) }}" style="float : left;">Previous Page</a>
 			{% else %}
-			Previous Page
+				Previous Page
 			{% endif %}
 			<a href="{{ url_for("index",page=page+1) }}" style="float : right;">Next Page</a>
 	</div>

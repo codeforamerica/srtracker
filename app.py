@@ -44,7 +44,7 @@ def password_protect():
 #--------------------------------------------------------------------------
 # ROUTES
 #--------------------------------------------------------------------------
-@app.route("/",defaults={'page':1})
+@app.route("/", defaults={'page':1})
 @app.route("/<int:page>")
 def index(page):
     url = '%s/requests.json' % app.config['OPEN311_SERVER']
@@ -73,7 +73,7 @@ def index(page):
         # need to slice with max_recent_srs in case an endpoint doesn't support page_size
         service_requests = r.json[:page_size]
     
-    return render_app_template('index.html', service_requests=service_requests,page=page)
+    return render_app_template('index.html', service_requests=service_requests, page=page)
 
 
 @app.route("/requests/")
