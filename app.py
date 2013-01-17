@@ -15,6 +15,8 @@ import updater
 from util import bool_from_env
 import open311tools
 
+from werkzeug.contrib.atom import AtomFeed
+
 # Config
 DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'configuration.py')
 
@@ -233,6 +235,60 @@ def unsubscribe(subscription_key):
     flash(u'You‘ve been unsubscribed from this service request. You will no longer receive e-mails when it is updated.')
     return redirect(destination)
 
+#--------------------------------------------------------------------------
+# SYNDICATION
+#--------------------------------------------------------------------------
+
+@app.route('/recent.atom')
+def recent_feed():
+    atom_size = 15
+    
+    url = '%s/requests.json' % app.config['OPEN311_SERVER']
+    recent_sr_timeframe = app.config.get('RECENT_SRS_TIME')
+
+    params = {
+        'extensions': 'true',
+        'legacy': 'false',
+        'page_size': atom_size
+    }
+    if recent_sr_timeframe:
+        start_datetime = datetime.datetime.utcnow() - datetime.timedelta(seconds=recent_sr_timeframe)
+        params['start_date'] = start_datetime.isoformat() + 'Z'
+    if app.config['OPEN311_API_KEY']:
+        params['api_key'] = app.config['OPEN311_API_KEY']
+
+    app.logger.debug('RECENT SRs: %s', params)
+
+    r = requests.get(url, params=params)
+    if r.status_code != 200:
+        app.logger.error('OPEN311: Failed to load recent requests from Open311 server. Status Code: %s, Response: %s', r.status_code, r.text)
+        service_requests = None
+    else:
+        # need to slice with max_recent_srs in case an endpoint doesn't support page_size
+        service_requests = r.json[:atom_size]
+
+    # generate feed 
+    feed = AtomFeed('Recent Articles',
+                    feed_url=request.url, url=request.url_root)
+
+    if service_requests:    
+        for sr in service_requests:
+            if 'service_request_id' in sr:
+                sr['requested_datetime'] = iso8601.parse_date(sr['requested_datetime'])
+                sr['updated_datetime'] = iso8601.parse_date(sr['updated_datetime'])
+
+                title = sr['service_name'] + ' - ' + sr['service_request_id']
+                body = sr['service_name']  + sr['address']
+                feed.add(title, 
+                         unicode(body),
+                         content_type='html',
+                         author=sr['agency_responsible'],
+                         url=url_for('show_request', request_id=sr['service_request_id']),
+                         updated=sr['updated_datetime'],
+                         published=sr['requested_datetime'])
+
+    return feed.get_response()
+    
 
 #--------------------------------------------------------------------------
 # ERRORS
