@@ -39,19 +39,25 @@
 			<h1>Find out the status of your 311 service request</h1>
 
 			{% set example_id = service_requests and service_requests[0].service_request_id or '12-01516712' %}
-			
+
 			<form method="GET" action="{{ url_for('request_search') }}" class="in_yo_face search_form">
 				<input type="text" name="request_id" id="search_field" class="search_field" placeholder="Request #, e.g. {{ example_id }}" />
 				<input type="submit" class="submit" value="Submit" />
 			</form>
-			
+			<label for="customDropdown">Category</label>
+                        <select>
+				{% for st in service_list %}
+				<option title="{{ st.description }}">{{ st.service_name }}</option>
+				{% endfor %}
+			</select>
 			<p class="form_help">Don’t know your service request number? Call 311.</p>
 		</div>
-		
+
 		{% if service_requests %}
 			<div class="box request_list">
 				<h1>Recently Updated Service Requests</h1>
-				
+
+
 				<table>
 					<tbody>
 						{# most recent requests first, in order #}
