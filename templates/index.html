@@ -44,21 +44,6 @@
 				<input type="text" name="request_id" id="search_field" class="search_field" placeholder="Request #, e.g. {{ example_id }}" />
 				<input type="submit" class="submit" value="Submit" />
 			</form>
-                        <h3> Filter by Request Type </h3>
-			<form method="GET" action="{{ url_for("index", page=1) }}">
-				<label for="filter">Service Request Type</label>
-				<select id="filter" name="filter">
-					<option>All</option>
-					{% for st in services_list %}
-                                        {% if sID == st.service_code %}
-                                        <option title="{{ st.description }}" value="{{ st.service_code }}" selected>{{ st.service_name }}</option>
-                                        {% else %}
-					<option title="{{ st.description }}" value="{{ st.service_code }}">{{ st.service_name }}</option>
-                                        {% endif %}
-					{% endfor %}
-				</select>
-                                <input type="submit" class="submit" value="Filter" />
-			</form>
 			<p class="form_help">Don’t know your service request number? Call 311.</p>
 
 		</div>
@@ -66,8 +51,21 @@
 		{% if service_requests %}
 			<div class="box request_list">
 				<h1>Recently Updated Service Requests</h1>
-
-
+			        <form method="GET" action="{{ url_for("index", page=1) }}">
+				        <label for="filter">Filter by Service Request Type</label>
+				        <select id="filter" name="filter">
+					        <option>All</option>
+					        {% for st in services_list %}
+                                                {% if sID == st.service_code %}
+                                                <option title="{{ st.description }}" value="{{ st.service_code }}" selected>{{ st.service_name }}</option>
+                                                {% else %}
+					        <option title="{{ st.description }}" value="{{ st.service_code }}">{{ st.service_name }}</option>
+                                                {% endif %}
+					        {% endfor %}
+				        </select>
+                                        <input type="submit" class="submit" value="Filter" />
+			        </form>
+                                <hr>
 				<table>
 					<tbody>
 						{# most recent requests first, in order #}
