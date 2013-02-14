@@ -44,12 +44,15 @@
 				<input type="text" name="request_id" id="search_field" class="search_field" placeholder="Request #, e.g. {{ example_id }}" />
 				<input type="submit" class="submit" value="Submit" />
 			</form>
-			<label for="customDropdown">Category</label>
-                        <select>
-				{% for st in service_list %}
-				<option title="{{ st.description }}">{{ st.service_name }}</option>
-				{% endfor %}
-			</select>
+			<form method="GET">
+				<label for="filter">Category</label>
+				<select id="filter">
+					<option>All</option>
+					{% for st in services_list %}
+					<option title="{{ st.description }}">{{ st.service_name }}</option>
+					{% endfor %}
+				</select>
+			</form>
 			<p class="form_help">Don’t know your service request number? Call 311.</p>
 		</div>
 

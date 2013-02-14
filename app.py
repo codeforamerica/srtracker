@@ -59,6 +59,8 @@ def index(page):
         page_size = app.config.get('MAX_RECENT_SRS', 50)
         page = 1
 
+
+    services_list = open311tools.services(app.config['OPEN311_SERVER'], app.config['OPEN311_API_KEY'])
     params = {
         'extensions': 'true',
         'legacy': 'false',
@@ -80,9 +82,7 @@ def index(page):
     else:
         # need to slice with page_size in case an endpoint doesn't support page_size its API (it's non-standard)
         service_requests = r.json[:page_size]
-        SERVICES_LIST = open311tools.services(app.config['OPEN311_SERVER'], app.config['OPEN311_API_KEY'])
-
-    return render_app_template('index.html', service_requests=service_requests, page=page, service_list=SERVICES_LIST)
+    return render_app_template('index.html', service_requests=service_requests, page=page, services_list=services_list)
 
 
 
