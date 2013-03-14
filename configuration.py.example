@@ -28,4 +28,4 @@ SRTRACKER_URL     = 'http://localhost:5000/'
 
 
 # SYNDICATION
-ATOM_SIZE                = 15
+ATOM_SIZE                = 25
