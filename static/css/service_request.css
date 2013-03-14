@@ -385,6 +385,6 @@ input {
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
 	.site_title {
-		background: url("../img/311_service_tracker_logo_x2.png");
+		background-image: url("../img/311_service_tracker_logo_x2.png");
 	}
 }
