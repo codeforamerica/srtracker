@@ -195,11 +195,11 @@ button:hover {
 		}
 		.footer_logos .logo_chicago {
 			width: 184px;
-			background: url("../img/footer_logo_chicago.png");
+			background-image: url("../img/footer_logo_chicago.png");
 		}
 		.footer_logos .logo_cfa {
 			width: 133px;
-			background: url("../img/footer_logo_cfa.png");
+			background-image: url("../img/footer_logo_cfa.png");
 		}
 
 .message_overlay_backing {
@@ -395,19 +395,19 @@ button:hover {
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
 	.landing header {
-		background: url("../img/311_service_tracker_logo_big_x2.png");
+		background-image: url("../img/311_service_tracker_logo_big_x2.png");
 	}
 
 	.footer_logos .logo_chicago {
-		background: url("../img/footer_logo_chicago_2x.png");
+		background-image: url("../img/footer_logo_chicago_2x.png");
 	}
 	.footer_logos .logo_cfa {
-		background: url("../img/footer_logo_cfa_2x.png");
+		background-image: url("../img/footer_logo_cfa_2x.png");
 	}
 }
 
 @media only screen and (max-width: 759px) and (-webkit-min-device-pixel-ratio: 2) {
 	.landing header {
-		background: url("../img/311_service_tracker_logo_x2.png");
+		background-image: url("../img/311_service_tracker_logo_x2.png");
 	}
 }
