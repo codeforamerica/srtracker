@@ -242,7 +242,7 @@ def unsubscribe(subscription_key):
 
 @app.route('/recent.atom')
 def recent_feed():
-    atom_size = app.config['ATOM_SIZE']
+    atom_size = app.config.get('ATOM_SIZE', 25)
 
     url = '%s/requests.json' % app.config['OPEN311_SERVER']
     recent_sr_timeframe = app.config.get('RECENT_SRS_TIME')
@@ -266,7 +266,7 @@ def recent_feed():
         service_requests = r.json[:atom_size]
 
     # generate feed
-    feed = AtomFeed('Recently Update Service Requests',
+    feed = AtomFeed('Recently Updated Service Requests',
                     feed_url=request.url, url=request.url_root)
 
     if service_requests:
