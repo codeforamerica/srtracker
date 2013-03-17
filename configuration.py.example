@@ -25,3 +25,7 @@ EMAIL_SSL          = True
 EMAIL_MAX_THREADS  = 5
 
 SRTRACKER_URL     = 'http://localhost:5000/'
+
+
+# SYNDICATION
+ATOM_SIZE                = 25
