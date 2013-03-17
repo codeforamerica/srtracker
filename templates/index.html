@@ -2,6 +2,11 @@
 
 {% block page_class %}landing{% endblock %}
 
+{% block head %}
+	{{ super() }}
+	<link href="{{ url_for('recent_feed') }}" type="application/atom+xml" rel="alternate" title="News Feed of Recent Service Requests" />
+{% endblock %}
+
 {% block stylesheets %}
 	{{ super() }}
 	<style type="text/css" media="screen">
