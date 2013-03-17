@@ -50,17 +50,17 @@
 		
 		{% if service_requests %}
 			<div class="box request_list">
-				<h1>Recent Service Requests</h1>
+				<h1>Recently Updated Service Requests</h1>
 				
 				<table>
 					<tbody>
 						{# most recent requests first, in order #}
-						{% for sr in service_requests|sort(reverse=True, attribute='requested_datetime') %}
+						{% for sr in service_requests|sort(reverse=True, attribute='updated_datetime') %}
 							{% if sr.service_request_id %}
 								<tr>
 									<th><a href="{{ url_for("show_request", request_id=sr.service_request_id) }}">{{ sr.service_name or '?' }}</a></th>
 									<td class="number_col"><a href="{{ url_for("show_request", request_id=sr.service_request_id) }}">#{{ sr.service_request_id }}</a></td>
-									<td class="number_col time_col"><a href="{{ url_for("show_request", request_id=sr.service_request_id) }}">{{ sr.requested_datetime|friendly_time }}</a></td>
+									<td class="number_col time_col"><a href="{{ url_for("show_request", request_id=sr.service_request_id) }}">{{ sr.updated_datetime|friendly_time }}</a></td>
 								</tr>
 							{% endif %}
 						{% endfor %}
@@ -68,5 +68,11 @@
 				</table>
 			</div>
 		{% endif %}
+			{% if page != 1 %}
+				<a href="{{ url_for("index",page=page-1) }}" style="float : left;">Previous Page</a>
+			{% else %}
+				Previous Page
+			{% endif %}
+			<a href="{{ url_for("index",page=page+1) }}" style="float : right;">Next Page</a>
 	</div>
 {% endblock %}

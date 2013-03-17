@@ -46,17 +46,18 @@ def password_protect():
 #--------------------------------------------------------------------------
 # ROUTES
 #--------------------------------------------------------------------------
-
-@app.route("/")
-def index():
+@app.route("/", defaults={'page':1})
+@app.route("/<int:page>")
+def index(page):
     url = '%s/requests.json' % app.config['OPEN311_SERVER']
-    max_recent_srs = app.config.get('MAX_RECENT_SRS', 50)
+    page_size = app.config.get('SRS_PAGE_SIZE', 50)
     recent_sr_timeframe = app.config.get('RECENT_SRS_TIME')
-
+    
     params = {
         'extensions': 'true',
         'legacy': 'false',
-        'page_size': max_recent_srs
+        'page_size': page_size,
+        'page' : page
     }
     if recent_sr_timeframe:
         start_datetime = datetime.datetime.utcnow() - datetime.timedelta(seconds=recent_sr_timeframe)
@@ -72,9 +73,9 @@ def index():
         service_requests = None
     else:
         # need to slice with max_recent_srs in case an endpoint doesn't support page_size
-        service_requests = r.json[:max_recent_srs]
-
-    return render_app_template('index.html', service_requests=service_requests)
+        service_requests = r.json[:page_size]
+    
+    return render_app_template('index.html', service_requests=service_requests, page=page)
 
 
 @app.route("/requests/")
