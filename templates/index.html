@@ -68,11 +68,13 @@
 				</table>
 			</div>
 		{% endif %}
+		{% if paged %}
 			{% if page != 1 %}
 				<a href="{{ url_for("index",page=page-1) }}" style="float : left;">Previous Page</a>
 			{% else %}
 				Previous Page
 			{% endif %}
 			<a href="{{ url_for("index",page=page+1) }}" style="float : right;">Next Page</a>
+		{% endif %}
 	</div>
 {% endblock %}

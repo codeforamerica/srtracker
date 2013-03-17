@@ -50,8 +50,14 @@ def password_protect():
 @app.route("/<int:page>")
 def index(page):
     url = '%s/requests.json' % app.config['OPEN311_SERVER']
-    page_size = app.config.get('SRS_PAGE_SIZE', 50)
     recent_sr_timeframe = app.config.get('RECENT_SRS_TIME')
+    
+    # If SRS_PAGE_SIZE is set, use paging. Otherwise, fall back to a non-paged list from MAX_RECENT_SRS
+    page_size = app.config.get('SRS_PAGE_SIZE')
+    paged = page_size > 0
+    if not paged:
+        page_size = app.config.get('MAX_RECENT_SRS', 50)
+        page = 1
     
     params = {
         'extensions': 'true',
@@ -72,10 +78,10 @@ def index(page):
         app.logger.error('OPEN311: Failed to load recent requests from Open311 server. Status Code: %s, Response: %s', r.status_code, r.text)
         service_requests = None
     else:
-        # need to slice with max_recent_srs in case an endpoint doesn't support page_size
+        # need to slice with page_size in case an endpoint doesn't support page_size its API (it's non-standard)
         service_requests = r.json[:page_size]
     
-    return render_app_template('index.html', service_requests=service_requests, page=page)
+    return render_app_template('index.html', service_requests=service_requests, page=page, paged=paged)
 
 
 @app.route("/requests/")
