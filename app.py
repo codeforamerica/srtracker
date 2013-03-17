@@ -8,6 +8,7 @@ import os
 import datetime
 import re
 from flask import Flask, render_template, request, abort, redirect, url_for, make_response, session, flash
+from werkzeug.contrib.atom import AtomFeed
 import requests
 import iso8601
 import pytz
@@ -15,7 +16,6 @@ import updater
 from util import bool_from_env
 import open311tools
 
-from werkzeug.contrib.atom import AtomFeed
 
 # Config
 DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'configuration.py')
