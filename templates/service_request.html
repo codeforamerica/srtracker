@@ -37,7 +37,7 @@
 			</p>
 			<p>
 				<strong>Created:</strong> 
-				{% if sr.address %}
+				{% if sr.requested_datetime %}
 					{{ sr.requested_datetime.strftime('%B %d, %Y') }}
 				{% else %}
 					Unknown
