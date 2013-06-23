@@ -64,7 +64,6 @@ def index(page, sID):
         page_size = app.config.get('MAX_RECENT_SRS', 50)
         page = 1
 
-
     services_list = open311tools.services(app.config['OPEN311_SERVER'], app.config['OPEN311_API_KEY'])
     if sID != '':
         if sID not in [s['service_code'] for s in services_list]:
@@ -92,7 +91,6 @@ def index(page, sID):
         # need to slice with page_size in case an endpoint doesn't support page_size its API (it's non-standard)
         service_requests = r.json[:page_size]
     return render_app_template('index.html', service_requests=service_requests, page=page, services_list=services_list, sID=sID)
-
 
 
 @app.route("/requests/")
@@ -170,7 +168,6 @@ def show_request(request_id):
             if note['type'] in ('follow_on', 'follow_on_created', 'follow_on_closed'):
                 note_sr_id = note['extended_attributes']['service_request_id']
 
-
                 # old-style is just "follow_on" for everything related to follow-ons
                 # new-style is "follow_on_created" and "follow_on_closed"
                 # update old notes so templates don't get crazy complicated :(
@@ -187,7 +184,7 @@ def show_request(request_id):
                         original['extended_attributes']['closed_datetime'] = note['datetime']
 
         # if we hit any follow_on_opened notes
-        if follow_on_open_count >0:
+        if follow_on_open_count > 0:
             # remove the notes that claim the request is closed
             sr['notes'] = [n for n in sr['notes'] if not n['type'] == 'closed']
             # set the request to open
@@ -257,6 +254,7 @@ def unsubscribe(subscription_key):
 #--------------------------------------------------------------------------
 # SYNDICATION
 #--------------------------------------------------------------------------
+
 
 @app.route('/recent.atom')
 def recent_feed():
