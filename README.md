@@ -9,6 +9,15 @@ It includes the following components:
 
 ![Screenshot of SR Tracker](https://raw.github.com/codeforamerica/srtracker/master/screenshot.png)
 
+
+Reuse
+-----
+
+If you are seeing this text, you are probably looking at the `master-chicago` branch of the SRTracker code. This branch is maintained specifically for the City of Chicago and is probably not something you want to redeploy in another city. This primarily means that the HTML and CSS templates here are customized to provide a special look and feel. The actual application code and functionality is no different from the more readily reusable code in the `master` branch.
+
+If you'd like to set up SRTracker in another city, you should take a look at the [master branch](https://github.com/codeforamerica/srtracker).
+
+
 Installation & Configuration
 ----------------------------
 
