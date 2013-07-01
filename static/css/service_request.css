@@ -61,6 +61,12 @@ h1 {
 	font-family: ArvoBold, Helvetica, Arial, sans-serif;
 	font-size: 32px;
 	font-weight: normal;
+	overflow: hidden;
+     -o-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
+   -moz-text-overflow: ellipsis;
+-webkit-text-overflow: ellipsis;
+        text-overflow: ellipsis;
 }
 
 input {
