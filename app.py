@@ -53,7 +53,7 @@ def password_protect():
 def index(page, service_code):
     if 'filter' in request.args:
         service_code = request.args['filter']
-    print page, service_code
+
     url = '%s/requests.json' % app.config['OPEN311_SERVER']
     recent_sr_timeframe = app.config.get('RECENT_SRS_TIME')
 
@@ -65,9 +65,9 @@ def index(page, service_code):
         page = 1
 
     services_list = open311tools.services(app.config['OPEN311_SERVER'], app.config['OPEN311_API_KEY'])
-    if service_code != '':
-        if service_code not in [s['service_code'] for s in services_list]:
-            service_code = ''
+
+    if service_code not in [s['service_code'] for s in services_list]:
+        service_code = ''
 
     params = {
         'extensions': 'true',
