@@ -47,13 +47,13 @@ def password_protect():
 #--------------------------------------------------------------------------
 # ROUTES
 #--------------------------------------------------------------------------
-@app.route("/", defaults={'page': 1, 'sID': ''})
-@app.route("/<int:page>", defaults={'sID': ''})
-@app.route("/<int:page>/<sID>")
-def index(page, sID):
+@app.route("/", defaults={'page': 1, 'service_code': ''})
+@app.route("/<int:page>", defaults={'service_code': ''})
+@app.route("/<int:page>/<service_code>")
+def index(page, service_code):
     if 'filter' in request.args:
-        sID = request.args['filter']
-    print page, sID
+        service_code = request.args['filter']
+    print page, service_code
     url = '%s/requests.json' % app.config['OPEN311_SERVER']
     recent_sr_timeframe = app.config.get('RECENT_SRS_TIME')
 
@@ -65,15 +65,15 @@ def index(page, sID):
         page = 1
 
     services_list = open311tools.services(app.config['OPEN311_SERVER'], app.config['OPEN311_API_KEY'])
-    if sID != '':
-        if sID not in [s['service_code'] for s in services_list]:
-            sID = ''
+    if service_code != '':
+        if service_code not in [s['service_code'] for s in services_list]:
+            service_code = ''
 
     params = {
         'extensions': 'true',
         'page_size': page_size,
         'page': page,
-        'service_code': sID
+        'service_code': service_code
     }
     if recent_sr_timeframe:
         start_datetime = datetime.datetime.utcnow() - datetime.timedelta(seconds=recent_sr_timeframe)
@@ -90,7 +90,7 @@ def index(page, sID):
     else:
         # need to slice with page_size in case an endpoint doesn't support page_size its API (it's non-standard)
         service_requests = r.json[:page_size]
-    return render_app_template('index.html', service_requests=service_requests, page=page, services_list=services_list, sID=sID)
+    return render_app_template('index.html', service_requests=service_requests, page=page, services_list=services_list, service_code=service_code)
 
 
 @app.route("/requests/")

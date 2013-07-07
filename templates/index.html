@@ -56,7 +56,7 @@
 					<select id="filter" name="filter">
 						<option>All</option>
 						{% for st in services_list %}
-						{% if sID == st.service_code %}
+						{% if service_code == st.service_code %}
 						<option title="{{ st.description }}" value="{{ st.service_code }}" selected>{{ st.service_name }}</option>
 						{% else %}
 						<option title="{{ st.description }}" value="{{ st.service_code }}">{{ st.service_name }}</option>
@@ -84,12 +84,12 @@
 		{% endif %}
 		{% if paged %}
 			{% if page != 1 %}
-				<a href="{{ url_for("index",page=page-1,sID=sID) }}" style="float : left;">Previous Page</a>
+				<a href="{{ url_for("index",page=page-1,service_code=service_code) }}" style="float : left;">Previous Page</a>
 			{% else %}
 				Previous Page
 			{% endif %}
 
-			<a href="{{ url_for("index",page=page+1,sID=sID) }}" style="float : right;">Next Page</a>
+			<a href="{{ url_for("index",page=page+1,service_code=service_code) }}" style="float : right;">Next Page</a>
 		{% endif %}
 	</div>
 {% endblock %}
