@@ -51,21 +51,21 @@
 		{% if service_requests %}
 			<div class="box request_list">
 				<h1>Recently Updated Service Requests</h1>
-			        <form method="GET" action="{{ url_for("index", page=1) }}">
-				        <label for="filter">Filter by Service Request Type</label>
-				        <select id="filter" name="filter">
-					        <option>All</option>
-					        {% for st in services_list %}
-                                                {% if sID == st.service_code %}
-                                                <option title="{{ st.description }}" value="{{ st.service_code }}" selected>{{ st.service_name }}</option>
-                                                {% else %}
-					        <option title="{{ st.description }}" value="{{ st.service_code }}">{{ st.service_name }}</option>
-                                                {% endif %}
-					        {% endfor %}
-				        </select>
-                                        <input type="submit" class="submit" value="Filter" />
-			        </form>
-                                <hr>
+				<form method="GET" action="{{ url_for("index", page=1) }}">
+					<label for="filter">Filter by Service Request Type</label>
+					<select id="filter" name="filter">
+						<option>All</option>
+						{% for st in services_list %}
+						{% if sID == st.service_code %}
+						<option title="{{ st.description }}" value="{{ st.service_code }}" selected>{{ st.service_name }}</option>
+						{% else %}
+						<option title="{{ st.description }}" value="{{ st.service_code }}">{{ st.service_name }}</option>
+						{% endif %}
+						{% endfor %}
+					</select>
+					<input type="submit" class="submit" value="Filter" />
+				</form>
+				<hr>
 				<table>
 					<tbody>
 						{# most recent requests first, in order #}
