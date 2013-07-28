@@ -95,7 +95,12 @@ $(document).ready(function() {
             event.stopPropagation();
         }
     });
-
+    
+    
+    // request type filter form
+    $("#filter_form").on("change", function(event) {
+        this.submit();
+    });
 
 
     // HTML5 Placeholder Shim
