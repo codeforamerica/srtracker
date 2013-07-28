@@ -66,7 +66,12 @@ def index(page, service_code):
 
     services_list = open311tools.services(app.config['OPEN311_SERVER'], app.config['OPEN311_API_KEY'])
 
-    if service_code not in [s['service_code'] for s in services_list]:
+    service_name = ''
+    for service in services_list:
+        if service_code == service['service_code']:
+            service_name = service['service_name']
+            break
+    if not service_name:
         service_code = ''
 
     params = {
@@ -90,7 +95,12 @@ def index(page, service_code):
     else:
         # need to slice with page_size in case an endpoint doesn't support page_size its API (it's non-standard)
         service_requests = r.json[:page_size]
-    return render_app_template('index.html', service_requests=service_requests, page=page, services_list=services_list, service_code=service_code)
+    return render_app_template('index.html',
+        service_requests = service_requests,
+        page             = page,
+        services_list    = services_list,
+        service_code     = service_code,
+        service_name     = service_name)
 
 
 @app.route("/requests/")
