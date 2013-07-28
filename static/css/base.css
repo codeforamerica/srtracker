@@ -155,9 +155,6 @@ button:hover {
 	float: right;
 	margin: 10px 0 10px;
 }
-	.request_list header .submit {
-		display: none;
-	}
 	.filter_label {
 		display: inline-block;
 		position: relative;

@@ -98,9 +98,10 @@ $(document).ready(function() {
     
     
     // request type filter form
-    $("#filter_form").on("change", function(event) {
+    $(".request_list header form").on("change", function(event) {
         this.submit();
     });
+    $(".request_list header .submit").remove();
 
 
     // HTML5 Placeholder Shim
