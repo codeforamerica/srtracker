@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012, Code for America
+ * Copyright (C) 2012-2013, Code for America
  * This is open source software, released under a standard 3-clause
  * BSD-style license; see the file LICENSE for details.
  */
