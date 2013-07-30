@@ -41,14 +41,18 @@ body {
 	        border-radius: 4px;
 }
 
-	.box > h1 {
-		margin: 0 0 18px;
+	.box h1 {
+		margin: 0;
 		padding: 0 0 10px;
 		font-family: ArvoBold, Helvetica, Arial, sans-serif;
 		font-weight: normal;
 		line-height: 1em;
 		text-align: left;
 		font-size: 28px;
+	}
+	.box > h1,
+	.box > header {
+		margin: 0 0 18px;
 	}
 	
 table {
@@ -139,9 +143,39 @@ button:hover {
 	font-style: italic;
 }
 
-.request_list h1 {
+.request_list header {
 	border-bottom: 3px solid #333;
+	overflow: hidden;
+	width: 100%;
 }
+.request_list h1 {
+	float: left;
+}
+.request_list header form {
+	float: right;
+	margin: 10px 0 10px;
+}
+	.filter_label {
+		display: inline-block;
+		position: relative;
+		background: url("../img/filter_arrow_2x.png") no-repeat 100% 50%;
+		background-size: 13px 7px;
+		padding-right: 18px;
+		color: #777;
+		font-weight: bold;
+		font-size: 14px;
+		text-transform: uppercase;
+	}
+		.filter_label select {
+			position: absolute;
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			opacity: 0;
+			margin: 0;
+			padding: 0;
+		}
 
 .request_list th,
 .request_list td {
@@ -261,7 +295,7 @@ button:hover {
  * Landing Page
  */
  
-.landing header {
+.landing .page_header {
 	margin: 0 auto 24px;
 	background: url("../img/311_service_tracker_logo_big.png");
 	background-size: 436px 190px;
@@ -316,7 +350,7 @@ button:hover {
 		padding: 0 0 180px;
 	}
 
-	.landing header {
+	.landing .page_header {
 		margin: 0 auto 10px;
 		background: url("../img/311_service_tracker_logo.png");
 		background-size: 279px 123px;
@@ -349,7 +383,14 @@ button:hover {
 		width: 100%;
 		margin-bottom: 0;
 	}
-
+	
+	.request_list h1 {
+		float: none;
+	}
+	
+	.request_list header form {
+		float: none;
+	}
 	
 	/* Too skinny for a side-by-side table */
 	.request_list tr {
@@ -394,7 +435,7 @@ button:hover {
  **********************************************************/
 
 @media only screen and (-webkit-min-device-pixel-ratio: 2) {
-	.landing header {
+	.landing .page_header {
 		background-image: url("../img/311_service_tracker_logo_big_x2.png");
 	}
 
@@ -404,10 +445,13 @@ button:hover {
 	.footer_logos .logo_cfa {
 		background-image: url("../img/footer_logo_cfa_2x.png");
 	}
+	.filter_label {
+		background-image: url("../img/filter_arrow_2x.png");
+	}
 }
 
 @media only screen and (max-width: 759px) and (-webkit-min-device-pixel-ratio: 2) {
-	.landing header {
+	.landing .page_header {
 		background-image: url("../img/311_service_tracker_logo_x2.png");
 	}
 }

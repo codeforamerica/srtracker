@@ -13,7 +13,7 @@ import requests
 import iso8601
 import pytz
 import updater
-from util import bool_from_env
+
 import open311tools
 
 
@@ -29,6 +29,7 @@ PASSWORD_PROTECTED = False
 SECRET_KEY = 'please_please_change_this!'
 
 app = Flask(__name__)
+
 
 @app.before_request
 def password_protect():
@@ -46,17 +47,38 @@ def password_protect():
 #--------------------------------------------------------------------------
 # ROUTES
 #--------------------------------------------------------------------------
+@app.route("/", defaults={'page': 1, 'service_code': ''})
+@app.route("/<int:page>", defaults={'service_code': ''})
+@app.route("/<int:page>/<service_code>")
+def index(page, service_code):
+    if 'filter' in request.args:
+        service_code = request.args['filter']
 
-@app.route("/")
-def index():
     url = '%s/requests.json' % app.config['OPEN311_SERVER']
-    max_recent_srs = app.config.get('MAX_RECENT_SRS', 50)
     recent_sr_timeframe = app.config.get('RECENT_SRS_TIME')
+
+    # If SRS_PAGE_SIZE is set, use paging. Otherwise, fall back to a non-paged list from MAX_RECENT_SRS
+    page_size = app.config.get('SRS_PAGE_SIZE')
+    paged = page_size > 0
+    if not paged:
+        page_size = app.config.get('MAX_RECENT_SRS', 50)
+        page = 1
+
+    services_list = open311tools.services(app.config['OPEN311_SERVER'], app.config['OPEN311_API_KEY'])
+
+    service_name = ''
+    for service in services_list:
+        if service_code == service['service_code']:
+            service_name = service['service_name']
+            break
+    if not service_name:
+        service_code = ''
 
     params = {
         'extensions': 'true',
-        'legacy': 'false',
-        'page_size': max_recent_srs
+        'page_size': page_size,
+        'page': page,
+        'service_code': service_code
     }
     if recent_sr_timeframe:
         start_datetime = datetime.datetime.utcnow() - datetime.timedelta(seconds=recent_sr_timeframe)
@@ -71,10 +93,14 @@ def index():
         app.logger.error('OPEN311: Failed to load recent requests from Open311 server. Status Code: %s, Response: %s', r.status_code, r.text)
         service_requests = None
     else:
-        # need to slice with max_recent_srs in case an endpoint doesn't support page_size
-        service_requests = r.json[:max_recent_srs]
-
-    return render_app_template('index.html', service_requests=service_requests)
+        # need to slice with page_size in case an endpoint doesn't support page_size its API (it's non-standard)
+        service_requests = r.json[:page_size]
+    return render_app_template('index.html',
+        service_requests = service_requests,
+        page             = page,
+        services_list    = services_list,
+        service_code     = service_code,
+        service_name     = service_name)
 
 
 @app.route("/requests/")
@@ -152,7 +178,6 @@ def show_request(request_id):
             if note['type'] in ('follow_on', 'follow_on_created', 'follow_on_closed'):
                 note_sr_id = note['extended_attributes']['service_request_id']
 
-
                 # old-style is just "follow_on" for everything related to follow-ons
                 # new-style is "follow_on_created" and "follow_on_closed"
                 # update old notes so templates don't get crazy complicated :(
@@ -169,7 +194,7 @@ def show_request(request_id):
                         original['extended_attributes']['closed_datetime'] = note['datetime']
 
         # if we hit any follow_on_opened notes
-        if follow_on_open_count >0:
+        if follow_on_open_count > 0:
             # remove the notes that claim the request is closed
             sr['notes'] = [n for n in sr['notes'] if not n['type'] == 'closed']
             # set the request to open
@@ -239,6 +264,7 @@ def unsubscribe(subscription_key):
 #--------------------------------------------------------------------------
 # SYNDICATION
 #--------------------------------------------------------------------------
+
 
 @app.route('/recent.atom')
 def recent_feed():
@@ -319,8 +345,7 @@ def friendly_time(dt, past_="ago", future_="from now", default="just now"):
     or "time until" e.g.
     3 days ago, 5 hours from now etc.
     """
-
-    if dt == None:
+    if dt is None:
         return ''
 
     if isinstance(dt, basestring):
@@ -350,14 +375,16 @@ def friendly_time(dt, past_="ago", future_="from now", default="just now"):
     for period, singular, plural in periods:
 
         if period:
-            return "%d %s %s" % (period, \
-                singular if period == 1 else plural, \
-                past_ if dt_is_past else future_)
+            return "%d %s %s" % (period,
+                                 singular if period == 1 else plural,
+                                 past_ if dt_is_past else future_)
 
     return default
 
 
 state_pattern = re.compile(r'\b(\w\w)(,?\s*\d{5}(?:-\d{4})?)?$')
+
+
 @app.template_filter()
 def title_address(address):
     '''Slightly improved title() method for address strings

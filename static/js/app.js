@@ -95,7 +95,13 @@ $(document).ready(function() {
             event.stopPropagation();
         }
     });
-
+    
+    
+    // request type filter form
+    $(".request_list header form").on("change", function(event) {
+        this.submit();
+    });
+    $(".request_list header .submit").remove();
 
 
     // HTML5 Placeholder Shim
