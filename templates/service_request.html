@@ -15,41 +15,40 @@
 		<h1>{{ sr.service_name }}</h1>
 		
 		<div class="request_details {% if sr.media_url %}has_media{% endif %}">
-			{% if sr.media_url %}
-				<img src="{{ sr.media_url }}" class="request_media" alt="" />
-			{% endif %}
 			
 			<p class="status_indicator status-{{ sr.status }}">{{ sr.status.title() }}</p>
 			
-			<div class="request_id">#{{ sr.service_request_id }}</div>
-			
-			{% if 'description' in sr %}
-				<p><strong>Description:</strong> {{ sr.description }}</p>
-			{% endif %}
+      <div class='request_info'>
+        <div class="request_id">#{{ sr.service_request_id }}</div>
 
-			<p>
-				<strong>Address:</strong> 
-				{% if sr.address %}
-					{{ sr.address|title_address }}
-				{% else %}
-					Unknown
-				{% endif %}
-			</p>
-			<p>
-				<strong>Created:</strong> 
-				{% if sr.requested_datetime %}
-					{{ sr.requested_datetime.strftime('%B %d, %Y') }}
-				{% else %}
-					Unknown
-				{% endif %}
-			</p>
-			{%  if sr.extended_attributes and sr.extended_attributes.channel %}
-				<p><strong>Received via:</strong> {{ sr.extended_attributes.channel.title() }}</p>
-			{% endif %}
-			
+        {% if 'description' in sr %}
+          <p><strong>Description:</strong> {{ sr.description }}</p>
+        {% endif %}
+
+        <p>
+          <strong>Address:</strong> 
+          {% if sr.address %}
+            {{ sr.address|title_address }}
+          {% else %}
+            Unknown
+          {% endif %}
+        </p>
+        <p>
+          <strong>Created:</strong> 
+          {% if sr.requested_datetime %}
+            {{ sr.requested_datetime.strftime('%B %d, %Y') }}
+          {% else %}
+            Unknown
+          {% endif %}
+        </p>
+        {%  if sr.extended_attributes and sr.extended_attributes.channel %}
+          <p><strong>Received via:</strong> {{ sr.extended_attributes.channel.title() }}</p>
+        {% endif %}
+      </div>
+      <img src="http://311request.cityofchicago.org/media/chicago/report/photos/521b5b4a016302a7830f3e25/pic_9246_2531.png" class="request_media" alt="">
 			<div class="clearfix"></div>
 		</div>
-		
+
 		<div class="secondary_content">
 			<section class="request_history">
 				<h2 class="activity_header">Activity</h2>
