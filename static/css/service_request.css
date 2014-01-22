@@ -76,9 +76,12 @@ input {
 .request_details {
 	position: relative;
 	margin-bottom: 32px;
-	padding: 24px;
+	padding: 24px 160px 24px 24px;
 	background: #f0f0f0;
 	box-shadow: 0 5px 5px rgba(0, 0, 0, 0.07);
+}
+.request_details.has_media {
+	padding-right: 320px;
 }
   .request_info {
     float: left;
@@ -86,6 +89,7 @@ input {
 	.request_media {
 		float: right;
 		max-width: 280px;
+		margin: 0 -300px 0 0;
 	}
 
 	.status_indicator {
@@ -322,11 +326,14 @@ input {
 		margin-bottom: 32px;
 		padding: 10px;
 	}
+	.request_details.has_media {
+		padding: 10px;
+	}
 		.request_media {
 			max-width: 100%;
 			margin: 0 0 0.5em;
-      float: left;
-      clear: left;
+			float: left;
+			clear: left;
 		}
 	
 		.status_indicator {
