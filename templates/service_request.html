@@ -15,38 +15,39 @@
 		<h1>{{ sr.service_name }}</h1>
 		
 		<div class="request_details {% if sr.media_url %}has_media{% endif %}">
-			{% if sr.media_url %}
-				<img src="{{ sr.media_url }}" class="request_media" alt="" />
-			{% endif %}
 			
 			<p class="status_indicator status-{{ sr.status }}">{{ sr.status.title() }}</p>
 			
-			<div class="request_id">#{{ sr.service_request_id }}</div>
-			
-			{% if 'description' in sr %}
-				<p><strong>Description:</strong> {{ sr.description }}</p>
-			{% endif %}
+			<div class='request_info'>
+				<div class="request_id">#{{ sr.service_request_id }}</div>
 
-			<p>
-				<strong>Address:</strong> 
-				{% if sr.address %}
-					{{ sr.address|title_address }}
-				{% else %}
-					Unknown
+				{% if 'description' in sr %}
+					<p><strong>Description:</strong> {{ sr.description }}</p>
 				{% endif %}
-			</p>
-			<p>
-				<strong>Created:</strong> 
-				{% if sr.requested_datetime %}
-					{{ sr.requested_datetime.strftime('%B %d, %Y') }}
-				{% else %}
-					Unknown
+
+				<p>
+					<strong>Address:</strong> 
+					{% if sr.address %}
+						{{ sr.address|title_address }}
+					{% else %}
+						Unknown
+					{% endif %}
+				</p>
+				<p>
+					<strong>Created:</strong> 
+					{% if sr.requested_datetime %}
+						{{ sr.requested_datetime.strftime('%B %d, %Y') }}
+					{% else %}
+						Unknown
+					{% endif %}
+				</p>
+				{%  if sr.extended_attributes and sr.extended_attributes.channel %}
+					<p><strong>Received via:</strong> {{ sr.extended_attributes.channel.title() }}</p>
 				{% endif %}
-			</p>
-			{%  if sr.extended_attributes and sr.extended_attributes.channel %}
-				<p><strong>Received via:</strong> {{ sr.extended_attributes.channel.title() }}</p>
+			</div>
+			{% if sr.media_url %}
+				<img src="{{ sr.media_url }}" class="request_media" alt="" />
 			{% endif %}
-			
 			<div class="clearfix"></div>
 		</div>
 		

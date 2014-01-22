@@ -83,6 +83,9 @@ input {
 .request_details.has_media {
 	padding-right: 320px;
 }
+  .request_info {
+    float: left;
+  }
 	.request_media {
 		float: right;
 		max-width: 280px;
@@ -329,6 +332,8 @@ input {
 		.request_media {
 			max-width: 100%;
 			margin: 0 0 0.5em;
+			float: left;
+			clear: left;
 		}
 	
 		.status_indicator {
