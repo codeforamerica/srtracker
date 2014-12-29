@@ -108,6 +108,6 @@ We use the [GitHub issue tracker][issues] to track bugs and features. Before sub
 7. Submit a pull request.
 
 ## Copyright
-Copyright (c) 2012 Code for America. See [LICENSE][] for details.
+Copyright (c) 2012-2013 Code for America. See [LICENSE][] for details.
 
 [license]: https://github.com/codeforamerica/srtracker/blob/master/LICENSE

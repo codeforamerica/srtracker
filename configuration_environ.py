@@ -1,4 +1,4 @@
-# Copyright (C) 2012, Code for America
+# Copyright (C) 2012-2013, Code for America
 # This is open source software, released under a standard 3-clause
 # BSD-style license; see the file LICENSE for details.
 
@@ -11,6 +11,7 @@ SECRET_KEY         = environ.get('SECRET_KEY')
 PASSWORD_PROTECTED = bool_from_env('PASSWORD_PROTECTED')
 PASSWORD           = environ.get('PASSWORD', '')
 MAX_RECENT_SRS     = int(environ.get('MAX_RECENT_SRS', 50))
+SRS_PAGE_SIZE      = int(environ.get('SRS_PAGE_SIZE', 0))
 RECENT_SRS_TIME    = int(environ.get('RECENT_SRS_TIME', 7 * 24 * 60 * 60))  # (in seconds)
 if 'SR_FIELD_BLACKLIST' in environ:
 	SR_FIELD_BLACKLIST = map(lambda item: item.strip(), environ['SR_FIELD_BLACKLIST'].split(','))

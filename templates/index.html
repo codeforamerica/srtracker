@@ -39,34 +39,69 @@
 			<h1>Find out the status of your 311 service request</h1>
 
 			{% set example_id = service_requests and service_requests[0].service_request_id or '12-01516712' %}
-			
+
 			<form method="GET" action="{{ url_for('request_search') }}" class="in_yo_face search_form">
 				<input type="text" name="request_id" id="search_field" class="search_field" placeholder="Request #, e.g. {{ example_id }}" />
 				<input type="submit" class="submit" value="Submit" />
 			</form>
-			
 			<p class="form_help">Don’t know your service request number? Call 311.</p>
+
 		</div>
-		
-		{% if service_requests %}
-			<div class="box request_list">
-				<h1>Recent Service Requests</h1>
-				
-				<table>
-					<tbody>
-						{# most recent requests first, in order #}
-						{% for sr in service_requests|sort(reverse=True, attribute='requested_datetime') %}
-							{% if sr.service_request_id %}
-								<tr>
-									<th><a href="{{ url_for("show_request", request_id=sr.service_request_id) }}">{{ sr.service_name or '?' }}</a></th>
-									<td class="number_col"><a href="{{ url_for("show_request", request_id=sr.service_request_id) }}">#{{ sr.service_request_id }}</a></td>
-									<td class="number_col time_col"><a href="{{ url_for("show_request", request_id=sr.service_request_id) }}">{{ sr.requested_datetime|friendly_time }}</a></td>
-								</tr>
+
+		{% if service_requests != None %}
+			<section class="box request_list">
+				<header>
+					<h1>Recently Updated Requests</h1>
+					<form method="GET" action="{{ url_for("index", page=1) }}" id="filter_form">
+						<label class="filter_label">
+							{% if service_name %}
+								{{ service_name }}
+							{% else %}
+								Filter
 							{% endif %}
-						{% endfor %}
-					</tbody>
-				</table>
-			</div>
+							<select id="sr_type_filter" name="filter">
+								<option>All</option>
+								{% for st in services_list %}
+									{% if service_code == st.service_code %}
+										<option title="{{ st.description }}" value="{{ st.service_code }}" selected>{{ st.service_name }}</option>
+									{% else %}
+										<option title="{{ st.description }}" value="{{ st.service_code }}">{{ st.service_name }}</option>
+									{% endif %}
+								{% endfor %}
+							</select>
+						</label>
+						<input type="submit" class="submit" value="Filter" />
+					</form>
+				</header>
+				
+				{% if service_requests %}
+					<table>
+						<tbody>
+							{# most recent requests first, in order #}
+							{% for sr in service_requests|sort(reverse=True, attribute='updated_datetime') %}
+								{% if sr.service_request_id %}
+									<tr>
+										<th><a href="{{ url_for("show_request", request_id=sr.service_request_id) }}">{{ sr.service_name or '?' }}</a></th>
+										<td class="number_col"><a href="{{ url_for("show_request", request_id=sr.service_request_id) }}">#{{ sr.service_request_id }}</a></td>
+										<td class="number_col time_col"><a href="{{ url_for("show_request", request_id=sr.service_request_id) }}">{{ sr.updated_datetime|friendly_time }}</a></td>
+									</tr>
+								{% endif %}
+							{% endfor %}
+						</tbody>
+					</table>
+				{% else %}
+					<em>There aren't any recent {{ service_name }} service requests.</em>
+				{% endif %}
+			</section>
+		{% endif %}
+		{% if paged %}
+			{% if page != 1 %}
+				<a href="{{ url_for("index",page=page-1,service_code=service_code) }}" style="float : left;">Previous Page</a>
+			{% else %}
+				Previous Page
+			{% endif %}
+
+			<a href="{{ url_for("index",page=page+1,service_code=service_code) }}" style="float : right;">Next Page</a>
 		{% endif %}
 	</div>
 {% endblock %}

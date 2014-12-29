@@ -28,7 +28,7 @@
 	</head>
 	<body>
 		{% block body %}
-			<header>
+			<header class="page_header">
 				{% block page_header %}
 					<a href="{{ url_for('index') }}" class="site_title">311 Service Tracker</a>
 					<form method="GET" action="{{ url_for('request_search') }}" class="search_form">
