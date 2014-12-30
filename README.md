@@ -61,6 +61,14 @@ This application relies upon extensions to the [Open311 GeoReport v2 Spec](http:
 - `updated_at` parameter: allows sorting requests by when they were updated, not just initially requests
 - `notes` field: individual requests may have additional "follow-on" requests that define additional work/activities related to the initial request which are exposed in the `notes` field of an individual service request
 
+
+## Want to reuse this outside Chicago?
+
+Chime in to [issue #64](https://github.com/codeforamerica/srtracker/issues/64) and let us know! https://github.com/codeforamerica/srtracker/issues/64
+
+Several things about the UI for this app are pretty specific to Chicago. We have some bugs filed about making it easy to re-deploy in other cities, so if you’re interested in using this app for an Open311 service outside Chicago, please let us know on [issue #64](https://github.com/codeforamerica/srtracker/issues/64). We’d love to hear what specific features would make this easy for you to re-use and customize.
+
+
 ## Contributing
 In the spirit of [free software][free-sw], **everyone** is encouraged to help
 improve this project.
