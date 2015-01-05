@@ -93,6 +93,16 @@ def index(page, service_code):
     else:
         # need to slice with page_size in case an endpoint doesn't support page_size its API (it's non-standard)
         service_requests = r.json[:page_size]
+        # we might receive SRs that were updated in the future (!); pretend like those updates were just now.
+        # fixes https://github.com/codeforamerica/srtracker/issues/80
+        now = datetime.datetime.utcnow()
+        for sr in service_requests:
+            if 'updated_datetime' in sr:
+                # parse and ensure the date is naive for comparison to utcnow
+                updated = iso8601.parse_date(sr['updated_datetime']) \
+                    .astimezone(pytz.utc).replace(tzinfo=None)
+                sr['updated_datetime'] = min(now, updated)
+                    
     return render_app_template('index.html',
         service_requests = service_requests,
         page             = page,
