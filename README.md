@@ -1,5 +1,4 @@
-Service Request Tracker
-=======================
+# Service Request Tracker
 
 This web application is built for the City of Chicago as an interface to service requests submitted through their 311 system. It uses Chicago's Open311 API---including Chicago-specific extensions---to provide listings, lookups and subscription capabilities.
 
@@ -9,8 +8,8 @@ It includes the following components:
 
 ![Screenshot of SR Tracker](https://raw.github.com/codeforamerica/srtracker/master/screenshot.png)
 
-Installation & Configuration
-----------------------------
+
+## Installation & Configuration
 
 To install (you may need to do this as root):
 
@@ -53,8 +52,7 @@ application.config.from_envvar('SRTRACKER_CONFIGURATION')
 ```
 
 
-Chicago-specific Open311 Extensions
------------------------------------
+## Chicago-specific Open311 Extensions
 
 This application relies upon extensions to the [Open311 GeoReport v2 Spec](http://wiki.open311.org/GeoReport_v2) that are specific to Chicago (for the time being). These include:
 
@@ -93,11 +91,13 @@ Here are some ways *you* can contribute:
 [issues]: https://github.com/codeforamerica/straymapper/issues
 [financially]: https://secure.codeforamerica.org/page/contribute
 
+
 ## Submitting an Issue
 
 We use the [GitHub issue tracker][issues] to track bugs and features. Before submitting a bug report or feature request, check to make sure it hasn't already been submitted. You can indicate support for an existing issue by voting it up. When submitting a bug report, please include a [Gist][] that includes a stack trace and any details that may be necessary to reproduce the bug, including your gem version, Ruby version, and operating system. Ideally, a bug report should include a pull request with failing specs.
 
 [gist]: https://gist.github.com/
+
 
 ## Submitting a Pull Request
 1. Fork the project.
@@ -106,7 +106,8 @@ We use the [GitHub issue tracker][issues] to track bugs and features. Before sub
 6. Commit and push your changes.
 7. Submit a pull request.
 
+
 ## Copyright
-Copyright (c) 2012-2014 Code for America. See [LICENSE][] for details.
+Copyright (c) 2012-2015 Code for America. See [LICENSE][] for details.
 
 [license]: https://github.com/codeforamerica/srtracker/blob/master/LICENSE
