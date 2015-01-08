@@ -413,6 +413,8 @@ def render_app_template(template, **kwargs):
 
     if 'config' not in kwargs:
         kwargs['config'] = app.config
+    if '__version__' not in kwargs:
+        kwargs['__version__'] = __version__
     return render_template(template, **kwargs)
 
 
