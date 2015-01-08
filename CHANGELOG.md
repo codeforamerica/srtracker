@@ -25,3 +25,20 @@ The following is a history of the major changes included in various releases of 
 ## 1.0 (2012-08-20)
 
 Initial release!
+
+
+---
+
+## (In-progress work)
+
+- Integration with Google Analytics
+- Show a dot in the activity list noting when a request was completed/closed.
+- Fix broken images on retina displays.
+- RSS/Atom feed for service request updates!
+- You can now filter the home page by service request type.
+- Special thanks to new contributors:
+  - Philip Neustrom (https://github.com/philipn)
+  - Ryan Briones (https://github.com/ryanbriones)
+  - Karl Fogel (https://github.com/kfogel)
+  - Thomas Caswell (https://github.com/tacaswell)
+  - Dave Guarino (https://github.com/daguar)
