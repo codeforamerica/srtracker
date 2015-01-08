@@ -16,6 +16,7 @@ import updater
 
 import open311tools
 
+__version__ = '1.0.2'
 
 # Config
 DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'configuration.py')
