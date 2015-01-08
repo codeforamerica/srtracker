@@ -6,6 +6,8 @@ It includes the following components:
  - A web application for listing service requests, searching for a specific service request based on ID, and subscribing to email updates for specific service requests
  - A python script (in `/updater`) that checks the Open311 endpoint for 
 
+The latest version is **1.0.2**.
+
 ![Screenshot of SR Tracker](https://raw.github.com/codeforamerica/srtracker/master/screenshot.png)
 
 
