@@ -16,6 +16,7 @@ import updater
 
 import open311tools
 
+__version__ = '1.0.2'
 
 # Config
 DEFAULT_CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'configuration.py')
@@ -412,6 +413,8 @@ def render_app_template(template, **kwargs):
 
     if 'config' not in kwargs:
         kwargs['config'] = app.config
+    if '__version__' not in kwargs:
+        kwargs['__version__'] = __version__
     return render_template(template, **kwargs)
 
 

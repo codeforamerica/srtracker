@@ -235,6 +235,14 @@ button:hover {
 			width: 133px;
 			background-image: url("../img/footer_logo_cfa.png");
 		}
+	
+	.version_number {
+		margin: 2em 0 0;
+		padding: 0;
+		font-size: 0.8em;
+		color: #999;
+		clear: left;
+	}
 
 .message_overlay_backing {
 	position: fixed;
@@ -347,7 +355,7 @@ button:hover {
 
 @media only screen and (max-width: 759px) {
 	body {
-		padding: 0 0 180px;
+		padding: 0 0 220px;
 	}
 
 	.landing .page_header {
