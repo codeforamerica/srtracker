@@ -1,5 +1,7 @@
 # Service Request Tracker
 
+**NOTE: This repository is archived and is no longer in active use or maintenance by the City of Chicago or Code for America.**
+
 This web application is built for the City of Chicago as an interface to service requests submitted through their 311 system. It uses Chicago's Open311 API---including Chicago-specific extensions---to provide listings, lookups and subscription capabilities.
 
 It includes the following components:
